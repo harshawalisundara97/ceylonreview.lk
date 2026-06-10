@@ -6,20 +6,34 @@ import 'application/category_theme_provider.dart';
 import 'core/theme/app_spacing.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/screens/login/login_screen.dart';
+import 'presentation/screens/splash/splash_screen.dart';
 import 'presentation/shell/app_shell.dart';
 
 void main() {
   runApp(const ProviderScope(child: CeylonReviewApp()));
 }
 
-class CeylonReviewApp extends ConsumerWidget {
+class CeylonReviewApp extends ConsumerStatefulWidget {
   const CeylonReviewApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CeylonReviewApp> createState() => _CeylonReviewAppState();
+}
+
+class _CeylonReviewAppState extends ConsumerState<CeylonReviewApp> {
+  bool _splashDone = false;
+
+  @override
+  Widget build(BuildContext context) {
     final category = ref.watch(activeCategoryProvider);
     final themeMode = ref.watch(themeModeProvider);
     final signedIn = ref.watch(authProvider) != null;
+
+    final Widget home = !_splashDone
+        ? SplashScreen(onFinished: () => setState(() => _splashDone = true))
+        : signedIn
+            ? const AppShell()
+            : const LoginScreen();
 
     return MaterialApp(
       title: 'Ceylon Review',
@@ -30,7 +44,12 @@ class CeylonReviewApp extends ConsumerWidget {
       // 360ms category cross-fade — the signature interaction.
       themeAnimationDuration: AppMotion.slow,
       themeAnimationCurve: Curves.easeInOut,
-      home: signedIn ? const AppShell() : const LoginScreen(),
+      home: AnimatedSwitcher(
+        duration: AppMotion.slow,
+        switchInCurve: Curves.easeOut,
+        switchOutCurve: Curves.easeIn,
+        child: home,
+      ),
     );
   }
 }
