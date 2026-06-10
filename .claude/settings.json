@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "b=$(git branch --show-current 2>/dev/null); t=$(date +%Y-%m-%d); if [ -n \"$b\" ] && [ \"${b#$t}\" = \"$b\" ]; then echo \"{\\\"systemMessage\\\":\\\"Reminder: no branch for today. Create one: git checkout -b $t-<task-name>\\\",\\\"hookSpecificOutput\\\":{\\\"hookEventName\\\":\\\"SessionStart\\\",\\\"additionalContext\\\":\\\"Current branch is $b, not a dated branch for $t. The user wants a new branch each day named <date>-<task>. Remind them and offer to create it.\\\"}}\"; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
