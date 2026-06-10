@@ -17,6 +17,31 @@ The GitHub repository is currently a stub (README only). The design system was a
 
 ---
 
+## Flutter App (`app/`)
+
+The production Flutter app lives in [`app/`](app/) — see [app/README.md](app/README.md) for full details.
+
+### Features
+- 7 core screens: Home, Category browse, Place detail, Write review, Profile, Map, Login
+- 6 themed categories with animated colour cross-fade theming
+- Interactive star ratings and reviews
+- Map of Sri Lanka with category-coloured pins (flutter_map)
+- Light & dark mode following this design system
+- Sample data of real Sri Lankan places
+
+### Tech Stack
+| Layer | Technology |
+|---|---|
+| Framework | Flutter (Material 3) |
+| Language | Dart |
+| State management | flutter_riverpod |
+| Maps | flutter_map + latlong2 |
+| Typography | google_fonts (Bricolage Grotesque + Plus Jakarta Sans) |
+| Architecture | Clean layering: domain / data / application / presentation |
+| Platforms | Android, iOS, Web, macOS, Linux, Windows |
+
+---
+
 ## Brand Overview
 
 Ceylon Review is a **mobile-first** discovery and review platform designed for Sri Lanka's local population and international tourists. It is the island's first all-in-one place-review product, covering six categories:
