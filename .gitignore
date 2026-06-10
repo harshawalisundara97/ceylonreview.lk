@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+**/.DS_Store
+._*
+
+# IDE / editors
+.idea/
+.vscode/
+*.iml
+*.swp
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Node
+node_modules/
+
+# Logs & temp
+*.log
+*.tmp
