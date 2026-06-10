@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80" role="img" aria-label="Ceylon Review">
+  
+  <g transform="translate(8, 4)">
+    
+    <path d="M32 4C20.954 4 12 12.954 12 24c0 15 20 48 20 48s20-33 20-48C52 12.954 43.046 4 32 4z" fill="#0F6E56"></path>
+    
+    <ellipse cx="32" cy="18" rx="5" ry="8" fill="white" opacity="0.95" transform="rotate(0,32,23)"></ellipse>
+    <ellipse cx="32" cy="18" rx="5" ry="8" fill="white" opacity="0.80" transform="rotate(72,32,23)"></ellipse>
+    <ellipse cx="32" cy="18" rx="5" ry="8" fill="white" opacity="0.80" transform="rotate(144,32,23)"></ellipse>
+    <ellipse cx="32" cy="18" rx="5" ry="8" fill="white" opacity="0.80" transform="rotate(216,32,23)"></ellipse>
+    <ellipse cx="32" cy="18" rx="5" ry="8" fill="white" opacity="0.80" transform="rotate(288,32,23)"></ellipse>
+    
+    <circle cx="32" cy="23" r="4" fill="#0F6E56"></circle>
+  </g>
+  
+  <text x="80" y="34" font-family="&#39;Bricolage Grotesque&#39;, &#39;Plus Jakarta Sans&#39;, sans-serif" font-weight="800" font-size="26" fill="#0F6E56" letter-spacing="-0.5">Ceylon</text>
+  <text x="80" y="62" font-family="&#39;Plus Jakarta Sans&#39;, sans-serif" font-weight="500" font-size="20" fill="#44483F" letter-spacing="0.5">Review</text>
+  
+  <circle cx="175" cy="57" r="4" fill="#EF9F27"></circle>
+</svg>

@@ -1,0 +1,39 @@
+/* ============================================================
+   CEYLON REVIEW — TYPOGRAPHY SCALE
+   Material Design 3 type roles, retuned for the Ceylon brand.
+   Display = Bricolage Grotesque · Body/Label = Plus Jakarta Sans
+   Accessibility floor: body text never below 14px.
+   ============================================================ */
+
+:root {
+  --font-display: 'Bricolage Grotesque', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-text:    'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Weights */
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semibold:600;
+  --fw-bold:    700;
+  --fw-extra:   800;
+
+  /* --- Display (Bricolage) --- */
+  --type-display-lg: 700 36px/1.08 var(--font-display);   /* hero numbers, splash */
+  --type-display-md: 700 30px/1.12 var(--font-display);
+  --type-headline:   700 26px/1.18 var(--font-display);   /* screen titles */
+  --type-title-lg:   600 22px/1.25 var(--font-display);   /* card / place names */
+
+  /* --- Title / Body / Label (Plus Jakarta Sans) --- */
+  --type-title-md:   600 17px/1.4  var(--font-text);      /* section headers, list titles */
+  --type-title-sm:   600 15px/1.4  var(--font-text);
+  --type-body-lg:    400 16px/1.55 var(--font-text);      /* primary reading text */
+  --type-body-md:    400 15px/1.55 var(--font-text);      /* secondary text (>=14 floor) */
+  --type-body-sm:    400 14px/1.5  var(--font-text);      /* captions, meta — min size */
+  --type-label-lg:   600 15px/1.2  var(--font-text);      /* buttons */
+  --type-label-md:   600 14px/1.2  var(--font-text);      /* chips, tabs */
+  --type-label-sm:   600 12px/1.2  var(--font-text);      /* badges, overlines ONLY */
+
+  --tracking-tight:  -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide:   0.04em;
+  --tracking-over:   0.10em;   /* overlines / category labels */
+}

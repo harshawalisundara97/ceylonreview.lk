@@ -1,0 +1,10 @@
+/* ============================================================
+   CEYLON REVIEW DESIGN SYSTEM — Global stylesheet entry point
+   Import this one file in any consuming project.
+   All rules live in the imported partials below.
+   ============================================================ */
+
+@import './tokens/fonts.css';
+@import './tokens/colors.css';
+@import './tokens/typography.css';
+@import './tokens/spacing.css';

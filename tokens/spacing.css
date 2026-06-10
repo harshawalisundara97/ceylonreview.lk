@@ -1,0 +1,56 @@
+/* ============================================================
+   CEYLON REVIEW — SPACING, RADIUS, ELEVATION, MOTION
+   8px base grid. Mobile-first. Tap targets never below 44px.
+   ============================================================ */
+
+:root {
+  /* --- Spacing (8px grid, with 4px half-steps) --- */
+  --space-0:  0;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;   /* default screen gutter */
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  --screen-gutter: 16px;     /* horizontal padding on mobile screens */
+  --tap-min: 44px;           /* minimum interactive target */
+  --frame-width: 375px;      /* mobile canvas (iPhone / Android) */
+
+  /* --- Corner radius (rounded, friendly, MD3) --- */
+  --radius-xs:  6px;
+  --radius-sm:  10px;
+  --radius-md:  14px;   /* buttons, inputs */
+  --radius-lg:  20px;   /* cards */
+  --radius-xl:  28px;   /* sheets, hero cards */
+  --radius-2xl: 36px;
+  --radius-pill:999px;  /* chips, FAB, category pills */
+
+  /* --- Elevation (soft, flat-friendly — no heavy gradients) --- */
+  --elev-0: none;
+  --elev-1: 0 1px 2px hsl(var(--shadow-color) / 0.10),
+            0 1px 1px hsl(var(--shadow-color) / 0.06);
+  --elev-2: 0 2px 6px hsl(var(--shadow-color) / 0.10),
+            0 1px 2px hsl(var(--shadow-color) / 0.08);
+  --elev-3: 0 6px 16px hsl(var(--shadow-color) / 0.12),
+            0 2px 5px  hsl(var(--shadow-color) / 0.08);
+  --elev-4: 0 12px 28px hsl(var(--shadow-color) / 0.16),
+            0 4px 10px  hsl(var(--shadow-color) / 0.10);
+
+  /* --- Motion — smooth category color transitions are core --- */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.3, 0, 0, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.4, 1);
+  --dur-fast: 120ms;
+  --dur-base: 220ms;
+  --dur-slow: 360ms;       /* color theme cross-fade */
+
+  /* Apply this to themed surfaces so category swaps cross-fade */
+  --theme-transition: background-color var(--dur-slow) var(--ease-standard),
+                      color var(--dur-slow) var(--ease-standard),
+                      border-color var(--dur-slow) var(--ease-standard);
+}

@@ -1,0 +1,35 @@
+/* ============================================================
+   CEYLON REVIEW — WEBFONTS
+   Display : Bricolage Grotesque — characterful, modern, warm.
+             Used for the wordmark, screen titles, hero numbers.
+   Text/UI : Plus Jakarta Sans — humanist, highly legible, friendly
+             to all ages. Used for everything else.
+   Icons   : Material Symbols Rounded — the authentic MD3 icon set,
+             rounded for a soft, approachable feel.
+   NOTE: Loaded from Google Fonts CDN. To fully self-host, drop the
+   .woff2 files into assets/fonts/ and swap these @import lines for
+   local @font-face src: url(...) rules.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..600&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=block');
+
+/* Material Symbols base class */
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.material-symbols-rounded.fill { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }

@@ -1,0 +1,190 @@
+/* ============================================================
+   CEYLON REVIEW — COLOR SYSTEM
+   Material Design 3 color roles + dynamic category theming.
+   :root            → Light theme (default = Home / Ceylon brand)
+   [data-theme=dark]→ Dark theme overrides
+   .cat-*           → Category palettes that re-skin the primary
+                      family. Apply to any container (or :root) to
+                      transform the whole UI. Works in light & dark.
+   ============================================================ */
+
+:root {
+  /* ---- Brand constants ---- */
+  --ceylon-green: #0F6E56;
+  --golden-amber: #EF9F27;
+
+  /* ---- Primary family (default = Ceylon Green) ---- */
+  --primary:                #0F6E56;
+  --on-primary:             #FFFFFF;
+  --primary-container:      #B9F0DC;
+  --on-primary-container:   #00210F;
+  --primary-fixed-dim:      #6FD9B6;
+  /* Soft 8% tint of the active category — for headers, chips, washes */
+  --category-tint:          #E5F4EE;
+  --category-tint-strong:   #CDEBE0;
+
+  /* ---- Accent (Golden Amber) — constant across categories ---- */
+  --accent:                 #EF9F27;
+  --on-accent:              #3D2600;
+  --accent-container:       #FFE3B8;
+  --on-accent-container:    #2A1700;
+  --star:                   #EF9F27;   /* rating stars */
+  --star-empty:             #DAD7CF;
+
+  /* ---- Neutral surfaces (warm, faint green undertone) ---- */
+  --surface:                  #FCFBF7;
+  --surface-dim:              #EFEDE6;
+  --surface-bright:           #FCFBF7;
+  --surface-container-lowest: #FFFFFF;
+  --surface-container-low:    #F6F4EE;
+  --surface-container:        #F1EEE7;
+  --surface-container-high:   #EBE8E1;
+  --surface-container-highest:#E5E2DB;
+
+  --on-surface:             #1A1C19;
+  --on-surface-variant:     #44483F;
+  --outline:                #757A70;
+  --outline-variant:        #DAD7CF;
+
+  /* ---- Semantic ---- */
+  --success:                #2E7D49;
+  --success-container:      #B6F0C4;
+  --warning:                #B5650A;
+  --warning-container:      #FFDDB3;
+  --error:                  #B3261E;
+  --error-container:        #F9DEDC;
+  --on-error:               #FFFFFF;
+  --info:                   #00788F;
+
+  /* ---- Effects ---- */
+  --scrim:                  rgba(16, 23, 20, 0.45);
+  --shadow-color:           215 30% 12%;
+}
+
+/* ============================================================
+   DARK THEME
+   ============================================================ */
+[data-theme="dark"] {
+  --primary:                #6FD9B6;
+  --on-primary:             #00382A;
+  --primary-container:      #005140;
+  --on-primary-container:   #8FF5D2;
+  --primary-fixed-dim:      #6FD9B6;
+  --category-tint:          #18241F;
+  --category-tint-strong:   #21332B;
+
+  --accent:                 #FFB951;
+  --on-accent:              #432C00;
+  --accent-container:       #6E4900;
+  --on-accent-container:    #FFDDB3;
+  --star:                   #FFB951;
+  --star-empty:             #43483F;
+
+  --surface:                  #111513;
+  --surface-dim:              #111513;
+  --surface-bright:           #373B38;
+  --surface-container-lowest: #0C0F0D;
+  --surface-container-low:    #191D1A;
+  --surface-container:        #1D211E;
+  --surface-container-high:   #272B28;
+  --surface-container-highest:#323633;
+
+  --on-surface:             #E2E3DD;
+  --on-surface-variant:     #C3C8BE;
+  --outline:                #8D9289;
+  --outline-variant:        #43483F;
+
+  --success:                #7CDA97;
+  --success-container:      #18512F;
+  --warning:                #FFB95E;
+  --warning-container:      #6E4100;
+  --error:                  #FFB4AB;
+  --error-container:        #93000A;
+  --on-error:               #690005;
+  --info:                   #5BD6F0;
+
+  --scrim:                  rgba(0, 0, 0, 0.6);
+  --shadow-color:           160 30% 2%;
+}
+
+/* ============================================================
+   CATEGORY PALETTES  — light
+   Each re-skins the primary family + category tint.
+   ============================================================ */
+
+/* FOOD — spice terracotta */
+.cat-food {
+  --primary:#C0512C; --on-primary:#FFFFFF;
+  --primary-container:#FFDBCE; --on-primary-container:#3A0B00;
+  --primary-fixed-dim:#FFB59C;
+  --category-tint:#FBEBE4; --category-tint-strong:#F7D8CB;
+}
+/* NATURE — foliage green */
+.cat-nature {
+  --primary:#43811F; --on-primary:#FFFFFF;
+  --primary-container:#C2F0A0; --on-primary-container:#0E2600;
+  --primary-fixed-dim:#A7DC7F;
+  --category-tint:#EAF4E1; --category-tint-strong:#D7ECC4;
+}
+/* BEACH — ocean teal */
+.cat-beach {
+  --primary:#00788F; --on-primary:#FFFFFF;
+  --primary-container:#ABEDFB; --on-primary-container:#001F26;
+  --primary-fixed-dim:#5BD6F0;
+  --category-tint:#E1F3F7; --category-tint-strong:#C2E9F1;
+}
+/* HOTELS — plum violet */
+.cat-hotels {
+  --primary:#7A4F9E; --on-primary:#FFFFFF;
+  --primary-container:#EDDCFF; --on-primary-container:#2A004E;
+  --primary-fixed-dim:#D5BBFF;
+  --category-tint:#F3ECF9; --category-tint-strong:#E6D7F3;
+}
+/* TEMPLES — saffron gold */
+.cat-temples {
+  --primary:#9A5B00; --on-primary:#FFFFFF;
+  --primary-container:#FFDDB3; --on-primary-container:#301400;
+  --primary-fixed-dim:#FFB95E;
+  --category-tint:#F8EEDF; --category-tint-strong:#F1DEC0;
+}
+/* SHOPPING — vibrant magenta */
+.cat-shopping {
+  --primary:#B11A60; --on-primary:#FFFFFF;
+  --primary-container:#FFD9E5; --on-primary-container:#3E0021;
+  --primary-fixed-dim:#FFB0CD;
+  --category-tint:#FBE9F1; --category-tint-strong:#F6D3E2;
+}
+
+/* ============================================================
+   CATEGORY PALETTES — dark overrides
+   ============================================================ */
+[data-theme="dark"] .cat-food {
+  --primary:#FFB59C; --on-primary:#5C1900;
+  --primary-container:#7A2D14; --on-primary-container:#FFDBCE;
+  --category-tint:#241813; --category-tint-strong:#33211A;
+}
+[data-theme="dark"] .cat-nature {
+  --primary:#A7DC7F; --on-primary:#1A3700;
+  --primary-container:#2C5410; --on-primary-container:#C2F0A0;
+  --category-tint:#1A2114; --category-tint-strong:#243117;
+}
+[data-theme="dark"] .cat-beach {
+  --primary:#5BD6F0; --on-primary:#003640;
+  --primary-container:#00586A; --on-primary-container:#ABEDFB;
+  --category-tint:#13222680; --category-tint-strong:#0D2C34;
+}
+[data-theme="dark"] .cat-hotels {
+  --primary:#D5BBFF; --on-primary:#41216B;
+  --primary-container:#5E3585; --on-primary-container:#EDDCFF;
+  --category-tint:#1E1826; --category-tint-strong:#2B2138;
+}
+[data-theme="dark"] .cat-temples {
+  --primary:#FFB95E; --on-primary:#4A2800;
+  --primary-container:#6E4100; --on-primary-container:#FFDDB3;
+  --category-tint:#231a0f; --category-tint-strong:#34270f;
+}
+[data-theme="dark"] .cat-shopping {
+  --primary:#FFB0CD; --on-primary:#5E1136;
+  --primary-container:#8A0E48; --on-primary-container:#FFD9E5;
+  --category-tint:#241620; --category-tint-strong:#341f2c;
+}
