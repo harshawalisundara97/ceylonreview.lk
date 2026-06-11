@@ -42,7 +42,7 @@ void main() {
       );
       final reviews = await repo.fetchForPlace('odel');
       expect(reviews.first.authorName, 'Test User');
-      expect(await repo.fetchByAuthor('Test User'), hasLength(1));
+      expect(await repo.fetchMine(), hasLength(1));
     });
   });
 
