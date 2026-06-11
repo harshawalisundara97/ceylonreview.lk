@@ -2,13 +2,16 @@ import '../../domain/models/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 /// Mock auth: any non-empty credentials sign in. The display name is
-/// derived from the email's local part.
+/// derived from the email's local part. No session persistence.
 class SampleAuthRepository implements AuthRepository {
+  @override
+  AppUser? get currentUser => null;
+
   @override
   Future<AppUser> signIn(
       {required String email, required String password}) async {
     if (email.trim().isEmpty || password.isEmpty) {
-      throw ArgumentError('Email and password are required.');
+      throw const AuthFailure('Email and password are required.');
     }
     // Brief delay so the UI's loading state is visible.
     await Future<void>.delayed(const Duration(milliseconds: 400));
@@ -19,6 +22,19 @@ class SampleAuthRepository implements AuthRepository {
         .map((s) => s[0].toUpperCase() + s.substring(1))
         .join(' ');
     return AppUser(name: name.isEmpty ? 'Traveller' : name, email: email);
+  }
+
+  @override
+  Future<AppUser> signUp({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    if (name.trim().isEmpty) {
+      throw const AuthFailure('Name is required.');
+    }
+    await Future<void>.delayed(const Duration(milliseconds: 400));
+    return AppUser(name: name.trim(), email: email);
   }
 
   @override

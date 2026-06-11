@@ -4,7 +4,8 @@ import '../models/review.dart';
 abstract interface class ReviewsRepository {
   Future<List<Review>> fetchForPlace(String placeId);
 
-  Future<List<Review>> fetchByAuthor(String authorName);
+  /// Reviews written by the signed-in user, newest first.
+  Future<List<Review>> fetchMine();
 
   Future<Review> add({
     required String placeId,

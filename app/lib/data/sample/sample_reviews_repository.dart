@@ -9,6 +9,7 @@ class SampleReviewsRepository implements ReviewsRepository {
       : _reviews = [...(seed ?? SampleData.reviews)];
 
   final List<Review> _reviews;
+  final List<Review> _mine = [];
   int _nextId = 1000;
 
   @override
@@ -19,8 +20,8 @@ class SampleReviewsRepository implements ReviewsRepository {
   }
 
   @override
-  Future<List<Review>> fetchByAuthor(String authorName) async {
-    final list = _reviews.where((r) => r.authorName == authorName).toList()
+  Future<List<Review>> fetchMine() async {
+    final list = [..._mine]
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return list;
   }
@@ -41,6 +42,7 @@ class SampleReviewsRepository implements ReviewsRepository {
       createdAt: DateTime.now(),
     );
     _reviews.add(review);
+    _mine.add(review);
     return review;
   }
 }

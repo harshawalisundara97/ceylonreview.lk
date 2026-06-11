@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'application/auth_provider.dart';
 import 'application/category_theme_provider.dart';
+import 'core/supabase_config.dart';
 import 'core/theme/app_spacing.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/screens/login/login_screen.dart';
 import 'presentation/screens/splash/splash_screen.dart';
 import 'presentation/shell/app_shell.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Restores any persisted auth session before the first frame.
+  await Supabase.initialize(
+    url: SupabaseConfig.url,
+    publishableKey: SupabaseConfig.publishableKey,
+  );
   runApp(const ProviderScope(child: CeylonReviewApp()));
 }
 
