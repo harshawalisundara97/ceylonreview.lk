@@ -9,7 +9,8 @@ Sri Lanka's all-in-one place review app — discover, rate and review restaurant
 - **Star ratings & reviews** — interactive star picker, review tiles with author avatars, one-decimal rating display (e.g. `4.7`)
 - **Interactive map** — browse places on a map of Sri Lanka with category-coloured pins
 - **Light & dark mode** — warm greenish off-white light surfaces and green-charcoal dark surfaces, per the Ceylon Review design system
-- **Real Sri Lankan places** — sample data features Ministry of Crab, Mirissa Beach, Temple of the Tooth, Sinharaja Forest, Heritance Kandalama, Odel and more
+- **Real Sri Lankan places** — the database is seeded with Ministry of Crab, Mirissa Beach, Temple of the Tooth, Sinharaja Forest, Heritance Kandalama, Odel and more
+- **Cloud backend (Supabase)** — real email/password sign-up & sign-in with persisted sessions, places and reviews stored in PostgreSQL, live ratings recomputed by a database trigger on every new review, and Row Level Security guarding writes
 
 ## Tech Stack
 
@@ -18,6 +19,8 @@ Sri Lanka's all-in-one place review app — discover, rate and review restaurant
 | Framework | [Flutter](https://flutter.dev) (Material 3) |
 | Language | Dart |
 | State management | [flutter_riverpod](https://pub.dev/packages/flutter_riverpod) |
+| Backend | [Supabase](https://supabase.com) — Auth (email/password), PostgreSQL, Row Level Security |
+| Backend SDK | [supabase_flutter](https://pub.dev/packages/supabase_flutter) |
 | Maps | [flutter_map](https://pub.dev/packages/flutter_map) + [latlong2](https://pub.dev/packages/latlong2) |
 | Typography | [google_fonts](https://pub.dev/packages/google_fonts) — Bricolage Grotesque (display) + Plus Jakarta Sans (UI/body) |
 | Linting | flutter_lints |
@@ -29,14 +32,23 @@ Clean-architecture-style layering:
 
 ```
 lib/
-├── core/theme/        # Colours, typography, spacing, Material 3 theme
+├── core/              # Theme (colours, typography, spacing) + Supabase config
 ├── domain/            # Models (Place, Review, User, Category) + repository interfaces
-├── data/sample/       # In-memory sample repositories & seed data
+├── data/supabase/     # Supabase-backed repositories (auth, places, reviews)
+├── data/sample/       # In-memory sample repositories & seed data (offline stand-in)
 ├── application/       # Riverpod providers (auth, places, reviews, category theme)
 └── presentation/      # Screens, app shell (bottom nav), shared widgets
 ```
 
-The data layer currently uses in-memory sample repositories behind domain interfaces, so a real backend (e.g. REST or Supabase) can be swapped in without touching the UI.
+The UI depends only on domain repository interfaces; the Supabase implementations are injected via Riverpod providers (`lib/application/repository_providers.dart`), with the in-memory sample repositories still available for tests and offline work.
+
+### Backend (Supabase)
+
+- **Auth** — email/password sign-up & sign-in; sessions persist on-device and are restored on app start. New accounts require email confirmation.
+- **Database** — PostgreSQL tables `places`, `reviews`, and `profiles` (auto-created on signup by a trigger). A trigger recomputes each place's average rating and review count whenever reviews change.
+- **Security** — Row Level Security: anyone can read places/reviews; only signed-in users can post reviews, and only as themselves.
+
+Full architecture report and schema: [docs/BACKEND_PLAN.md](../docs/BACKEND_PLAN.md).
 
 ## Getting Started
 

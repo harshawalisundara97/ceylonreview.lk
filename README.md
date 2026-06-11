@@ -27,7 +27,8 @@ The production Flutter app lives in [`app/`](app/) — see [app/README.md](app/R
 - Interactive star ratings and reviews
 - Map of Sri Lanka with category-coloured pins (flutter_map)
 - Light & dark mode following this design system
-- Sample data of real Sri Lankan places
+- Real Sri Lankan places seeded in a cloud PostgreSQL database
+- Supabase backend: email/password auth with persisted sessions, live reviews with trigger-computed ratings, Row Level Security
 
 ### Tech Stack
 | Layer | Technology |
@@ -35,6 +36,7 @@ The production Flutter app lives in [`app/`](app/) — see [app/README.md](app/R
 | Framework | Flutter (Material 3) |
 | Language | Dart |
 | State management | flutter_riverpod |
+| Backend | Supabase (Auth + PostgreSQL + RLS) via supabase_flutter |
 | Maps | flutter_map + latlong2 |
 | Typography | google_fonts (Bricolage Grotesque + Plus Jakarta Sans) |
 | Architecture | Clean layering: domain / data / application / presentation |
