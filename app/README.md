@@ -12,6 +12,7 @@ Sri Lanka's all-in-one place review app — discover, rate and review restaurant
 - **Real Sri Lankan places** — the database is seeded with Ministry of Crab, Mirissa Beach, Temple of the Tooth, Sinharaja Forest, Heritance Kandalama, Odel and more
 - **Cloud backend (Supabase)** — real email/password sign-up & sign-in with persisted sessions, places and reviews stored in PostgreSQL, live ratings recomputed by a database trigger on every new review, and Row Level Security guarding writes
 - **Search & discovery filters** — filter by price level and "open now", sort by rating/price/distance, and see live distance ("2.3 km") from your current location on place cards
+- **Favorites** — bookmark places from any card or the detail screen; saved places appear under "Your Favorites" on your profile
 
 ## Tech Stack
 
