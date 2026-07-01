@@ -14,6 +14,7 @@ class PlaceCard extends StatelessWidget {
     required this.place,
     required this.onTap,
     this.width,
+    this.distanceKm,
   });
 
   final Place place;
@@ -21,6 +22,10 @@ class PlaceCard extends StatelessWidget {
 
   /// When set, renders the compact carousel layout.
   final double? width;
+
+  /// Distance from the device's current location, in kilometres. Shown next
+  /// to the district when available.
+  final double? distanceKm;
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +103,9 @@ class PlaceCard extends StatelessWidget {
                       const SizedBox(width: 2),
                       Flexible(
                         child: Text(
-                          place.district,
+                          distanceKm != null
+                              ? '${distanceKm!.toStringAsFixed(1)} km'
+                              : place.district,
                           style: theme.textTheme.bodySmall,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -106,6 +113,10 @@ class PlaceCard extends StatelessWidget {
                       ),
                     ],
                   ),
+                  if (place.isOpenNow != null) ...[
+                    const SizedBox(height: AppSpacing.xs),
+                    _OpenNowChip(isOpen: place.isOpenNow!),
+                  ],
                 ],
               ),
             ),
@@ -115,5 +126,28 @@ class PlaceCard extends StatelessWidget {
     );
 
     return width != null ? SizedBox(width: width, child: card) : card;
+  }
+}
+
+class _OpenNowChip extends StatelessWidget {
+  const _OpenNowChip({required this.isOpen});
+
+  final bool isOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = isOpen ? Colors.green.shade600 : theme.colorScheme.error;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.circle, size: 8, color: color),
+        const SizedBox(width: 4),
+        Text(
+          isOpen ? 'Open now' : 'Closed',
+          style: theme.textTheme.labelSmall?.copyWith(color: color),
+        ),
+      ],
+    );
   }
 }

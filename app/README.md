@@ -11,6 +11,7 @@ Sri Lanka's all-in-one place review app — discover, rate and review restaurant
 - **Light & dark mode** — warm greenish off-white light surfaces and green-charcoal dark surfaces, per the Ceylon Review design system
 - **Real Sri Lankan places** — the database is seeded with Ministry of Crab, Mirissa Beach, Temple of the Tooth, Sinharaja Forest, Heritance Kandalama, Odel and more
 - **Cloud backend (Supabase)** — real email/password sign-up & sign-in with persisted sessions, places and reviews stored in PostgreSQL, live ratings recomputed by a database trigger on every new review, and Row Level Security guarding writes
+- **Search & discovery filters** — filter by price level and "open now", sort by rating/price/distance, and see live distance ("2.3 km") from your current location on place cards
 
 ## Tech Stack
 
@@ -22,6 +23,7 @@ Sri Lanka's all-in-one place review app — discover, rate and review restaurant
 | Backend | [Supabase](https://supabase.com) — Auth (email/password), PostgreSQL, Row Level Security |
 | Backend SDK | [supabase_flutter](https://pub.dev/packages/supabase_flutter) |
 | Maps | [flutter_map](https://pub.dev/packages/flutter_map) + [latlong2](https://pub.dev/packages/latlong2) |
+| Location | [geolocator](https://pub.dev/packages/geolocator) — device position for "near me" distance sorting |
 | Typography | [google_fonts](https://pub.dev/packages/google_fonts) — Bricolage Grotesque (display) + Plus Jakarta Sans (UI/body) |
 | Linting | flutter_lints |
 | Platforms | Android, iOS, Web, macOS, Linux, Windows |
@@ -36,7 +38,7 @@ lib/
 ├── domain/            # Models (Place, Review, User, Category) + repository interfaces
 ├── data/supabase/     # Supabase-backed repositories (auth, places, reviews)
 ├── data/sample/       # In-memory sample repositories & seed data (offline stand-in)
-├── application/       # Riverpod providers (auth, places, reviews, category theme)
+├── application/       # Riverpod providers (auth, places, reviews, category theme, filters, location)
 └── presentation/      # Screens, app shell (bottom nav), shared widgets
 ```
 

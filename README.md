@@ -29,6 +29,7 @@ The production Flutter app lives in [`app/`](app/) — see [app/README.md](app/R
 - Light & dark mode following this design system
 - Real Sri Lankan places seeded in a cloud PostgreSQL database
 - Supabase backend: email/password auth with persisted sessions, live reviews with trigger-computed ratings, Row Level Security
+- Search & discovery filters: price level, "open now", and sort by rating/price/distance from your current location
 
 ### Tech Stack
 | Layer | Technology |
@@ -38,6 +39,7 @@ The production Flutter app lives in [`app/`](app/) — see [app/README.md](app/R
 | State management | flutter_riverpod |
 | Backend | Supabase (Auth + PostgreSQL + RLS) via supabase_flutter |
 | Maps | flutter_map + latlong2 |
+| Location | geolocator (device position for distance sort) |
 | Typography | google_fonts (Bricolage Grotesque + Plus Jakarta Sans) |
 | Architecture | Clean layering: domain / data / application / presentation |
 | Platforms | Android, iOS, Web, macOS, Linux, Windows |

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:latlong2/latlong.dart' as latlong;
 
 import '../../../application/category_theme_provider.dart';
-import '../../../application/places_provider.dart';
+import '../../../application/location_provider.dart';
+import '../../../application/place_filters_provider.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../domain/models/category.dart';
 import '../../widgets/category_pill_row.dart';
+import '../../widgets/filters_bottom_sheet.dart';
 import '../../widgets/place_card.dart';
 import '../place_detail/place_detail_screen.dart';
 
@@ -20,7 +23,11 @@ class CategoryScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final tokens = theme.extension<CeylonTokens>()!;
     final category = ref.watch(activeCategoryProvider);
-    final places = ref.watch(placesByCategoryProvider(category));
+    final places = ref.watch(filteredPlacesProvider(category));
+    final position = ref.watch(locationProvider).valueOrNull;
+    final from = position == null
+        ? null
+        : latlong.LatLng(position.latitude, position.longitude);
 
     return Scaffold(
       body: SafeArea(
@@ -37,11 +44,21 @@ class CategoryScreen extends ConsumerWidget {
                   Icon(CategoryPillRow.iconOf(category),
                       color: theme.colorScheme.primary, size: 28),
                   const SizedBox(width: AppSpacing.sm),
-                  Text(
-                    category == PlaceCategory.home
-                        ? 'Explore Sri Lanka'
-                        : category.displayName,
-                    style: theme.textTheme.headlineMedium,
+                  Expanded(
+                    child: Text(
+                      category == PlaceCategory.home
+                          ? 'Explore Sri Lanka'
+                          : category.displayName,
+                      style: theme.textTheme.headlineMedium,
+                    ),
+                  ),
+                  IconButton(
+                    icon: Badge(
+                      isLabelVisible: ref.watch(placeFiltersProvider).isActive,
+                      child: const Icon(Icons.tune_rounded),
+                    ),
+                    tooltip: 'Filters',
+                    onPressed: () => showFiltersSheet(context, ref, category),
                   ),
                 ],
               ),
@@ -63,6 +80,7 @@ class CategoryScreen extends ConsumerWidget {
                       const SizedBox(height: AppSpacing.md),
                   itemBuilder: (context, i) => PlaceCard(
                     place: list[i],
+                    distanceKm: distanceToPlaceKm(from, list[i]),
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) =>
