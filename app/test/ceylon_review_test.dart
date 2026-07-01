@@ -83,7 +83,7 @@ void main() {
       ]);
     }
 
-    test('signed-out user has no favorites and toggle is a no-op', () async {
+    test('signed-out user has no favorites', () async {
       final container = buildContainer(SampleFavoritesRepository(), null);
       addTearDown(container.dispose);
 
