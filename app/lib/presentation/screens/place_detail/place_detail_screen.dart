@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../application/favorites_provider.dart';
 import '../../../application/places_provider.dart';
 import '../../../application/reviews_provider.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -52,6 +53,9 @@ class _PlaceDetailBody extends ConsumerWidget {
     final theme = Theme.of(context);
     final tokens = theme.extension<CeylonTokens>()!;
     final reviews = ref.watch(reviewsForPlaceProvider(place.id));
+    final isFavorite =
+        (ref.watch(myFavoriteIdsProvider).valueOrNull ?? const {})
+            .contains(place.id);
 
     return Scaffold(
       body: CustomScrollView(
@@ -127,6 +131,19 @@ class _PlaceDetailBody extends ConsumerWidget {
                       const SizedBox(width: 2),
                       Text(place.district,
                           style: theme.textTheme.titleSmall),
+                      IconButton(
+                        icon: Icon(
+                          isFavorite
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_border_rounded,
+                          color: isFavorite
+                              ? Colors.redAccent
+                              : theme.colorScheme.outline,
+                        ),
+                        onPressed: () => ref
+                            .read(myFavoriteIdsProvider.notifier)
+                            .toggle(place.id),
+                      ),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.lg),
