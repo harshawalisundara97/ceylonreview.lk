@@ -12,6 +12,7 @@ import 'package:ceylon_review/data/sample/sample_favorites_repository.dart';
 import 'package:ceylon_review/domain/models/category.dart';
 import 'package:ceylon_review/domain/models/user.dart';
 import 'package:ceylon_review/domain/repositories/favorites_repository.dart';
+import 'package:ceylon_review/presentation/widgets/place_card.dart';
 import 'package:ceylon_review/presentation/widgets/rating_stars.dart';
 import 'package:ceylon_review/presentation/widgets/star_picker.dart';
 
@@ -119,9 +120,13 @@ void main() {
   });
 
   group('Widgets', () {
-    Widget themed(Widget child) => MaterialApp(
-          theme: AppTheme.of(PlaceCategory.home, Brightness.light),
-          home: Scaffold(body: Center(child: child)),
+    Widget themed(Widget child, {List<Override> overrides = const []}) =>
+        ProviderScope(
+          overrides: overrides,
+          child: MaterialApp(
+            theme: AppTheme.of(PlaceCategory.home, Brightness.light),
+            home: Scaffold(body: Center(child: child)),
+          ),
         );
 
     testWidgets('RatingStars renders five stars with half support',
@@ -144,6 +149,30 @@ void main() {
       await tester.pump();
       expect(picked, 4);
       expect(find.byIcon(Icons.star_rounded), findsNWidgets(4));
+    });
+
+    testWidgets('PlaceCard heart toggles favorite state', (tester) async {
+      final repo = SampleFavoritesRepository();
+      final place = (await SamplePlacesRepository().fetchAll())
+          .firstWhere((p) => p.id == 'odel');
+
+      await tester.pumpWidget(themed(
+        PlaceCard(place: place, onTap: () {}),
+        overrides: [
+          favoritesRepositoryProvider.overrideWithValue(repo),
+          authProvider.overrideWith(() => _FakeAuthNotifier(
+              const AppUser(name: 'Test User', email: 't@example.com'))),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.favorite_border_rounded), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.favorite_border_rounded));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.favorite_rounded), findsOneWidget);
+      expect(await repo.fetchMyFavoriteIds(), {'odel'});
     });
   });
 }

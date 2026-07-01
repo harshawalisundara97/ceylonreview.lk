@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../application/favorites_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_theme.dart';
@@ -8,7 +10,7 @@ import '../../domain/models/place.dart';
 
 /// Place card: full-bleed photo with bottom scrim, name, category overline,
 /// rating and review count. Two layouts: carousel (fixed width) and list.
-class PlaceCard extends StatelessWidget {
+class PlaceCard extends ConsumerWidget {
   const PlaceCard({
     super.key,
     required this.place,
@@ -28,10 +30,13 @@ class PlaceCard extends StatelessWidget {
   final double? distanceKm;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final tokens = theme.extension<CeylonTokens>()!;
     final seed = AppColors.seedOf(place.category);
+    final isFavorite =
+        (ref.watch(myFavoriteIdsProvider).valueOrNull ?? const {})
+            .contains(place.id);
 
     final card = Card(
       clipBehavior: Clip.antiAlias,
@@ -71,6 +76,25 @@ class PlaceCard extends StatelessWidget {
                     child: Text(
                       place.category.label,
                       style: AppTypography.overline(Colors.white),
+                    ),
+                  ),
+                  Positioned(
+                    top: AppSpacing.sm,
+                    right: AppSpacing.sm,
+                    child: Material(
+                      color: Colors.black38,
+                      shape: const CircleBorder(),
+                      child: IconButton(
+                        icon: Icon(
+                          isFavorite
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_border_rounded,
+                          color: isFavorite ? Colors.redAccent : Colors.white,
+                        ),
+                        onPressed: () => ref
+                            .read(myFavoriteIdsProvider.notifier)
+                            .toggle(place.id),
+                      ),
                     ),
                   ),
                 ],
