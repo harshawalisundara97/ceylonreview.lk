@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ceylon_review/core/theme/app_theme.dart';
 import 'package:ceylon_review/data/sample/sample_places_repository.dart';
 import 'package:ceylon_review/data/sample/sample_reviews_repository.dart';
+import 'package:ceylon_review/data/sample/sample_favorites_repository.dart';
 import 'package:ceylon_review/domain/models/category.dart';
 import 'package:ceylon_review/presentation/widgets/rating_stars.dart';
 import 'package:ceylon_review/presentation/widgets/star_picker.dart';
@@ -43,6 +44,28 @@ void main() {
       final reviews = await repo.fetchForPlace('odel');
       expect(reviews.first.authorName, 'Test User');
       expect(await repo.fetchMine(), hasLength(1));
+    });
+  });
+
+  group('SampleFavoritesRepository', () {
+    test('starts empty, add/remove update the id set', () async {
+      final repo = SampleFavoritesRepository();
+      expect(await repo.fetchMyFavoriteIds(), isEmpty);
+
+      await repo.add('odel');
+      expect(await repo.fetchMyFavoriteIds(), {'odel'});
+
+      await repo.add('mirissa-beach');
+      expect(await repo.fetchMyFavoriteIds(), {'odel', 'mirissa-beach'});
+
+      await repo.remove('odel');
+      expect(await repo.fetchMyFavoriteIds(), {'mirissa-beach'});
+    });
+
+    test('removing a non-favorited id is a no-op', () async {
+      final repo = SampleFavoritesRepository();
+      await repo.remove('never-added');
+      expect(await repo.fetchMyFavoriteIds(), isEmpty);
     });
   });
 
