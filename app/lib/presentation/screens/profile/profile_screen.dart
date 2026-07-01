@@ -3,12 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../application/auth_provider.dart';
 import '../../../application/category_theme_provider.dart';
+import '../../../application/favorites_provider.dart';
 import '../../../application/places_provider.dart';
 import '../../../application/reviews_provider.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../widgets/place_card.dart';
 import '../../widgets/review_tile.dart';
 import '../../widgets/user_avatar.dart';
+import '../place_detail/place_detail_screen.dart';
 
 /// Profile: avatar + identity, dark-mode toggle, the user's reviews,
 /// and sign out.
@@ -22,6 +25,7 @@ class ProfileScreen extends ConsumerWidget {
     final user = ref.watch(authProvider);
     final themeMode = ref.watch(themeModeProvider);
     final myReviews = ref.watch(myReviewsProvider);
+    final favoriteIds = ref.watch(myFavoriteIdsProvider);
     final placesAsync = ref.watch(allPlacesProvider);
 
     if (user == null) {
@@ -61,6 +65,55 @@ class ProfileScreen extends ConsumerWidget {
               secondary: Icon(
                   isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded),
               title: const Text('Dark Mode'),
+            ),
+            const Divider(height: 1),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(AppSpacing.gutter,
+                  AppSpacing.xl, AppSpacing.gutter, AppSpacing.sm),
+              child:
+                  Text('Your Favorites', style: theme.textTheme.titleLarge),
+            ),
+            favoriteIds.when(
+              loading: () => const Padding(
+                padding: EdgeInsets.all(AppSpacing.xl),
+                child: Center(child: CircularProgressIndicator()),
+              ),
+              error: (_, __) => const Padding(
+                padding: EdgeInsets.all(AppSpacing.gutter),
+                child: Text('Could not load your favorites.'),
+              ),
+              data: (ids) {
+                final places = (placesAsync.valueOrNull ?? [])
+                    .where((p) => ids.contains(p.id))
+                    .toList();
+                if (places.isEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.all(AppSpacing.gutter),
+                    child: Text(
+                      'No favorites yet. Tap the heart on a place you love!',
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                  );
+                }
+                return Column(
+                  children: [
+                    for (final place in places)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(AppSpacing.gutter,
+                            0, AppSpacing.gutter, AppSpacing.md),
+                        child: PlaceCard(
+                          place: place,
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  PlaceDetailScreen(placeId: place.id),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
             ),
             const Divider(height: 1),
             Padding(
