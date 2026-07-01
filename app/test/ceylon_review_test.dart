@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:ceylon_review/application/auth_provider.dart';
+import 'package:ceylon_review/application/favorites_provider.dart';
+import 'package:ceylon_review/application/repository_providers.dart';
 import 'package:ceylon_review/core/theme/app_theme.dart';
 import 'package:ceylon_review/data/sample/sample_places_repository.dart';
 import 'package:ceylon_review/data/sample/sample_reviews_repository.dart';
 import 'package:ceylon_review/data/sample/sample_favorites_repository.dart';
 import 'package:ceylon_review/domain/models/category.dart';
+import 'package:ceylon_review/domain/models/user.dart';
+import 'package:ceylon_review/domain/repositories/favorites_repository.dart';
 import 'package:ceylon_review/presentation/widgets/rating_stars.dart';
 import 'package:ceylon_review/presentation/widgets/star_picker.dart';
 
@@ -69,6 +75,40 @@ void main() {
     });
   });
 
+  group('myFavoriteIdsProvider', () {
+    ProviderContainer buildContainer(FavoritesRepository repo, AppUser? user) {
+      return ProviderContainer(overrides: [
+        favoritesRepositoryProvider.overrideWithValue(repo),
+        authProvider.overrideWith(() => _FakeAuthNotifier(user)),
+      ]);
+    }
+
+    test('signed-out user has no favorites and toggle is a no-op', () async {
+      final container = buildContainer(SampleFavoritesRepository(), null);
+      addTearDown(container.dispose);
+
+      final ids = await container.read(myFavoriteIdsProvider.future);
+      expect(ids, isEmpty);
+    });
+
+    test('toggle adds then removes a place id, backed by the repository',
+        () async {
+      final repo = SampleFavoritesRepository();
+      final container = buildContainer(
+          repo, const AppUser(name: 'Test User', email: 't@example.com'));
+      addTearDown(container.dispose);
+
+      await container.read(myFavoriteIdsProvider.future);
+      await container.read(myFavoriteIdsProvider.notifier).toggle('odel');
+      expect(container.read(myFavoriteIdsProvider).value, {'odel'});
+      expect(await repo.fetchMyFavoriteIds(), {'odel'});
+
+      await container.read(myFavoriteIdsProvider.notifier).toggle('odel');
+      expect(container.read(myFavoriteIdsProvider).value, isEmpty);
+      expect(await repo.fetchMyFavoriteIds(), isEmpty);
+    });
+  });
+
   group('Place formatting', () {
     test('rating shows one decimal and counts abbreviate to k', () async {
       final places = await SamplePlacesRepository().fetchAll();
@@ -106,4 +146,12 @@ void main() {
       expect(find.byIcon(Icons.star_rounded), findsNWidgets(4));
     });
   });
+}
+
+class _FakeAuthNotifier extends AuthNotifier {
+  _FakeAuthNotifier(this._user);
+  final AppUser? _user;
+
+  @override
+  AppUser? build() => _user;
 }
