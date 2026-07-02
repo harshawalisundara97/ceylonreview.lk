@@ -144,7 +144,9 @@ class _TrendingCarousel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final trending = ref.watch(trendingPlacesProvider);
     return SizedBox(
-      height: 236,
+      // Tall enough for the photo, title, rating row, and the optional
+      // "Open now" chip that places with opening hours render.
+      height: 254,
       child: trending.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => const _ErrorNote(),
