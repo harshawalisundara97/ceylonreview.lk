@@ -144,7 +144,9 @@ class _TrendingCarousel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final trending = ref.watch(trendingPlacesProvider);
     return SizedBox(
-      height: 236,
+      // Sized to fit PlaceCard's carousel layout including the optional
+      // open-now chip row.
+      height: 256,
       child: trending.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => const _ErrorNote(),
