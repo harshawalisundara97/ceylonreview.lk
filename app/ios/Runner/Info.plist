@@ -47,5 +47,7 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>Ceylon Review uses your location to show how far nearby places are and to sort listings by distance.</string>
 	</dict>
 </plist>

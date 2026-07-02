@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:latlong2/latlong.dart' as latlong;
 
 import '../../../application/auth_provider.dart';
 import '../../../application/category_theme_provider.dart';
+import '../../../application/location_provider.dart';
+import '../../../application/place_filters_provider.dart';
 import '../../../application/places_provider.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../domain/models/category.dart';
 import '../../widgets/category_pill_row.dart';
+import '../../widgets/filters_bottom_sheet.dart';
 import '../../widgets/place_card.dart';
 import '../../widgets/section_header.dart';
 import '../../widgets/user_avatar.dart';
@@ -110,6 +114,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 title: activeCategory == PlaceCategory.home
                     ? 'Places You\'ll Love'
                     : activeCategory.displayName,
+                action: Consumer(
+                  builder: (context, ref, _) => IconButton(
+                    icon: Badge(
+                      isLabelVisible: ref.watch(placeFiltersProvider).isActive,
+                      child: const Icon(Icons.tune_rounded),
+                    ),
+                    tooltip: 'Filters',
+                    onPressed: () =>
+                        showFiltersSheet(context, ref, activeCategory),
+                  ),
+                ),
               ),
               _CategoryList(onOpen: _openPlace),
             ],
@@ -129,7 +144,9 @@ class _TrendingCarousel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final trending = ref.watch(trendingPlacesProvider);
     return SizedBox(
-      height: 236,
+      // Sized to fit PlaceCard's carousel layout including the optional
+      // open-now chip row.
+      height: 256,
       child: trending.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => const _ErrorNote(),
@@ -157,7 +174,11 @@ class _CategoryList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final category = ref.watch(activeCategoryProvider);
-    final places = ref.watch(placesByCategoryProvider(category));
+    final places = ref.watch(filteredPlacesProvider(category));
+    final position = ref.watch(locationProvider).valueOrNull;
+    final from = position == null
+        ? null
+        : latlong.LatLng(position.latitude, position.longitude);
 
     return places.when(
       loading: () => const Padding(
@@ -171,7 +192,11 @@ class _CategoryList extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(
                   AppSpacing.gutter, 0, AppSpacing.gutter, AppSpacing.md),
-              child: PlaceCard(place: place, onTap: () => onOpen(place.id)),
+              child: PlaceCard(
+                place: place,
+                distanceKm: distanceToPlaceKm(from, place),
+                onTap: () => onOpen(place.id),
+              ),
             ),
         ],
       ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../application/favorites_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_theme.dart';
@@ -8,12 +10,13 @@ import '../../domain/models/place.dart';
 
 /// Place card: full-bleed photo with bottom scrim, name, category overline,
 /// rating and review count. Two layouts: carousel (fixed width) and list.
-class PlaceCard extends StatelessWidget {
+class PlaceCard extends ConsumerWidget {
   const PlaceCard({
     super.key,
     required this.place,
     required this.onTap,
     this.width,
+    this.distanceKm,
   });
 
   final Place place;
@@ -22,11 +25,18 @@ class PlaceCard extends StatelessWidget {
   /// When set, renders the compact carousel layout.
   final double? width;
 
+  /// Distance from the device's current location, in kilometres. Shown next
+  /// to the district when available.
+  final double? distanceKm;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final tokens = theme.extension<CeylonTokens>()!;
     final seed = AppColors.seedOf(place.category);
+    final isFavorite =
+        (ref.watch(myFavoriteIdsProvider).valueOrNull ?? const {})
+            .contains(place.id);
 
     final card = Card(
       clipBehavior: Clip.antiAlias,
@@ -68,6 +78,25 @@ class PlaceCard extends StatelessWidget {
                       style: AppTypography.overline(Colors.white),
                     ),
                   ),
+                  Positioned(
+                    top: AppSpacing.sm,
+                    right: AppSpacing.sm,
+                    child: Material(
+                      color: Colors.black38,
+                      shape: const CircleBorder(),
+                      child: IconButton(
+                        icon: Icon(
+                          isFavorite
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_border_rounded,
+                          color: isFavorite ? Colors.redAccent : Colors.white,
+                        ),
+                        onPressed: () => ref
+                            .read(myFavoriteIdsProvider.notifier)
+                            .toggle(place.id),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -89,16 +118,22 @@ class PlaceCard extends StatelessWidget {
                       const SizedBox(width: 2),
                       Text(place.ratingLabel,
                           style: theme.textTheme.labelMedium),
-                      Text(
-                        ' · ${place.reviewCountLabel} reviews',
-                        style: theme.textTheme.bodySmall,
+                      Flexible(
+                        child: Text(
+                          ' · ${place.reviewCountLabel} reviews',
+                          style: theme.textTheme.bodySmall,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                       const Spacer(),
                       Icon(Icons.place_rounded, size: 14, color: seed),
                       const SizedBox(width: 2),
                       Flexible(
                         child: Text(
-                          place.district,
+                          distanceKm != null
+                              ? '${distanceKm!.toStringAsFixed(1)} km'
+                              : place.district,
                           style: theme.textTheme.bodySmall,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -106,6 +141,10 @@ class PlaceCard extends StatelessWidget {
                       ),
                     ],
                   ),
+                  if (place.isOpenNow != null) ...[
+                    const SizedBox(height: AppSpacing.xs),
+                    _OpenNowChip(isOpen: place.isOpenNow!),
+                  ],
                 ],
               ),
             ),
@@ -115,5 +154,28 @@ class PlaceCard extends StatelessWidget {
     );
 
     return width != null ? SizedBox(width: width, child: card) : card;
+  }
+}
+
+class _OpenNowChip extends StatelessWidget {
+  const _OpenNowChip({required this.isOpen});
+
+  final bool isOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = isOpen ? Colors.green.shade600 : theme.colorScheme.error;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.circle, size: 8, color: color),
+        const SizedBox(width: 4),
+        Text(
+          isOpen ? 'Open now' : 'Closed',
+          style: theme.textTheme.labelSmall?.copyWith(color: color),
+        ),
+      ],
+    );
   }
 }

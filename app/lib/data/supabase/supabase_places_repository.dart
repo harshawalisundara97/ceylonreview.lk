@@ -62,4 +62,7 @@ Place _placeFromRow(Map<String, dynamic> row) => Place(
       description: row['description'] as String,
       imageUrl: row['image_url'] as String,
       trending: row['trending'] as bool,
+      priceLevel: row['price_level'] as int?,
+      opensAt: row['opens_at'] as String?,
+      closesAt: row['closes_at'] as String?,
     );
