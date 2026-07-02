@@ -10,6 +10,7 @@ import 'package:ceylon_review/data/sample/sample_places_repository.dart';
 import 'package:ceylon_review/data/sample/sample_reviews_repository.dart';
 import 'package:ceylon_review/data/sample/sample_favorites_repository.dart';
 import 'package:ceylon_review/domain/models/category.dart';
+import 'package:ceylon_review/domain/models/place.dart';
 import 'package:ceylon_review/domain/models/user.dart';
 import 'package:ceylon_review/domain/repositories/favorites_repository.dart';
 import 'package:ceylon_review/presentation/widgets/place_card.dart';
@@ -173,6 +174,43 @@ void main() {
 
       expect(find.byIcon(Icons.favorite_rounded), findsOneWidget);
       expect(await repo.fetchMyFavoriteIds(), {'odel'});
+    });
+
+    testWidgets('PlaceCard with open-hours chip fits the trending carousel',
+        (tester) async {
+      // Same constraints as the Trending This Week carousel on Home:
+      // fixed 220-wide cards inside a fixed-height horizontal strip. The
+      // place has hours set so the _OpenNowChip row renders.
+      final place = Place(
+        id: 'test',
+        name: 'Test Place',
+        category: PlaceCategory.food,
+        district: 'Colombo',
+        latitude: 6.9,
+        longitude: 79.8,
+        rating: 4.5,
+        reviewCount: 1200,
+        description: 'Test',
+        imageUrl: 'https://example.com/x.jpg',
+        opensAt: '00:00',
+        closesAt: '23:59',
+      );
+
+      await tester.pumpWidget(themed(
+        SizedBox(
+          height: 256,
+          child: PlaceCard(place: place, width: 220, onTap: () {}),
+        ),
+        overrides: [
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+        ],
+      ));
+      await tester.pump();
+
+      // A RenderFlex overflow surfaces as an exception during layout.
+      expect(tester.takeException(), isNull);
     });
   });
 }

@@ -118,9 +118,13 @@ class PlaceCard extends ConsumerWidget {
                       const SizedBox(width: 2),
                       Text(place.ratingLabel,
                           style: theme.textTheme.labelMedium),
-                      Text(
-                        ' · ${place.reviewCountLabel} reviews',
-                        style: theme.textTheme.bodySmall,
+                      Flexible(
+                        child: Text(
+                          ' · ${place.reviewCountLabel} reviews',
+                          style: theme.textTheme.bodySmall,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                       const Spacer(),
                       Icon(Icons.place_rounded, size: 14, color: seed),
