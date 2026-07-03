@@ -15,6 +15,7 @@ import '../../widgets/filters_bottom_sheet.dart';
 import '../../widgets/place_card.dart';
 import '../../widgets/section_header.dart';
 import '../../widgets/user_avatar.dart';
+import '../add_place/add_place_screen.dart';
 import '../place_detail/place_detail_screen.dart';
 
 /// Home: greeting, hero search, category pills (drives re-theming),
@@ -214,6 +215,7 @@ class _SearchResults extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final results = ref.watch(placeSearchProvider(query));
     final theme = Theme.of(context);
+    final user = ref.watch(authProvider);
 
     return results.when(
       loading: () => const Padding(
@@ -232,6 +234,18 @@ class _SearchResults extends ConsumerWidget {
                 const SizedBox(height: AppSpacing.md),
                 Text('No places found for "$query"',
                     style: theme.textTheme.bodyMedium),
+                if (user != null) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  FilledButton.icon(
+                    icon: const Icon(Icons.add_location_alt_rounded),
+                    label: const Text("Can't find it? Add this place"),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => AddPlaceScreen(initialName: query),
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           );

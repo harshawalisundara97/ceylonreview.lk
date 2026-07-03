@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../application/auth_provider.dart';
 import '../../../application/category_theme_provider.dart';
 import '../../../application/places_provider.dart';
 import '../../../core/theme/app_colors.dart';
@@ -10,6 +11,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../domain/models/place.dart';
 import '../../widgets/category_pill_row.dart';
 import '../../widgets/rating_stars.dart';
+import '../add_place/add_place_screen.dart';
 import '../place_detail/place_detail_screen.dart';
 
 /// Map of Sri Lanka with category-colored markers (OpenStreetMap tiles —
@@ -34,8 +36,18 @@ class MapScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final category = ref.watch(activeCategoryProvider);
     final placesAsync = ref.watch(placesByCategoryProvider(category));
+    final user = ref.watch(authProvider);
 
     return Scaffold(
+      floatingActionButton: user == null
+          ? null
+          : FloatingActionButton(
+              tooltip: 'Add a place',
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const AddPlaceScreen()),
+              ),
+              child: const Icon(Icons.add_location_alt_rounded),
+            ),
       body: placesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => const Center(child: Text('Could not load the map.')),

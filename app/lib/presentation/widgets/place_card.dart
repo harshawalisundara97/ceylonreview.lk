@@ -73,9 +73,26 @@ class PlaceCard extends ConsumerWidget {
                   Positioned(
                     left: AppSpacing.md,
                     bottom: AppSpacing.sm,
-                    child: Text(
-                      place.category.label,
-                      style: AppTypography.overline(Colors.white),
+                    child: Row(
+                      children: [
+                        Text(
+                          place.category.label,
+                          style: AppTypography.overline(Colors.white),
+                        ),
+                        if (place.addedBy != null) ...[
+                          const SizedBox(width: AppSpacing.sm),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.black45,
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Text('COMMUNITY',
+                                style: AppTypography.overline(Colors.white)),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                   Positioned(

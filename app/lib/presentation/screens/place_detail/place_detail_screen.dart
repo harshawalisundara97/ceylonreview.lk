@@ -91,8 +91,18 @@ class _PlaceDetailBody extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(place.category.label,
-                            style: AppTypography.overline(Colors.white)),
+                        Row(
+                          children: [
+                            Text(place.category.label,
+                                style: AppTypography.overline(Colors.white)),
+                            if (place.addedBy != null) ...[
+                              const SizedBox(width: AppSpacing.sm),
+                              Text('· COMMUNITY',
+                                  style:
+                                      AppTypography.overline(Colors.white70)),
+                            ],
+                          ],
+                        ),
                         const SizedBox(height: AppSpacing.xs),
                         Text(
                           place.name,
