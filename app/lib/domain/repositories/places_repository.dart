@@ -13,4 +13,7 @@ abstract interface class PlacesRepository {
   Future<Place?> fetchById(String id);
 
   Future<List<Place>> search(String query);
+
+  /// Adds a community place and returns it as stored.
+  Future<Place> addPlace(Place place);
 }

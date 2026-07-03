@@ -38,6 +38,20 @@ void main() {
       expect(await repo.search('COLOMBO'), isNotEmpty);
       expect(await repo.search('zzz-nowhere'), isEmpty);
     });
+
+    test('addPlace makes the place visible in fetches', () async {
+      final repo = SamplePlacesRepository();
+      const place = Place(
+        id: 'new-cafe', name: 'New Cafe', category: PlaceCategory.food,
+        district: 'Galle', latitude: 6.03, longitude: 80.22,
+        rating: 0, reviewCount: 0, description: 'Cozy.', imageUrl: '',
+        addedBy: 'user-1',
+      );
+      final created = await repo.addPlace(place);
+      expect(created.id, 'new-cafe');
+      expect((await repo.fetchAll()).map((p) => p.id), contains('new-cafe'));
+      expect(await repo.fetchById('new-cafe'), isNotNull);
+    });
   });
 
   group('SampleReviewsRepository', () {
