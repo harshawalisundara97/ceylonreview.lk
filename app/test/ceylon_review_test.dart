@@ -17,6 +17,7 @@ import 'package:ceylon_review/domain/models/category.dart';
 import 'package:ceylon_review/domain/models/place.dart';
 import 'package:ceylon_review/domain/models/user.dart';
 import 'package:ceylon_review/domain/repositories/favorites_repository.dart';
+import 'package:ceylon_review/presentation/screens/add_place/add_place_screen.dart';
 import 'package:ceylon_review/presentation/widgets/place_card.dart';
 import 'package:ceylon_review/presentation/widgets/rating_stars.dart';
 import 'package:ceylon_review/presentation/widgets/star_picker.dart';
@@ -278,6 +279,29 @@ void main() {
 
       expect(find.byIcon(Icons.favorite_rounded), findsOneWidget);
       expect(await repo.fetchMyFavoriteIds(), {'odel'});
+    });
+
+    testWidgets('AddPlaceScreen blocks save when required fields missing',
+        (tester) async {
+      // The form is taller than the default test surface, which leaves the
+      // submit button outside the ListView's lazy-build cache extent.
+      // Enlarge the surface so every field builds without needing to scroll.
+      await tester.binding.setSurfaceSize(const Size(400, 2400));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(themed(
+        const AddPlaceScreen(),
+        overrides: [
+          authProvider.overrideWith(() => _FakeAuthNotifier(
+              const AppUser(id: 'user-1', name: 'Test', email: 't@example.com'))),
+        ],
+      ));
+      await tester.pump();
+      await tester.ensureVisible(find.text('Add Place'));
+      await tester.tap(find.text('Add Place'));
+      await tester.pump();
+      expect(find.text('Name is required'), findsOneWidget);
+      expect(find.text('District is required'), findsOneWidget);
     });
   });
 }

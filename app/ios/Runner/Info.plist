@@ -49,5 +49,9 @@
 		<false/>
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string>Ceylon Review uses your location to show how far nearby places are and to sort listings by distance.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Take a photo of the place you are adding.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Choose a photo of the place you are adding.</string>
 	</dict>
 </plist>
