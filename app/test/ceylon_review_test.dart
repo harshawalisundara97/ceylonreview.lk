@@ -10,6 +10,7 @@ import 'package:ceylon_review/data/sample/sample_places_repository.dart';
 import 'package:ceylon_review/data/sample/sample_reviews_repository.dart';
 import 'package:ceylon_review/data/sample/sample_favorites_repository.dart';
 import 'package:ceylon_review/domain/models/category.dart';
+import 'package:ceylon_review/domain/models/place.dart';
 import 'package:ceylon_review/domain/models/user.dart';
 import 'package:ceylon_review/domain/repositories/favorites_repository.dart';
 import 'package:ceylon_review/presentation/widgets/place_card.dart';
@@ -96,7 +97,7 @@ void main() {
         () async {
       final repo = SampleFavoritesRepository();
       final container = buildContainer(
-          repo, const AppUser(name: 'Test User', email: 't@example.com'));
+          repo, const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'));
       addTearDown(container.dispose);
 
       await container.read(myFavoriteIdsProvider.future);
@@ -116,6 +117,23 @@ void main() {
       final crab = places.firstWhere((p) => p.id == 'ministry-of-crab');
       expect(crab.ratingLabel, '4.8');
       expect(crab.reviewCountLabel, '2.3k');
+    });
+  });
+
+  group('Place addedBy', () {
+    test('defaults to null and carries a value when set', () {
+      const seeded = Place(
+        id: 'x', name: 'X', category: PlaceCategory.food, district: 'Colombo',
+        latitude: 6.9, longitude: 79.8, rating: 4, reviewCount: 1,
+        description: 'd', imageUrl: 'u',
+      );
+      const community = Place(
+        id: 'y', name: 'Y', category: PlaceCategory.food, district: 'Colombo',
+        latitude: 6.9, longitude: 79.8, rating: 0, reviewCount: 0,
+        description: 'd', imageUrl: 'u', addedBy: 'user-1',
+      );
+      expect(seeded.addedBy, isNull);
+      expect(community.addedBy, 'user-1');
     });
   });
 
@@ -161,7 +179,7 @@ void main() {
         overrides: [
           favoritesRepositoryProvider.overrideWithValue(repo),
           authProvider.overrideWith(() => _FakeAuthNotifier(
-              const AppUser(name: 'Test User', email: 't@example.com'))),
+              const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'))),
         ],
       ));
       await tester.pumpAndSettle();
