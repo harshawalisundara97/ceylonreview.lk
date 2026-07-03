@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:ceylon_review/application/add_place_controller.dart';
 import 'package:ceylon_review/application/auth_provider.dart';
 import 'package:ceylon_review/application/favorites_provider.dart';
 import 'package:ceylon_review/application/repository_providers.dart';
@@ -163,6 +164,63 @@ void main() {
       );
       expect(seeded.addedBy, isNull);
       expect(community.addedBy, 'user-1');
+    });
+  });
+
+  group('AddPlaceController', () {
+    test('submit uploads photo, stores place, returns it', () async {
+      final placesRepo = SamplePlacesRepository(places: []);
+      final photoRepo = SamplePhotoStorageRepository();
+      final container = ProviderContainer(overrides: [
+        placesRepositoryProvider.overrideWithValue(placesRepo),
+        photoStorageRepositoryProvider.overrideWithValue(photoRepo),
+        authProvider.overrideWith(() => _FakeAuthNotifier(
+            const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'))),
+      ]);
+      addTearDown(container.dispose);
+
+      final place = await container
+          .read(addPlaceControllerProvider.notifier)
+          .submit(
+            name: 'Hidden Waterfall',
+            category: PlaceCategory.nature,
+            district: 'Badulla',
+            description: 'A quiet spot.',
+            latitude: 6.87,
+            longitude: 81.05,
+            photoBytes: Uint8List.fromList([9, 9]),
+          );
+
+      expect(place.name, 'Hidden Waterfall');
+      expect(place.addedBy, isNotNull);
+      expect(place.imageUrl, startsWith('https://photos.example/'));
+      expect((await placesRepo.fetchAll()).single.id, place.id);
+      expect(photoRepo.uploads, hasLength(1));
+    });
+
+    test('submit without photo uses empty imageUrl and stores place',
+        () async {
+      final placesRepo = SamplePlacesRepository(places: []);
+      final container = ProviderContainer(overrides: [
+        placesRepositoryProvider.overrideWithValue(placesRepo),
+        photoStorageRepositoryProvider
+            .overrideWithValue(SamplePhotoStorageRepository()),
+        authProvider.overrideWith(() => _FakeAuthNotifier(
+            const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'))),
+      ]);
+      addTearDown(container.dispose);
+
+      final place = await container
+          .read(addPlaceControllerProvider.notifier)
+          .submit(
+            name: 'No Photo Cafe',
+            category: PlaceCategory.food,
+            district: 'Colombo',
+            description: '',
+            latitude: 6.9,
+            longitude: 79.8,
+          );
+      expect(place.imageUrl, '');
     });
   });
 
