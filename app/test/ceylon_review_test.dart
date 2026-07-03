@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,9 +8,10 @@ import 'package:ceylon_review/application/auth_provider.dart';
 import 'package:ceylon_review/application/favorites_provider.dart';
 import 'package:ceylon_review/application/repository_providers.dart';
 import 'package:ceylon_review/core/theme/app_theme.dart';
+import 'package:ceylon_review/data/sample/sample_favorites_repository.dart';
+import 'package:ceylon_review/data/sample/sample_photo_storage_repository.dart';
 import 'package:ceylon_review/data/sample/sample_places_repository.dart';
 import 'package:ceylon_review/data/sample/sample_reviews_repository.dart';
-import 'package:ceylon_review/data/sample/sample_favorites_repository.dart';
 import 'package:ceylon_review/domain/models/category.dart';
 import 'package:ceylon_review/domain/models/place.dart';
 import 'package:ceylon_review/domain/models/user.dart';
@@ -88,6 +91,18 @@ void main() {
       final repo = SampleFavoritesRepository();
       await repo.remove('never-added');
       expect(await repo.fetchMyFavoriteIds(), isEmpty);
+    });
+  });
+
+  group('SamplePhotoStorageRepository', () {
+    test('uploadPhoto returns a url and records the upload', () async {
+      final repo = SamplePhotoStorageRepository();
+      final url = await repo.uploadPhoto(Uint8List.fromList([1, 2, 3]),
+          fileName: 'user-1/abc.jpg');
+      expect(url, contains('user-1/abc.jpg'));
+      expect(repo.uploads.keys, contains('user-1/abc.jpg'));
+      await repo.deletePhoto(url);
+      expect(repo.uploads, isEmpty);
     });
   });
 
