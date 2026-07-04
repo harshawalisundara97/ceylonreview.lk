@@ -14,6 +14,7 @@ import 'package:ceylon_review/data/sample/sample_photo_storage_repository.dart';
 import 'package:ceylon_review/data/sample/sample_places_repository.dart';
 import 'package:ceylon_review/data/sample/sample_reviews_repository.dart';
 import 'package:ceylon_review/domain/models/category.dart';
+import 'package:ceylon_review/domain/models/leaderboard_entry.dart';
 import 'package:ceylon_review/domain/models/place.dart';
 import 'package:ceylon_review/domain/models/user.dart';
 import 'package:ceylon_review/domain/repositories/favorites_repository.dart';
@@ -249,6 +250,26 @@ void main() {
         throwsA(isA<StateError>()),
       );
       expect(photoRepo.uploads, isEmpty);
+    });
+  });
+
+  group('LeaderboardEntry', () {
+    test('carries rank, points, and an optional rank change', () {
+      const withChange = LeaderboardEntry(
+        userId: 'u1',
+        name: 'Nadeesha',
+        points: 860,
+        rank: 2,
+        rankChange: 3,
+      );
+      const withoutChange = LeaderboardEntry(
+        userId: 'u2',
+        name: 'New User',
+        points: 10,
+        rank: 40,
+      );
+      expect(withChange.rankChange, 3);
+      expect(withoutChange.rankChange, isNull);
     });
   });
 
