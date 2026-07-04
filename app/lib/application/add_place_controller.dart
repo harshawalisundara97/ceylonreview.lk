@@ -40,22 +40,34 @@ class AddPlaceController extends AsyncNotifier<void> {
             .read(photoStorageRepositoryProvider)
             .uploadPhoto(photoBytes, fileName: '${user.id}/$id.jpg');
       }
-      final created = await ref.read(placesRepositoryProvider).addPlace(Place(
-            id: id,
-            name: name,
-            category: category,
-            district: district,
-            latitude: latitude,
-            longitude: longitude,
-            rating: 0,
-            reviewCount: 0,
-            description: description,
-            imageUrl: imageUrl,
-            priceLevel: priceLevel,
-            opensAt: opensAt,
-            closesAt: closesAt,
-            addedBy: user.id,
-          ));
+      late final Place created;
+      try {
+        created = await ref.read(placesRepositoryProvider).addPlace(Place(
+              id: id,
+              name: name,
+              category: category,
+              district: district,
+              latitude: latitude,
+              longitude: longitude,
+              rating: 0,
+              reviewCount: 0,
+              description: description,
+              imageUrl: imageUrl,
+              priceLevel: priceLevel,
+              opensAt: opensAt,
+              closesAt: closesAt,
+              addedBy: user.id,
+            ));
+      } catch (_) {
+        if (imageUrl.isNotEmpty) {
+          // Best-effort cleanup: don't let a failed delete mask the real error.
+          await ref
+              .read(photoStorageRepositoryProvider)
+              .deletePhoto(imageUrl)
+              .catchError((_) {});
+        }
+        rethrow;
+      }
       ref.invalidate(allPlacesProvider);
       ref.invalidate(trendingPlacesProvider);
       ref.invalidate(placesByCategoryProvider);

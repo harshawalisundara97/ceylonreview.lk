@@ -17,6 +17,7 @@ import 'package:ceylon_review/domain/models/category.dart';
 import 'package:ceylon_review/domain/models/place.dart';
 import 'package:ceylon_review/domain/models/user.dart';
 import 'package:ceylon_review/domain/repositories/favorites_repository.dart';
+import 'package:ceylon_review/domain/repositories/places_repository.dart';
 import 'package:ceylon_review/presentation/screens/add_place/add_place_screen.dart';
 import 'package:ceylon_review/presentation/widgets/place_card.dart';
 import 'package:ceylon_review/presentation/widgets/rating_stars.dart';
@@ -223,6 +224,32 @@ void main() {
           );
       expect(place.imageUrl, '');
     });
+
+    test('submit deletes the uploaded photo if the place insert fails',
+        () async {
+      final photoRepo = SamplePhotoStorageRepository();
+      final container = ProviderContainer(overrides: [
+        placesRepositoryProvider.overrideWithValue(_ThrowingPlacesRepository()),
+        photoStorageRepositoryProvider.overrideWithValue(photoRepo),
+        authProvider.overrideWith(() => _FakeAuthNotifier(
+            const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'))),
+      ]);
+      addTearDown(container.dispose);
+
+      await expectLater(
+        container.read(addPlaceControllerProvider.notifier).submit(
+              name: 'Doomed Place',
+              category: PlaceCategory.nature,
+              district: 'Badulla',
+              description: '',
+              latitude: 6.87,
+              longitude: 81.05,
+              photoBytes: Uint8List.fromList([9, 9]),
+            ),
+        throwsA(isA<StateError>()),
+      );
+      expect(photoRepo.uploads, isEmpty);
+    });
   });
 
   group('Widgets', () {
@@ -304,6 +331,28 @@ void main() {
       expect(find.text('District is required'), findsOneWidget);
     });
   });
+}
+
+class _ThrowingPlacesRepository implements PlacesRepository {
+  @override
+  Future<Place> addPlace(Place place) async {
+    throw StateError('insert failed');
+  }
+
+  @override
+  Future<List<Place>> fetchAll() async => [];
+
+  @override
+  Future<Place?> fetchById(String id) async => null;
+
+  @override
+  Future<List<Place>> fetchByCategory(PlaceCategory category) async => [];
+
+  @override
+  Future<List<Place>> fetchTrending() async => [];
+
+  @override
+  Future<List<Place>> search(String query) async => [];
 }
 
 class _FakeAuthNotifier extends AuthNotifier {
