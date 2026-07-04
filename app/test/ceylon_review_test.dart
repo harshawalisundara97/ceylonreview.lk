@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ceylon_review/application/add_place_controller.dart';
 import 'package:ceylon_review/application/auth_provider.dart';
 import 'package:ceylon_review/application/favorites_provider.dart';
+import 'package:ceylon_review/application/leaderboard_provider.dart';
 import 'package:ceylon_review/application/repository_providers.dart';
 import 'package:ceylon_review/core/theme/app_theme.dart';
 import 'package:ceylon_review/data/sample/sample_favorites_repository.dart';
@@ -123,6 +124,45 @@ void main() {
       final repo = SampleLeaderboardRepository();
       final mine = await repo.fetchMyRank('nobody');
       expect(mine, isNull);
+    });
+  });
+
+  group('Leaderboard providers', () {
+    test('leaderboardProvider returns the repository\'s ranked list',
+        () async {
+      final container = ProviderContainer(overrides: [
+        leaderboardRepositoryProvider
+            .overrideWithValue(SampleLeaderboardRepository()),
+      ]);
+      addTearDown(container.dispose);
+
+      final list = await container.read(leaderboardProvider.future);
+      expect(list.first.name, 'Harsha W.');
+    });
+
+    test('myRankProvider is null when signed out', () async {
+      final container = ProviderContainer(overrides: [
+        leaderboardRepositoryProvider
+            .overrideWithValue(SampleLeaderboardRepository()),
+        authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+      ]);
+      addTearDown(container.dispose);
+
+      final mine = await container.read(myRankProvider.future);
+      expect(mine, isNull);
+    });
+
+    test('myRankProvider resolves the signed-in user\'s entry', () async {
+      final container = ProviderContainer(overrides: [
+        leaderboardRepositoryProvider
+            .overrideWithValue(SampleLeaderboardRepository()),
+        authProvider.overrideWith(() => _FakeAuthNotifier(
+            const AppUser(id: 'u-dilan', name: 'Dilan', email: 'd@example.com'))),
+      ]);
+      addTearDown(container.dispose);
+
+      final mine = await container.read(myRankProvider.future);
+      expect(mine?.rank, 3);
     });
   });
 
