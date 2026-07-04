@@ -10,6 +10,7 @@ import 'package:ceylon_review/application/favorites_provider.dart';
 import 'package:ceylon_review/application/repository_providers.dart';
 import 'package:ceylon_review/core/theme/app_theme.dart';
 import 'package:ceylon_review/data/sample/sample_favorites_repository.dart';
+import 'package:ceylon_review/data/sample/sample_leaderboard_repository.dart';
 import 'package:ceylon_review/data/sample/sample_photo_storage_repository.dart';
 import 'package:ceylon_review/data/sample/sample_places_repository.dart';
 import 'package:ceylon_review/data/sample/sample_reviews_repository.dart';
@@ -95,6 +96,33 @@ void main() {
       final repo = SampleFavoritesRepository();
       await repo.remove('never-added');
       expect(await repo.fetchMyFavoriteIds(), isEmpty);
+    });
+  });
+
+  group('SampleLeaderboardRepository', () {
+    test('fetchLeaderboard returns entries ordered by points descending',
+        () async {
+      final repo = SampleLeaderboardRepository();
+      final list = await repo.fetchLeaderboard();
+      expect(list, isNotEmpty);
+      for (var i = 1; i < list.length; i++) {
+        expect(list[i - 1].points, greaterThanOrEqualTo(list[i].points));
+      }
+      expect(list.first.rank, 1);
+    });
+
+    test('fetchMyRank finds the matching entry by userId', () async {
+      final repo = SampleLeaderboardRepository();
+      final list = await repo.fetchLeaderboard();
+      final target = list[1];
+      final mine = await repo.fetchMyRank(target.userId);
+      expect(mine?.rank, target.rank);
+    });
+
+    test('fetchMyRank returns null for an unknown user', () async {
+      final repo = SampleLeaderboardRepository();
+      final mine = await repo.fetchMyRank('nobody');
+      expect(mine, isNull);
     });
   });
 
