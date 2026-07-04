@@ -7,8 +7,8 @@ import '../screens/map/map_screen.dart';
 import '../screens/profile/profile_screen.dart';
 import '../screens/write_review/write_review_screen.dart';
 
-/// Signed-in shell: 5-tab bottom navigation per the design system —
-/// Home, Map, Post Review (center, filled primary), Feed, Profile.
+/// Signed-in shell: 6-tab bottom navigation —
+/// Home, Map, Ranks (leaderboard), Post Review, Feed, Profile.
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
 
