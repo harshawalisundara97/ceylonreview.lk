@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../screens/category/category_screen.dart';
 import '../screens/home/home_screen.dart';
+import '../screens/leaderboard/leaderboard_screen.dart';
 import '../screens/map/map_screen.dart';
 import '../screens/profile/profile_screen.dart';
 import '../screens/write_review/write_review_screen.dart';
@@ -21,6 +22,7 @@ class _AppShellState extends State<AppShell> {
   static const _tabs = [
     HomeScreen(),
     MapScreen(),
+    LeaderboardScreen(),
     WriteReviewScreen(),
     CategoryScreen(),
     ProfileScreen(),
@@ -45,6 +47,11 @@ class _AppShellState extends State<AppShell> {
             icon: Icon(Icons.map_outlined),
             selectedIcon: Icon(Icons.map_rounded),
             label: 'Map',
+          ),
+          const NavigationDestination(
+            icon: Icon(Icons.leaderboard_outlined),
+            selectedIcon: Icon(Icons.leaderboard_rounded),
+            label: 'Ranks',
           ),
           NavigationDestination(
             icon: Icon(Icons.add_circle_rounded,
