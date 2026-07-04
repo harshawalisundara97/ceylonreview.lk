@@ -21,7 +21,9 @@ import 'package:ceylon_review/domain/models/place.dart';
 import 'package:ceylon_review/domain/models/user.dart';
 import 'package:ceylon_review/domain/repositories/favorites_repository.dart';
 import 'package:ceylon_review/domain/repositories/places_repository.dart';
+import 'package:ceylon_review/domain/repositories/leaderboard_repository.dart';
 import 'package:ceylon_review/presentation/screens/add_place/add_place_screen.dart';
+import 'package:ceylon_review/presentation/screens/leaderboard/leaderboard_screen.dart';
 import 'package:ceylon_review/presentation/widgets/place_card.dart';
 import 'package:ceylon_review/presentation/widgets/rating_stars.dart';
 import 'package:ceylon_review/presentation/widgets/star_picker.dart';
@@ -456,6 +458,67 @@ void main() {
       expect(find.text('Name is required'), findsOneWidget);
       expect(find.text('District is required'), findsOneWidget);
     });
+
+    testWidgets('LeaderboardScreen shows a podium for the top 3',
+        (tester) async {
+      await tester.pumpWidget(themed(
+        const LeaderboardScreen(),
+        overrides: [
+          leaderboardRepositoryProvider
+              .overrideWithValue(SampleLeaderboardRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+        ],
+      ));
+      // The crown above the #1 podium slot bobs forever
+      // (`..repeat(reverse: true)`), so `pumpAndSettle` never settles here.
+      // Pump a fixed amount of time instead, enough for the entrance
+      // animations and the delayed podium reveals to finish.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.text('Harsha W.'), findsOneWidget);
+      expect(find.text('Nadeesha'), findsOneWidget);
+      expect(find.text('Dilan'), findsOneWidget);
+      // Rank 4+ render in the list below the podium.
+      expect(find.text('Sanduni P.'), findsOneWidget);
+    });
+
+    testWidgets('LeaderboardScreen shows an empty state with no reviews yet',
+        (tester) async {
+      await tester.pumpWidget(themed(
+        const LeaderboardScreen(),
+        overrides: [
+          leaderboardRepositoryProvider
+              .overrideWithValue(_EmptyLeaderboardRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Be the first to post a review and claim #1!'),
+          findsOneWidget);
+    });
+
+    testWidgets('LeaderboardScreen shows a your-rank card outside the top 3',
+        (tester) async {
+      await tester.pumpWidget(themed(
+        const LeaderboardScreen(),
+        overrides: [
+          leaderboardRepositoryProvider
+              .overrideWithValue(SampleLeaderboardRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(
+              const AppUser(id: 'u-kasun', name: 'Kasun R.', email: 'k@example.com'))),
+        ],
+      ));
+      // Same bobbing-crown caveat as above: pump a fixed duration instead of
+      // pumpAndSettle.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.text('#5'), findsOneWidget);
+    });
   });
 }
 
@@ -479,6 +542,14 @@ class _ThrowingPlacesRepository implements PlacesRepository {
 
   @override
   Future<List<Place>> search(String query) async => [];
+}
+
+class _EmptyLeaderboardRepository implements LeaderboardRepository {
+  @override
+  Future<List<LeaderboardEntry>> fetchLeaderboard() async => [];
+
+  @override
+  Future<LeaderboardEntry?> fetchMyRank(String userId) async => null;
 }
 
 class _FakeAuthNotifier extends AuthNotifier {
