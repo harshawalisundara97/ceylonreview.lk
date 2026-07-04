@@ -48,6 +48,36 @@ class SupabasePlacesRepository implements PlacesRepository {
         .order('rating', ascending: false);
     return rows.map(_placeFromRow).toList();
   }
+
+  @override
+  Future<Place> addPlace(Place place) async {
+    final userId = _client.auth.currentUser?.id;
+    if (userId == null) {
+      throw StateError('You must be signed in to add a place.');
+    }
+    final row = await _client
+        .from('places')
+        .insert({
+          'id': place.id,
+          'name': place.name,
+          'category': place.category.name,
+          'district': place.district,
+          'latitude': place.latitude,
+          'longitude': place.longitude,
+          'rating': 0,
+          'review_count': 0,
+          'description': place.description,
+          'image_url': place.imageUrl,
+          'trending': false,
+          'price_level': place.priceLevel,
+          'opens_at': place.opensAt,
+          'closes_at': place.closesAt,
+          'added_by': userId,
+        })
+        .select()
+        .single();
+    return _placeFromRow(row);
+  }
 }
 
 Place _placeFromRow(Map<String, dynamic> row) => Place(
@@ -65,4 +95,5 @@ Place _placeFromRow(Map<String, dynamic> row) => Place(
       priceLevel: row['price_level'] as int?,
       opensAt: row['opens_at'] as String?,
       closesAt: row['closes_at'] as String?,
+      addedBy: row['added_by'] as String?,
     );

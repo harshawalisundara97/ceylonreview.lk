@@ -21,7 +21,7 @@ class SampleAuthRepository implements AuthRepository {
         .where((s) => s.isNotEmpty)
         .map((s) => s[0].toUpperCase() + s.substring(1))
         .join(' ');
-    return AppUser(name: name.isEmpty ? 'Traveller' : name, email: email);
+    return AppUser(id: 'sample-user', name: name.isEmpty ? 'Traveller' : name, email: email);
   }
 
   @override
@@ -34,7 +34,7 @@ class SampleAuthRepository implements AuthRepository {
       throw const AuthFailure('Name is required.');
     }
     await Future<void>.delayed(const Duration(milliseconds: 400));
-    return AppUser(name: name.trim(), email: email);
+    return AppUser(id: 'sample-user', name: name.trim(), email: email);
   }
 
   @override

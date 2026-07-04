@@ -3,10 +3,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../data/supabase/supabase_auth_repository.dart';
 import '../data/supabase/supabase_favorites_repository.dart';
+import '../data/supabase/supabase_photo_storage_repository.dart';
 import '../data/supabase/supabase_places_repository.dart';
 import '../data/supabase/supabase_reviews_repository.dart';
 import '../domain/repositories/auth_repository.dart';
 import '../domain/repositories/favorites_repository.dart';
+import '../domain/repositories/photo_storage_repository.dart';
 import '../domain/repositories/places_repository.dart';
 import '../domain/repositories/reviews_repository.dart';
 
@@ -24,3 +26,6 @@ final authRepositoryProvider = Provider<AuthRepository>(
 
 final favoritesRepositoryProvider = Provider<FavoritesRepository>(
     (ref) => SupabaseFavoritesRepository(Supabase.instance.client));
+
+final photoStorageRepositoryProvider = Provider<PhotoStorageRepository>(
+    (ref) => SupabasePhotoStorageRepository(Supabase.instance.client));

@@ -13,6 +13,7 @@ Sri Lanka's all-in-one place review app — discover, rate and review restaurant
 - **Cloud backend (Supabase)** — real email/password sign-up & sign-in with persisted sessions, places and reviews stored in PostgreSQL, live ratings recomputed by a database trigger on every new review, and Row Level Security guarding writes
 - **Search & discovery filters** — filter by price level and "open now", sort by rating/price/distance, and see live distance ("2.3 km") from your current location on place cards
 - **Favorites** — bookmark places from any card or the detail screen; saved places appear under "Your Favorites" on your profile
+- **Add a Place** — signed-in users add missing places with full details, a camera/gallery photo, and a map-pinned location (or their current position); community places are public instantly and badged "COMMUNITY"
 
 ## Tech Stack
 
@@ -25,6 +26,7 @@ Sri Lanka's all-in-one place review app — discover, rate and review restaurant
 | Backend SDK | [supabase_flutter](https://pub.dev/packages/supabase_flutter) |
 | Maps | [flutter_map](https://pub.dev/packages/flutter_map) + [latlong2](https://pub.dev/packages/latlong2) |
 | Location | [geolocator](https://pub.dev/packages/geolocator) — device position for "near me" distance sorting |
+| Photos & ids | [image_picker](https://pub.dev/packages/image_picker), [uuid](https://pub.dev/packages/uuid) |
 | Typography | [google_fonts](https://pub.dev/packages/google_fonts) — Bricolage Grotesque (display) + Plus Jakarta Sans (UI/body) |
 | Linting | flutter_lints |
 | Platforms | Android, iOS, Web, macOS, Linux, Windows |

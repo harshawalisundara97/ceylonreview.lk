@@ -31,6 +31,7 @@ The production Flutter app lives in [`app/`](app/) — see [app/README.md](app/R
 - Supabase backend: email/password auth with persisted sessions, live reviews with trigger-computed ratings, Row Level Security
 - Search & discovery filters: price level, "open now", and sort by rating/price/distance from your current location
 - Favorites: bookmark any place from its card or detail page, view them all under "Your Favorites" on your profile
+- Add a Place: users add missing places with a photo and map-pinned location; community places are instantly public and reviewable
 
 ### Tech Stack
 | Layer | Technology |

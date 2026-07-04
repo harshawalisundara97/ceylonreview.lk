@@ -62,6 +62,7 @@ class SupabaseAuthRepository implements AuthRepository {
     final email = user.email ?? '';
     final name = (user.userMetadata?['name'] as String?)?.trim();
     return AppUser(
+      id: user.id,
       name: (name == null || name.isEmpty) ? email.split('@').first : name,
       email: email,
     );

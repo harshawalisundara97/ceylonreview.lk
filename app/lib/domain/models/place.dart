@@ -17,6 +17,7 @@ class Place {
     this.priceLevel,
     this.opensAt,
     this.closesAt,
+    this.addedBy,
   });
 
   final String id;
@@ -39,6 +40,9 @@ class Place {
   /// Daily opening/closing time as `"HH:mm"`. Null where hours don't apply.
   final String? opensAt;
   final String? closesAt;
+
+  /// Id of the user who added this place; null for seeded places.
+  final String? addedBy;
 
   /// Whether the place is open right now, given [opensAt]/[closesAt].
   /// Returns null if hours aren't set for this place.

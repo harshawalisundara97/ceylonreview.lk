@@ -6,7 +6,7 @@ import 'sample_data.dart';
 /// In-memory implementation backed by [SampleData].
 class SamplePlacesRepository implements PlacesRepository {
   SamplePlacesRepository({List<Place>? places})
-      : _places = places ?? SampleData.places;
+      : _places = [...(places ?? SampleData.places)];
 
   final List<Place> _places;
 
@@ -40,5 +40,11 @@ class SamplePlacesRepository implements PlacesRepository {
             p.name.toLowerCase().contains(q) ||
             p.district.toLowerCase().contains(q))
         .toList();
+  }
+
+  @override
+  Future<Place> addPlace(Place place) async {
+    _places.add(place);
+    return place;
   }
 }
