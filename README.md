@@ -27,7 +27,7 @@ The production Flutter app lives in [`app/`](app/) — see [app/README.md](app/R
 - Interactive star ratings and reviews
 - Map of Sri Lanka with category-coloured pins (flutter_map)
 - Light & dark mode following this design system
-- Real Sri Lankan places seeded in a cloud PostgreSQL database
+- Real Sri Lankan places seeded in a cloud PostgreSQL database, each with a real, freely-licensed photo (sourced from Wikimedia Commons)
 - Supabase backend: email/password auth with persisted sessions, live reviews with trigger-computed ratings, Row Level Security
 - Search & discovery filters: price level, "open now", and sort by rating/price/distance from your current location
 - Favorites: bookmark any place from its card or detail page, view them all under "Your Favorites" on your profile

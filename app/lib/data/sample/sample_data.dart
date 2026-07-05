@@ -3,10 +3,58 @@ import '../../domain/models/place.dart';
 import '../../domain/models/review.dart';
 
 /// Realistic sample content. Per the design system: always real Sri Lankan
-/// places, never Lorem Ipsum. Image URLs are seeded placeholders until real
-/// photography is licensed.
+/// places, never Lorem Ipsum. Image URLs are real, freely-licensed photos
+/// sourced from Wikimedia Commons (same set used to seed the live Supabase
+/// `places.image_url` column).
 abstract final class SampleData {
-  static String _img(String id) => 'https://picsum.photos/seed/$id/640/420';
+  // A handful of entries have no exact business photo on Commons, so they
+  // use the closest well-known real-world subject instead (documented inline).
+  static const _images = <String, String>{
+    // Crab curry dish (no Commons photo of the restaurant itself).
+    'ministry-of-crab':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Colombo_restaurant_visit_to_enjoy_crab_curry_-_Oct_2022.jpg/1280px-Colombo_restaurant_visit_to_enjoy_crab_curry_-_Oct_2022.jpg',
+    'nuga-gama':
+        'https://upload.wikimedia.org/wikipedia/commons/6/6f/Sri_Lankan_Rice_and_Curry.jpg',
+    'beach-wadiya':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Wellawatte.jpg/1280px-Wellawatte.jpg',
+    'mirissa-beach':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Mirissa-Plage_%283%29.jpg/1280px-Mirissa-Plage_%283%29.jpg',
+    'unawatuna-beach':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Unawatuna.jpg/1280px-Unawatuna.jpg',
+    'hiriketiya-beach':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Baydickwella.jpg/1280px-Baydickwella.jpg',
+    'arugam-bay':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Beach_of_Arugam_Bay.jpg/1280px-Beach_of_Arugam_Bay.jpg',
+    // Kandalama Reservoir (no Commons photo of the hotel building itself).
+    'heritance-kandalama':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/KandalamaReservoir-June2008-2.jpg/1280px-KandalamaReservoir-June2008-2.jpg',
+    'cinnamon-grand':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Cinnamon_Grand%2C_Colombo%2C_Reception.jpg/1280px-Cinnamon_Grand%2C_Colombo%2C_Reception.jpg',
+    // Koggala Lake, which the lodge spirals around (no direct hotel photo).
+    'tri-hotel':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Lake_Koggala.jpg/1280px-Lake_Koggala.jpg',
+    'temple-of-the-tooth':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/SL_Kandy_asv2020-01_img33_Sacred_Tooth_Temple.jpg/1280px-SL_Kandy_asv2020-01_img33_Sacred_Tooth_Temple.jpg',
+    'dambulla-cave-temple':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Dambulla-buddhastupa.jpg/1280px-Dambulla-buddhastupa.jpg',
+    'kelaniya-temple':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Colombo._Kelaniya_Raja_Maha_Vihara_temple_%284%29.jpg/1280px-Colombo._Kelaniya_Raja_Maha_Vihara_temple_%284%29.jpg',
+    'sinharaja-forest':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/20160128_Sri_Lanka_4132_Sinharaja_Forest_Preserve_sRGB_%2825674474901%29.jpg/1280px-20160128_Sri_Lanka_4132_Sinharaja_Forest_Preserve_sRGB_%2825674474901%29.jpg',
+    'horton-plains':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Sri_Lanka%2C_World%27s_End_at_Horton_Plains.jpg/1280px-Sri_Lanka%2C_World%27s_End_at_Horton_Plains.jpg',
+    'ravana-falls':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Ravana_Falls_%28Ella%29.jpg/1280px-Ravana_Falls_%28Ella%29.jpg',
+    // A Colombo retail/shopping complex (no Commons photo of the Odel store).
+    'odel':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/One_Galle_Face%2C_Colombo.jpg/1280px-One_Galle_Face%2C_Colombo.jpg',
+    'dutch-hospital':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Dutch_Hospital.jpg/1280px-Dutch_Hospital.jpg',
+    'pettah-market':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Colombo_02.jpg/1280px-Colombo_02.jpg',
+  };
+
+  static String _img(String id) => _images[id]!;
 
   static final places = <Place>[
     // ---- Food ----

@@ -9,7 +9,7 @@ Sri Lanka's all-in-one place review app — discover, rate and review restaurant
 - **Star ratings & reviews** — interactive star picker, review tiles with author avatars, one-decimal rating display (e.g. `4.7`)
 - **Interactive map** — browse places on a map of Sri Lanka with category-coloured pins
 - **Light & dark mode** — warm greenish off-white light surfaces and green-charcoal dark surfaces, per the Ceylon Review design system
-- **Real Sri Lankan places** — the database is seeded with Ministry of Crab, Mirissa Beach, Temple of the Tooth, Sinharaja Forest, Heritance Kandalama, Odel and more
+- **Real Sri Lankan places** — the database is seeded with Ministry of Crab, Mirissa Beach, Temple of the Tooth, Sinharaja Forest, Heritance Kandalama, Odel and more, each with a real, freely-licensed photo (sourced from Wikimedia Commons) instead of a placeholder
 - **Cloud backend (Supabase)** — real email/password sign-up & sign-in with persisted sessions, places and reviews stored in PostgreSQL, live ratings recomputed by a database trigger on every new review, and Row Level Security guarding writes
 - **Search & discovery filters** — filter by price level and "open now", sort by rating/price/distance, and see live distance ("2.3 km") from your current location on place cards
 - **Favorites** — bookmark places from any card or the detail screen; saved places appear under "Your Favorites" on your profile
