@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../application/add_place_controller.dart';
 import '../../../application/location_provider.dart';
+import '../../../core/sri_lanka_districts.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../domain/models/category.dart';
 import '../../widgets/filters_bottom_sheet.dart' show categoryHasPricing;
@@ -28,7 +29,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
 
   final _formKey = GlobalKey<FormState>();
   late final _nameController = TextEditingController(text: widget.initialName);
-  final _districtController = TextEditingController();
+  String? _district;
   final _descriptionController = TextEditingController();
 
   PlaceCategory? _category;
@@ -42,7 +43,6 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
   @override
   void dispose() {
     _nameController.dispose();
-    _districtController.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
@@ -84,7 +84,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
       final place = await ref.read(addPlaceControllerProvider.notifier).submit(
             name: _nameController.text.trim(),
             category: _category!,
-            district: _districtController.text.trim(),
+            district: _district!,
             description: _descriptionController.text.trim(),
             latitude: _pin!.latitude,
             longitude: _pin!.longitude,
@@ -137,12 +137,18 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
               ],
             ),
             const SizedBox(height: AppSpacing.lg),
-            TextFormField(
-              controller: _districtController,
+            DropdownButtonFormField<String>(
+              value: _district,
+              isExpanded: true,
               decoration: const InputDecoration(labelText: 'District'),
-              validator: (v) => (v == null || v.trim().isEmpty)
-                  ? 'District is required'
-                  : null,
+              hint: const Text('Choose a district'),
+              items: [
+                for (final d in sriLankaDistricts)
+                  DropdownMenuItem(value: d, child: Text(d)),
+              ],
+              onChanged: (v) => setState(() => _district = v),
+              validator: (v) =>
+                  v == null ? 'District is required' : null,
             ),
             const SizedBox(height: AppSpacing.lg),
             TextFormField(

@@ -9,6 +9,7 @@ import 'package:ceylon_review/application/auth_provider.dart';
 import 'package:ceylon_review/application/favorites_provider.dart';
 import 'package:ceylon_review/application/leaderboard_provider.dart';
 import 'package:ceylon_review/application/repository_providers.dart';
+import 'package:ceylon_review/core/sri_lanka_districts.dart';
 import 'package:ceylon_review/core/theme/app_theme.dart';
 import 'package:ceylon_review/data/sample/sample_favorites_repository.dart';
 import 'package:ceylon_review/data/sample/sample_leaderboard_repository.dart';
@@ -29,6 +30,15 @@ import 'package:ceylon_review/presentation/widgets/rating_stars.dart';
 import 'package:ceylon_review/presentation/widgets/star_picker.dart';
 
 void main() {
+  group('sriLankaDistricts', () {
+    test('contains all 25 districts with no duplicates', () {
+      expect(sriLankaDistricts.length, 25);
+      expect(sriLankaDistricts.toSet().length, 25);
+      expect(sriLankaDistricts, contains('Colombo'));
+      expect(sriLankaDistricts, contains('Jaffna'));
+    });
+  });
+
   group('SamplePlacesRepository', () {
     final repo = SamplePlacesRepository();
 
@@ -457,6 +467,38 @@ void main() {
       await tester.pump();
       expect(find.text('Name is required'), findsOneWidget);
       expect(find.text('District is required'), findsOneWidget);
+    });
+
+    testWidgets(
+        'AddPlaceScreen district dropdown lists all districts and satisfies '
+        'validation once picked', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(400, 2400));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(themed(
+        const AddPlaceScreen(),
+        overrides: [
+          authProvider.overrideWith(() => _FakeAuthNotifier(
+              const AppUser(id: 'user-1', name: 'Test', email: 't@example.com'))),
+        ],
+      ));
+      await tester.pump();
+
+      await tester.ensureVisible(find.text('Add Place'));
+      await tester.tap(find.text('Add Place'));
+      await tester.pump();
+      expect(find.text('District is required'), findsOneWidget);
+
+      await tester.tap(find.text('Choose a district'));
+      await tester.pumpAndSettle();
+      expect(find.text('Colombo'), findsWidgets);
+      await tester.tap(find.text('Colombo').last);
+      await tester.pumpAndSettle();
+
+      await tester.ensureVisible(find.text('Add Place'));
+      await tester.tap(find.text('Add Place'));
+      await tester.pump();
+      expect(find.text('District is required'), findsNothing);
     });
 
     testWidgets('LeaderboardScreen shows a podium for the top 3',
