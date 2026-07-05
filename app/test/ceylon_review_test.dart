@@ -21,6 +21,7 @@ import 'package:ceylon_review/domain/models/leaderboard_entry.dart';
 import 'package:ceylon_review/domain/models/place.dart';
 import 'package:ceylon_review/domain/models/user.dart';
 import 'package:ceylon_review/domain/repositories/favorites_repository.dart';
+import 'package:ceylon_review/domain/repositories/geocoding_repository.dart';
 import 'package:ceylon_review/domain/repositories/places_repository.dart';
 import 'package:ceylon_review/domain/repositories/leaderboard_repository.dart';
 import 'package:ceylon_review/presentation/screens/add_place/add_place_screen.dart';
@@ -28,6 +29,7 @@ import 'package:ceylon_review/presentation/screens/leaderboard/leaderboard_scree
 import 'package:ceylon_review/presentation/widgets/place_card.dart';
 import 'package:ceylon_review/presentation/widgets/rating_stars.dart';
 import 'package:ceylon_review/presentation/widgets/star_picker.dart';
+import 'package:latlong2/latlong.dart';
 
 void main() {
   group('sriLankaDistricts', () {
@@ -501,6 +503,39 @@ void main() {
       expect(find.text('District is required'), findsNothing);
     });
 
+    testWidgets(
+        'AddPlaceScreen search box moves the pin on a match and shows an '
+        'error when nothing is found', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(400, 2400));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(themed(
+        const AddPlaceScreen(),
+        overrides: [
+          authProvider.overrideWith(() => _FakeAuthNotifier(
+              const AppUser(id: 'user-1', name: 'Test', email: 't@example.com'))),
+          geocodingRepositoryProvider
+              .overrideWithValue(_FakeGeocodingRepository()),
+        ],
+      ));
+      await tester.pump();
+
+      await tester.ensureVisible(find.byKey(const Key('locationSearchField')));
+      await tester.enterText(
+          find.byKey(const Key('locationSearchField')), 'Ella');
+      await tester.tap(find.byKey(const Key('locationSearchButton')));
+      await tester.pump();
+      expect(find.byIcon(Icons.location_pin), findsOneWidget);
+      expect(find.textContaining('No results found'), findsNothing);
+
+      await tester.enterText(
+          find.byKey(const Key('locationSearchField')), 'Nowhereville');
+      await tester.tap(find.byKey(const Key('locationSearchButton')));
+      await tester.pump();
+      expect(find.text('No results found for "Nowhereville".'),
+          findsOneWidget);
+    });
+
     testWidgets('LeaderboardScreen shows a podium for the top 3',
         (tester) async {
       await tester.pumpWidget(themed(
@@ -600,4 +635,12 @@ class _FakeAuthNotifier extends AuthNotifier {
 
   @override
   AppUser? build() => _user;
+}
+
+class _FakeGeocodingRepository implements GeocodingRepository {
+  @override
+  Future<LatLng?> search(String query) async {
+    if (query == 'Ella') return const LatLng(6.8667, 81.0466);
+    return null;
+  }
 }
