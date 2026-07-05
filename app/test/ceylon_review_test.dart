@@ -90,6 +90,21 @@ void main() {
       expect(reviews.first.authorName, 'Test User');
       expect(await repo.fetchMine(), hasLength(1));
     });
+
+    test('add() stores photoUrls and fetchForPlace returns them', () async {
+      final repo = SampleReviewsRepository(seed: []);
+      final added = await repo.add(
+        placeId: 'ministry-of-crab',
+        authorName: 'Nadeesha Perera',
+        rating: 5,
+        text: 'Loved the crab curry and the service.',
+        photoUrls: const ['https://photos.example/crab-1.jpg'],
+      );
+      expect(added.photoUrls, ['https://photos.example/crab-1.jpg']);
+
+      final stored = await repo.fetchForPlace('ministry-of-crab');
+      expect(stored.single.photoUrls, ['https://photos.example/crab-1.jpg']);
+    });
   });
 
   group('SampleFavoritesRepository', () {

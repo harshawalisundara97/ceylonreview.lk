@@ -7,6 +7,7 @@ class Review {
     required this.rating,
     required this.text,
     required this.createdAt,
+    this.photoUrls = const [],
   });
 
   final String id;
@@ -15,4 +16,7 @@ class Review {
   final int rating; // 1..5 whole stars
   final String text;
   final DateTime createdAt;
+
+  /// Public URLs of photos the reviewer attached (0–3).
+  final List<String> photoUrls;
 }
