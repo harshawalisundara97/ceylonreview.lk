@@ -32,6 +32,7 @@ The production Flutter app lives in [`app/`](app/) — see [app/README.md](app/R
 - Search & discovery filters: price level, "open now", and sort by rating/price/distance from your current location
 - Favorites: bookmark any place from its card or detail page, view them all under "Your Favorites" on your profile
 - Add a Place: users add missing places with a photo and map-pinned location; community places are instantly public and reviewable
+- Leaderboard: reviews earn points, with an animated podium for the top 3 and daily rank-change indicators on a dedicated Ranks tab
 
 ### Tech Stack
 | Layer | Technology |

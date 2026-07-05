@@ -14,6 +14,7 @@ Sri Lanka's all-in-one place review app — discover, rate and review restaurant
 - **Search & discovery filters** — filter by price level and "open now", sort by rating/price/distance, and see live distance ("2.3 km") from your current location on place cards
 - **Favorites** — bookmark places from any card or the detail screen; saved places appear under "Your Favorites" on your profile
 - **Add a Place** — signed-in users add missing places with full details, a camera/gallery photo, and a map-pinned location (or their current position); community places are public instantly and badged "COMMUNITY"
+- **Leaderboard** — every review earns 10 points; a "Ranks" tab shows an animated podium for the top 3 and a live, all-time ranked list for everyone, with daily rank-change indicators
 
 ## Tech Stack
 
