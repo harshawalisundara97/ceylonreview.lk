@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/models/review.dart';
 import 'auth_provider.dart';
+import 'leaderboard_provider.dart';
 import 'places_provider.dart';
 import 'repository_providers.dart';
 
@@ -40,6 +41,9 @@ class ReviewSubmitter {
     _ref.invalidate(allPlacesProvider);
     _ref.invalidate(trendingPlacesProvider);
     _ref.invalidate(placesByCategoryProvider);
+    // The backend also recomputes the reviewer's points via a trigger.
+    _ref.invalidate(leaderboardProvider);
+    _ref.invalidate(myRankProvider);
   }
 }
 

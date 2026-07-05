@@ -7,18 +7,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ceylon_review/application/add_place_controller.dart';
 import 'package:ceylon_review/application/auth_provider.dart';
 import 'package:ceylon_review/application/favorites_provider.dart';
+import 'package:ceylon_review/application/leaderboard_provider.dart';
 import 'package:ceylon_review/application/repository_providers.dart';
 import 'package:ceylon_review/core/theme/app_theme.dart';
 import 'package:ceylon_review/data/sample/sample_favorites_repository.dart';
+import 'package:ceylon_review/data/sample/sample_leaderboard_repository.dart';
 import 'package:ceylon_review/data/sample/sample_photo_storage_repository.dart';
 import 'package:ceylon_review/data/sample/sample_places_repository.dart';
 import 'package:ceylon_review/data/sample/sample_reviews_repository.dart';
 import 'package:ceylon_review/domain/models/category.dart';
+import 'package:ceylon_review/domain/models/leaderboard_entry.dart';
 import 'package:ceylon_review/domain/models/place.dart';
 import 'package:ceylon_review/domain/models/user.dart';
 import 'package:ceylon_review/domain/repositories/favorites_repository.dart';
 import 'package:ceylon_review/domain/repositories/places_repository.dart';
+import 'package:ceylon_review/domain/repositories/leaderboard_repository.dart';
 import 'package:ceylon_review/presentation/screens/add_place/add_place_screen.dart';
+import 'package:ceylon_review/presentation/screens/leaderboard/leaderboard_screen.dart';
 import 'package:ceylon_review/presentation/widgets/place_card.dart';
 import 'package:ceylon_review/presentation/widgets/rating_stars.dart';
 import 'package:ceylon_review/presentation/widgets/star_picker.dart';
@@ -94,6 +99,72 @@ void main() {
       final repo = SampleFavoritesRepository();
       await repo.remove('never-added');
       expect(await repo.fetchMyFavoriteIds(), isEmpty);
+    });
+  });
+
+  group('SampleLeaderboardRepository', () {
+    test('fetchLeaderboard returns entries ordered by points descending',
+        () async {
+      final repo = SampleLeaderboardRepository();
+      final list = await repo.fetchLeaderboard();
+      expect(list, isNotEmpty);
+      for (var i = 1; i < list.length; i++) {
+        expect(list[i - 1].points, greaterThanOrEqualTo(list[i].points));
+      }
+      expect(list.first.rank, 1);
+    });
+
+    test('fetchMyRank finds the matching entry by userId', () async {
+      final repo = SampleLeaderboardRepository();
+      final list = await repo.fetchLeaderboard();
+      final target = list[1];
+      final mine = await repo.fetchMyRank(target.userId);
+      expect(mine?.rank, target.rank);
+    });
+
+    test('fetchMyRank returns null for an unknown user', () async {
+      final repo = SampleLeaderboardRepository();
+      final mine = await repo.fetchMyRank('nobody');
+      expect(mine, isNull);
+    });
+  });
+
+  group('Leaderboard providers', () {
+    test('leaderboardProvider returns the repository\'s ranked list',
+        () async {
+      final container = ProviderContainer(overrides: [
+        leaderboardRepositoryProvider
+            .overrideWithValue(SampleLeaderboardRepository()),
+      ]);
+      addTearDown(container.dispose);
+
+      final list = await container.read(leaderboardProvider.future);
+      expect(list.first.name, 'Harsha W.');
+    });
+
+    test('myRankProvider is null when signed out', () async {
+      final container = ProviderContainer(overrides: [
+        leaderboardRepositoryProvider
+            .overrideWithValue(SampleLeaderboardRepository()),
+        authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+      ]);
+      addTearDown(container.dispose);
+
+      final mine = await container.read(myRankProvider.future);
+      expect(mine, isNull);
+    });
+
+    test('myRankProvider resolves the signed-in user\'s entry', () async {
+      final container = ProviderContainer(overrides: [
+        leaderboardRepositoryProvider
+            .overrideWithValue(SampleLeaderboardRepository()),
+        authProvider.overrideWith(() => _FakeAuthNotifier(
+            const AppUser(id: 'u-dilan', name: 'Dilan', email: 'd@example.com'))),
+      ]);
+      addTearDown(container.dispose);
+
+      final mine = await container.read(myRankProvider.future);
+      expect(mine?.rank, 3);
     });
   });
 
@@ -252,6 +323,26 @@ void main() {
     });
   });
 
+  group('LeaderboardEntry', () {
+    test('carries rank, points, and an optional rank change', () {
+      const withChange = LeaderboardEntry(
+        userId: 'u1',
+        name: 'Nadeesha',
+        points: 860,
+        rank: 2,
+        rankChange: 3,
+      );
+      const withoutChange = LeaderboardEntry(
+        userId: 'u2',
+        name: 'New User',
+        points: 10,
+        rank: 40,
+      );
+      expect(withChange.rankChange, 3);
+      expect(withoutChange.rankChange, isNull);
+    });
+  });
+
   group('Widgets', () {
     Widget themed(Widget child, {List<Override> overrides = const []}) =>
         ProviderScope(
@@ -367,6 +458,67 @@ void main() {
       expect(find.text('Name is required'), findsOneWidget);
       expect(find.text('District is required'), findsOneWidget);
     });
+
+    testWidgets('LeaderboardScreen shows a podium for the top 3',
+        (tester) async {
+      await tester.pumpWidget(themed(
+        const LeaderboardScreen(),
+        overrides: [
+          leaderboardRepositoryProvider
+              .overrideWithValue(SampleLeaderboardRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+        ],
+      ));
+      // The crown above the #1 podium slot bobs forever
+      // (`..repeat(reverse: true)`), so `pumpAndSettle` never settles here.
+      // Pump a fixed amount of time instead, enough for the entrance
+      // animations and the delayed podium reveals to finish.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.text('Harsha W.'), findsOneWidget);
+      expect(find.text('Nadeesha'), findsOneWidget);
+      expect(find.text('Dilan'), findsOneWidget);
+      // Rank 4+ render in the list below the podium.
+      expect(find.text('Sanduni P.'), findsOneWidget);
+    });
+
+    testWidgets('LeaderboardScreen shows an empty state with no reviews yet',
+        (tester) async {
+      await tester.pumpWidget(themed(
+        const LeaderboardScreen(),
+        overrides: [
+          leaderboardRepositoryProvider
+              .overrideWithValue(_EmptyLeaderboardRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Be the first to post a review and claim #1!'),
+          findsOneWidget);
+    });
+
+    testWidgets('LeaderboardScreen shows a your-rank card outside the top 3',
+        (tester) async {
+      await tester.pumpWidget(themed(
+        const LeaderboardScreen(),
+        overrides: [
+          leaderboardRepositoryProvider
+              .overrideWithValue(SampleLeaderboardRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(
+              const AppUser(id: 'u-kasun', name: 'Kasun R.', email: 'k@example.com'))),
+        ],
+      ));
+      // Same bobbing-crown caveat as above: pump a fixed duration instead of
+      // pumpAndSettle.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.text('#5'), findsOneWidget);
+    });
   });
 }
 
@@ -390,6 +542,14 @@ class _ThrowingPlacesRepository implements PlacesRepository {
 
   @override
   Future<List<Place>> search(String query) async => [];
+}
+
+class _EmptyLeaderboardRepository implements LeaderboardRepository {
+  @override
+  Future<List<LeaderboardEntry>> fetchLeaderboard() async => [];
+
+  @override
+  Future<LeaderboardEntry?> fetchMyRank(String userId) async => null;
 }
 
 class _FakeAuthNotifier extends AuthNotifier {
