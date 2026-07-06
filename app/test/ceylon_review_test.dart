@@ -9,6 +9,7 @@ import 'package:ceylon_review/application/auth_provider.dart';
 import 'package:ceylon_review/application/favorites_provider.dart';
 import 'package:ceylon_review/application/leaderboard_provider.dart';
 import 'package:ceylon_review/application/repository_providers.dart';
+import 'package:ceylon_review/application/reviews_provider.dart';
 import 'package:ceylon_review/core/sri_lanka_districts.dart';
 import 'package:ceylon_review/core/theme/app_theme.dart';
 import 'package:ceylon_review/data/sample/sample_favorites_repository.dart';
@@ -19,11 +20,13 @@ import 'package:ceylon_review/data/sample/sample_reviews_repository.dart';
 import 'package:ceylon_review/domain/models/category.dart';
 import 'package:ceylon_review/domain/models/leaderboard_entry.dart';
 import 'package:ceylon_review/domain/models/place.dart';
+import 'package:ceylon_review/domain/models/review.dart';
 import 'package:ceylon_review/domain/models/user.dart';
 import 'package:ceylon_review/domain/repositories/favorites_repository.dart';
 import 'package:ceylon_review/domain/repositories/geocoding_repository.dart';
 import 'package:ceylon_review/domain/repositories/places_repository.dart';
 import 'package:ceylon_review/domain/repositories/leaderboard_repository.dart';
+import 'package:ceylon_review/domain/repositories/reviews_repository.dart';
 import 'package:ceylon_review/presentation/screens/add_place/add_place_screen.dart';
 import 'package:ceylon_review/presentation/screens/leaderboard/leaderboard_screen.dart';
 import 'package:ceylon_review/presentation/widgets/place_card.dart';
@@ -350,6 +353,55 @@ void main() {
     });
   });
 
+  group('ReviewSubmitter', () {
+    test('submit uploads photos, stores them on the review, and cleans up '
+        'nothing on success', () async {
+      final reviewsRepo = SampleReviewsRepository(seed: []);
+      final photoRepo = SamplePhotoStorageRepository();
+      final container = ProviderContainer(overrides: [
+        reviewsRepositoryProvider.overrideWithValue(reviewsRepo),
+        photoStorageRepositoryProvider.overrideWithValue(photoRepo),
+        authProvider.overrideWith(() => _FakeAuthNotifier(
+            const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'))),
+      ]);
+      addTearDown(container.dispose);
+
+      await container.read(reviewSubmitterProvider).submit(
+            placeId: 'ministry-of-crab',
+            rating: 5,
+            text: 'Wonderful crab curry and warm service all evening.',
+            photoBytes: [Uint8List.fromList([1, 2, 3])],
+          );
+
+      final stored = await reviewsRepo.fetchForPlace('ministry-of-crab');
+      expect(stored.single.photoUrls, hasLength(1));
+      expect(photoRepo.uploads, hasLength(1));
+    });
+
+    test('submit deletes uploaded photos if the review insert fails',
+        () async {
+      final photoRepo = SamplePhotoStorageRepository();
+      final container = ProviderContainer(overrides: [
+        reviewsRepositoryProvider.overrideWithValue(_ThrowingReviewsRepository()),
+        photoStorageRepositoryProvider.overrideWithValue(photoRepo),
+        authProvider.overrideWith(() => _FakeAuthNotifier(
+            const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'))),
+      ]);
+      addTearDown(container.dispose);
+
+      await expectLater(
+        container.read(reviewSubmitterProvider).submit(
+              placeId: 'ministry-of-crab',
+              rating: 5,
+              text: 'Wonderful crab curry and warm service all evening.',
+              photoBytes: [Uint8List.fromList([1, 2, 3])],
+            ),
+        throwsA(isA<StateError>()),
+      );
+      expect(photoRepo.uploads, isEmpty);
+    });
+  });
+
   group('LeaderboardEntry', () {
     test('carries rank, points, and an optional rank change', () {
       const withChange = LeaderboardEntry(
@@ -634,6 +686,25 @@ class _ThrowingPlacesRepository implements PlacesRepository {
 
   @override
   Future<List<Place>> search(String query) async => [];
+}
+
+class _ThrowingReviewsRepository implements ReviewsRepository {
+  @override
+  Future<Review> add({
+    required String placeId,
+    required String authorName,
+    required int rating,
+    required String text,
+    List<String> photoUrls = const [],
+  }) async {
+    throw StateError('insert failed');
+  }
+
+  @override
+  Future<List<Review>> fetchForPlace(String placeId) async => [];
+
+  @override
+  Future<List<Review>> fetchMine() async => [];
 }
 
 class _EmptyLeaderboardRepository implements LeaderboardRepository {
