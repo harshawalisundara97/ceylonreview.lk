@@ -29,6 +29,7 @@ import 'package:ceylon_review/domain/repositories/leaderboard_repository.dart';
 import 'package:ceylon_review/domain/repositories/reviews_repository.dart';
 import 'package:ceylon_review/presentation/screens/add_place/add_place_screen.dart';
 import 'package:ceylon_review/presentation/screens/leaderboard/leaderboard_screen.dart';
+import 'package:ceylon_review/presentation/screens/write_review/write_review_screen.dart';
 import 'package:ceylon_review/presentation/widgets/place_card.dart';
 import 'package:ceylon_review/presentation/widgets/rating_stars.dart';
 import 'package:ceylon_review/presentation/widgets/star_picker.dart';
@@ -662,6 +663,39 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.text('#5'), findsOneWidget);
+    });
+
+    testWidgets(
+        'WriteReviewScreen shows an Add photos section and posts a review '
+        'without photos', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(400, 2400));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final reviewsRepo = SampleReviewsRepository(seed: []);
+      await tester.pumpWidget(themed(
+        const WriteReviewScreen(initialPlaceId: 'ministry-of-crab'),
+        overrides: [
+          placesRepositoryProvider.overrideWithValue(SamplePlacesRepository()),
+          reviewsRepositoryProvider.overrideWithValue(reviewsRepo),
+          authProvider.overrideWith(() => _FakeAuthNotifier(
+              const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'))),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Add photos (optional, up to 3)'), findsOneWidget);
+      expect(find.text('Camera'), findsOneWidget);
+      expect(find.text('Gallery'), findsOneWidget);
+
+      await tester.tap(find.byType(IconButton).at(4));
+      await tester.enterText(find.byType(TextField),
+          'Wonderful crab curry and warm service all evening.');
+      await tester.ensureVisible(find.text('Post Review'));
+      await tester.tap(find.text('Post Review'));
+      await tester.pumpAndSettle();
+
+      final stored = await reviewsRepo.fetchForPlace('ministry-of-crab');
+      expect(stored, hasLength(1));
+      expect(stored.single.photoUrls, isEmpty);
     });
   });
 }

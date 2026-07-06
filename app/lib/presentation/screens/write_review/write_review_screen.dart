@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../application/places_provider.dart';
 import '../../../application/reviews_provider.dart';
@@ -23,6 +26,7 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
   int _rating = 0;
   final _text = TextEditingController();
   bool _posting = false;
+  final List<Uint8List> _photoBytes = [];
 
   @override
   void initState() {
@@ -35,6 +39,17 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
     _text.dispose();
     super.dispose();
   }
+
+  Future<void> _pickPhoto(ImageSource source) async {
+    if (_photoBytes.length >= 3) return;
+    final picked = await ImagePicker()
+        .pickImage(source: source, maxWidth: 1600, imageQuality: 80);
+    if (picked == null) return;
+    final bytes = await picked.readAsBytes();
+    setState(() => _photoBytes.add(bytes));
+  }
+
+  void _removePhoto(int index) => setState(() => _photoBytes.removeAt(index));
 
   Future<void> _post() async {
     final messenger = ScaffoldMessenger.of(context);
@@ -60,6 +75,7 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
             placeId: _placeId!,
             rating: _rating,
             text: _text.text.trim(),
+            photoBytes: _photoBytes,
           );
       if (!mounted) return;
       messenger.showSnackBar(
@@ -70,6 +86,7 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
         setState(() {
           _rating = 0;
           _text.clear();
+          _photoBytes.clear();
           if (widget.initialPlaceId == null) _placeId = null;
         });
       }
@@ -117,6 +134,67 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
               value: _rating,
               onChanged: (v) => setState(() => _rating = v),
             ),
+            const SizedBox(height: AppSpacing.xl),
+            Text('Add photos (optional, up to 3)',
+                style: theme.textTheme.titleMedium),
+            const SizedBox(height: AppSpacing.sm),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.photo_camera_rounded),
+                    label: const Text('Camera'),
+                    onPressed: _photoBytes.length >= 3
+                        ? null
+                        : () => _pickPhoto(ImageSource.camera),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.photo_library_rounded),
+                    label: const Text('Gallery'),
+                    onPressed: _photoBytes.length >= 3
+                        ? null
+                        : () => _pickPhoto(ImageSource.gallery),
+                  ),
+                ),
+              ],
+            ),
+            if (_photoBytes.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.sm),
+              SizedBox(
+                height: 72,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _photoBytes.length,
+                  separatorBuilder: (_, __) =>
+                      const SizedBox(width: AppSpacing.sm),
+                  itemBuilder: (_, i) => Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.memory(_photoBytes[i],
+                            width: 72, height: 72, fit: BoxFit.cover),
+                      ),
+                      Positioned(
+                        top: 2,
+                        right: 2,
+                        child: GestureDetector(
+                          onTap: () => _removePhoto(i),
+                          child: const CircleAvatar(
+                            radius: 10,
+                            backgroundColor: Colors.black54,
+                            child: Icon(Icons.close_rounded,
+                                size: 14, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: AppSpacing.xl),
             Text('Your review', style: theme.textTheme.titleMedium),
             const SizedBox(height: AppSpacing.sm),
