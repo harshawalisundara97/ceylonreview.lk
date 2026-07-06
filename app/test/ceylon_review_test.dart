@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -30,12 +32,138 @@ import 'package:ceylon_review/domain/repositories/reviews_repository.dart';
 import 'package:ceylon_review/presentation/screens/add_place/add_place_screen.dart';
 import 'package:ceylon_review/presentation/screens/leaderboard/leaderboard_screen.dart';
 import 'package:ceylon_review/presentation/screens/write_review/write_review_screen.dart';
+import 'package:ceylon_review/presentation/widgets/photo_viewer.dart';
 import 'package:ceylon_review/presentation/widgets/place_card.dart';
 import 'package:ceylon_review/presentation/widgets/rating_stars.dart';
+import 'package:ceylon_review/presentation/widgets/review_tile.dart';
 import 'package:ceylon_review/presentation/widgets/star_picker.dart';
 import 'package:latlong2/latlong.dart';
 
+class _TestHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return _MockHttpClient();
+  }
+}
+
+class _MockHttpClient implements HttpClient {
+  @override
+  bool autoUncompress = true;
+
+  @override
+  Future<HttpClientRequest> getUrl(Uri url) async {
+    // Mock image URLs, pass through others
+    if (_isImageUrl(url)) {
+      return _MockHttpRequest();
+    }
+    return _realHttpClient.getUrl(url);
+  }
+
+  @override
+  Future<HttpClientRequest> postUrl(Uri url) async {
+    return _realHttpClient.postUrl(url);
+  }
+
+  @override
+  Future<HttpClientRequest> openUrl(String method, Uri url) async {
+    // Mock image URLs, pass through others
+    if (_isImageUrl(url)) {
+      return _MockHttpRequest();
+    }
+    return _realHttpClient.openUrl(method, url);
+  }
+
+  bool _isImageUrl(Uri url) {
+    return url.scheme == 'https' && url.host.contains('photos.example');
+  }
+
+  @override
+  void close({bool force = false}) {
+    _realHttpClient.close(force: force);
+  }
+
+  @override
+  noSuchMethod(Invocation invocation) {
+    return super.noSuchMethod(invocation);
+  }
+}
+
+class _MockHttpRequest implements HttpClientRequest {
+  @override
+  Future<HttpClientResponse> close() async {
+    return _MockHttpResponse();
+  }
+
+  @override
+  HttpHeaders get headers => _MockHttpHeaders();
+
+  @override
+  noSuchMethod(Invocation invocation) {
+    return super.noSuchMethod(invocation);
+  }
+}
+
+class _MockHttpHeaders implements HttpHeaders {
+  @override
+  noSuchMethod(Invocation invocation) {
+    return null;
+  }
+}
+
+class _MockHttpResponse extends Stream<List<int>> implements HttpClientResponse {
+  @override
+  int get statusCode => 200;
+
+  @override
+  int get contentLength => _pngData.length;
+
+  @override
+  bool get persistentConnection => false;
+
+  @override
+  HttpClientResponseCompressionState get compressionState =>
+      HttpClientResponseCompressionState.notCompressed;
+
+  @override
+  StreamSubscription<List<int>> listen(
+    void Function(List<int> event)? onData, {
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
+  }) {
+    return Stream.value(_pngData).listen(
+      onData,
+      onError: onError,
+      onDone: onDone,
+      cancelOnError: cancelOnError ?? false,
+    );
+  }
+
+  // Minimal 1x1 transparent PNG
+  static const List<int> _pngData = [
+    137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82,
+    0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 0, 0, 0, 144, 119, 83,
+    222, 0, 0, 0, 12, 73, 68, 65, 84, 8, 223, 99, 248, 15, 0, 0,
+    1, 1, 1, 0, 24, 221, 184, 84, 0, 0, 0, 0, 73, 69, 78, 68,
+    174, 66, 96, 130
+  ];
+
+  @override
+  noSuchMethod(Invocation invocation) {
+    return super.noSuchMethod(invocation);
+  }
+}
+
+late HttpClient _realHttpClient;
+
 void main() {
+  setUpAll(() {
+    // Save the original HttpClient before setting overrides to avoid infinite recursion
+    _realHttpClient = HttpClient();
+    // Use custom HttpClient to mock network image loading in tests
+    HttpOverrides.global = _TestHttpOverrides();
+  });
+
   group('sriLankaDistricts', () {
     test('contains all 25 districts with no duplicates', () {
       expect(sriLankaDistricts.length, 25);
@@ -696,6 +824,33 @@ void main() {
       final stored = await reviewsRepo.fetchForPlace('ministry-of-crab');
       expect(stored, hasLength(1));
       expect(stored.single.photoUrls, isEmpty);
+    });
+
+    testWidgets(
+        'ReviewTile shows photo thumbnails and opens the full-screen viewer '
+        'on tap', (tester) async {
+      final review = Review(
+        id: 'r1',
+        placeId: 'ministry-of-crab',
+        authorName: 'Nadeesha Perera',
+        rating: 5,
+        text: 'Loved it!',
+        createdAt: DateTime(2026, 5, 18),
+        photoUrls: const [
+          'https://photos.example/one.jpg',
+          'https://photos.example/two.jpg',
+        ],
+      );
+
+      await tester.pumpWidget(themed(ReviewTile(review: review)));
+      await tester.pump();
+
+      expect(find.byType(Image), findsNWidgets(2));
+
+      await tester.tap(find.byType(Image).first);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PhotoViewer), findsOneWidget);
     });
   });
 }

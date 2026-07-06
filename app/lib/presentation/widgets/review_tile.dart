@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_spacing.dart';
 import '../../domain/models/review.dart';
+import 'photo_viewer.dart';
 import 'rating_stars.dart';
 import 'user_avatar.dart';
 
@@ -46,6 +47,36 @@ class ReviewTile extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(review.text, style: theme.textTheme.bodyMedium),
+          if (review.photoUrls.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.sm),
+            SizedBox(
+              height: 64,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: review.photoUrls.length,
+                separatorBuilder: (_, __) =>
+                    const SizedBox(width: AppSpacing.xs),
+                itemBuilder: (_, i) => GestureDetector(
+                  onTap: () => PhotoViewer.open(context,
+                      photoUrls: review.photoUrls, initialIndex: i),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      review.photoUrls[i],
+                      width: 64,
+                      height: 64,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        width: 64,
+                        height: 64,
+                        color: theme.colorScheme.surfaceContainerHighest,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
