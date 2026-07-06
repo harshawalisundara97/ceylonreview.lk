@@ -87,6 +87,7 @@ create table public.reviews (
   author_name text not null,            -- denormalized for fast display
   rating int not null check (rating between 1 and 5),
   text text not null check (char_length(text) >= 10),
+  photo_urls text[] not null default '{}',       -- up to 3 review photos
   created_at timestamptz not null default now()
 );
 create index on public.reviews (place_id, created_at desc);
