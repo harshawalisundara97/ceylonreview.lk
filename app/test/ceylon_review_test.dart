@@ -31,6 +31,7 @@ import 'package:ceylon_review/domain/repositories/leaderboard_repository.dart';
 import 'package:ceylon_review/domain/repositories/reviews_repository.dart';
 import 'package:ceylon_review/presentation/screens/add_place/add_place_screen.dart';
 import 'package:ceylon_review/presentation/screens/leaderboard/leaderboard_screen.dart';
+import 'package:ceylon_review/presentation/screens/place_detail/place_detail_screen.dart';
 import 'package:ceylon_review/presentation/screens/write_review/write_review_screen.dart';
 import 'package:ceylon_review/presentation/widgets/photo_viewer.dart';
 import 'package:ceylon_review/presentation/widgets/place_card.dart';
@@ -851,6 +852,65 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(PhotoViewer), findsOneWidget);
+    });
+
+    testWidgets(
+        'PlaceDetailScreen shows a Photos strip built from review photos',
+        (tester) async {
+      final reviewsRepo = SampleReviewsRepository(seed: [
+        Review(
+          id: 'r1',
+          placeId: 'ministry-of-crab',
+          authorName: 'Nadeesha Perera',
+          rating: 5,
+          text: 'Loved it!',
+          createdAt: DateTime(2026, 5, 18),
+          photoUrls: const ['https://photos.example/crab.jpg'],
+        ),
+      ]);
+
+      await tester.pumpWidget(themed(
+        const PlaceDetailScreen(placeId: 'ministry-of-crab'),
+        overrides: [
+          placesRepositoryProvider.overrideWithValue(SamplePlacesRepository()),
+          reviewsRepositoryProvider.overrideWithValue(reviewsRepo),
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Photos'), findsOneWidget);
+    });
+
+    testWidgets(
+        'PlaceDetailScreen hides the Photos strip when no review has a photo',
+        (tester) async {
+      final reviewsRepo = SampleReviewsRepository(seed: [
+        Review(
+          id: 'r1',
+          placeId: 'ministry-of-crab',
+          authorName: 'Nadeesha Perera',
+          rating: 5,
+          text: 'Loved it!',
+          createdAt: DateTime(2026, 5, 18),
+        ),
+      ]);
+
+      await tester.pumpWidget(themed(
+        const PlaceDetailScreen(placeId: 'ministry-of-crab'),
+        overrides: [
+          placesRepositoryProvider.overrideWithValue(SamplePlacesRepository()),
+          reviewsRepositoryProvider.overrideWithValue(reviewsRepo),
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Photos'), findsNothing);
     });
   });
 }
