@@ -67,6 +67,16 @@ class SupabaseAuthRepository implements AuthRepository {
     }
   }
 
+  @override
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      await _client.auth
+          .updateUser(supabase.UserAttributes(password: newPassword));
+    } on supabase.AuthException catch (e) {
+      throw AuthFailure(_friendlyMessage(e));
+    }
+  }
+
   AppUser? _toAppUser(User? user) {
     if (user == null) return null;
     final email = user.email ?? '';

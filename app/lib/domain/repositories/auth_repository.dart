@@ -20,6 +20,11 @@ abstract interface class AuthRepository {
   /// address has an account — the UI should show one generic confirmation
   /// message regardless.
   Future<void> sendPasswordResetEmail(String email);
+
+  /// Sets a new password for the current session. Only valid immediately
+  /// after following a password-reset link, which establishes a temporary
+  /// recovery session.
+  Future<void> updatePassword(String newPassword);
 }
 
 /// Auth error with a message safe to show directly in the UI.
