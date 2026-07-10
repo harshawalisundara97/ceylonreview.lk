@@ -30,6 +30,9 @@ class AuthNotifier extends Notifier<AppUser?> {
     await ref.read(authRepositoryProvider).signOut();
     state = null;
   }
+
+  Future<void> sendPasswordResetEmail(String email) =>
+      ref.read(authRepositoryProvider).sendPasswordResetEmail(email);
 }
 
 final authProvider =

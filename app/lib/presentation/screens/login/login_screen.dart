@@ -37,6 +37,40 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       ..showSnackBar(SnackBar(content: Text(text)));
   }
 
+  Future<void> _showForgotPasswordDialog() async {
+    final controller = TextEditingController(text: _email.text);
+    final email = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Reset your password'),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.emailAddress,
+          autofillHints: const [AutofillHints.email],
+          decoration: const InputDecoration(labelText: 'Email'),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(controller.text),
+            child: const Text('Send reset link'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+    if (email == null || email.trim().isEmpty || !mounted) return;
+    await ref.read(authProvider.notifier).sendPasswordResetEmail(email);
+    if (mounted) {
+      _showMessage(
+          'If an account exists for that email, a reset link is on its way.');
+    }
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _busy = true);
@@ -133,6 +167,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         : null,
                     onFieldSubmitted: (_) => _submit(),
                   ),
+                  if (!_creatingAccount) ...[
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: _busy ? null : _showForgotPasswordDialog,
+                        child: const Text('Forgot password?'),
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: AppSpacing.xl),
                   FilledButton(
                     onPressed: _busy ? null : _submit,

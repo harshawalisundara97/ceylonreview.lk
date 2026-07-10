@@ -15,6 +15,11 @@ abstract interface class AuthRepository {
   });
 
   Future<void> signOut();
+
+  /// Sends a password-reset email to [email]. Never reveals whether the
+  /// address has an account — the UI should show one generic confirmation
+  /// message regardless.
+  Future<void> sendPasswordResetEmail(String email);
 }
 
 /// Auth error with a message safe to show directly in the UI.
