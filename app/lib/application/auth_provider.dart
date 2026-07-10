@@ -36,6 +36,12 @@ class AuthNotifier extends Notifier<AppUser?> {
 
   Future<void> updatePassword(String newPassword) =>
       ref.read(authRepositoryProvider).updatePassword(newPassword);
+
+  /// Re-reads the current session, e.g. after a password-recovery session
+  /// was established outside of [signIn]/[signUp].
+  void refresh() {
+    state = ref.read(authRepositoryProvider).currentUser;
+  }
 }
 
 final authProvider =

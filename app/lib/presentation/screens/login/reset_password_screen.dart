@@ -37,7 +37,12 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _busy = true);
     try {
-      await ref.read(authProvider.notifier).updatePassword(_password.text);
+      final auth = ref.read(authProvider.notifier);
+      await auth.updatePassword(_password.text);
+      // The recovery session is already a real, signed-in session — sync
+      // authProvider so the app treats the user as signed in immediately,
+      // instead of bouncing them to the login screen to sign in again.
+      auth.refresh();
       if (mounted) widget.onDone();
     } on AuthFailure catch (e) {
       if (mounted) {
@@ -55,6 +60,11 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
     } finally {
       if (mounted) setState(() => _busy = false);
     }
+  }
+
+  Future<void> _cancel() async {
+    await ref.read(authProvider.notifier).signOut();
+    if (mounted) widget.onDone();
   }
 
   @override
@@ -113,6 +123,11 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : const Text('Update password'),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  TextButton(
+                    onPressed: _busy ? null : _cancel,
+                    child: const Text('Cancel'),
                   ),
                 ],
               ),

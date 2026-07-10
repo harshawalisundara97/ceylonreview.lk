@@ -60,10 +60,12 @@ class SupabaseAuthRepository implements AuthRepository {
   @override
   Future<void> sendPasswordResetEmail(String email) async {
     try {
+      // Supabase never reveals whether the address has an account here —
+      // it always succeeds regardless, by design — so any thrown exception
+      // is a genuine failure (bad email format, rate limit, network).
       await _client.auth.resetPasswordForEmail(email.trim());
-    } on supabase.AuthException catch (_) {
-      // Swallowed deliberately: never reveal whether the address has an
-      // account, and rate-limit errors aren't actionable for the user here.
+    } on supabase.AuthException catch (e) {
+      throw AuthFailure(_friendlyMessage(e));
     }
   }
 
