@@ -8,6 +8,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../domain/models/place.dart';
+import '../../widgets/photo_viewer.dart';
 import '../../widgets/rating_stars.dart';
 import '../../widgets/review_tile.dart';
 import '../write_review/write_review_screen.dart';
@@ -197,21 +198,65 @@ class _PlaceDetailBody extends ConsumerWidget {
                       padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
                       child: Text('Could not load reviews.'),
                     ),
-                    data: (list) => list.isEmpty
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: AppSpacing.lg),
-                            child: Text(
+                    data: (list) {
+                      final reviewPhotos = [
+                        for (final r in list) ...r.photoUrls,
+                      ];
+                      final photos = [
+                        if (place.imageUrl.isNotEmpty) place.imageUrl,
+                        ...reviewPhotos,
+                      ];
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (reviewPhotos.isNotEmpty) ...[
+                            Text('Photos', style: theme.textTheme.titleLarge),
+                            const SizedBox(height: AppSpacing.sm),
+                            SizedBox(
+                              height: 96,
+                              child: ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: photos.length,
+                                separatorBuilder: (_, __) =>
+                                    const SizedBox(width: AppSpacing.sm),
+                                itemBuilder: (_, i) => GestureDetector(
+                                  onTap: () => PhotoViewer.open(context,
+                                      photoUrls: photos, initialIndex: i),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      photos[i],
+                                      width: 96,
+                                      height: 96,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) => Container(
+                                        width: 96,
+                                        height: 96,
+                                        color: theme
+                                            .colorScheme.surfaceContainerHighest,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                          ],
+                          if (list.isEmpty)
+                            Text(
                               'No reviews yet — be the first to share your visit!',
                               style: theme.textTheme.bodyMedium,
+                            )
+                          else
+                            Column(
+                              children: [
+                                for (final review in list)
+                                  ReviewTile(review: review),
+                              ],
                             ),
-                          )
-                        : Column(
-                            children: [
-                              for (final review in list)
-                                ReviewTile(review: review),
-                            ],
-                          ),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),

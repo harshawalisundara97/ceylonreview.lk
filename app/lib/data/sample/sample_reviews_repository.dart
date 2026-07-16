@@ -32,6 +32,7 @@ class SampleReviewsRepository implements ReviewsRepository {
     required String authorName,
     required int rating,
     required String text,
+    List<String> photoUrls = const [],
   }) async {
     final review = Review(
       id: 'r${_nextId++}',
@@ -40,6 +41,7 @@ class SampleReviewsRepository implements ReviewsRepository {
       rating: rating,
       text: text,
       createdAt: DateTime.now(),
+      photoUrls: photoUrls,
     );
     _reviews.add(review);
     _mine.add(review);

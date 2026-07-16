@@ -38,6 +38,7 @@ class SupabaseReviewsRepository implements ReviewsRepository {
     required String authorName,
     required int rating,
     required String text,
+    List<String> photoUrls = const [],
   }) async {
     final userId = _client.auth.currentUser?.id;
     if (userId == null) {
@@ -51,6 +52,7 @@ class SupabaseReviewsRepository implements ReviewsRepository {
           'author_name': authorName,
           'rating': rating,
           'text': text,
+          'photo_urls': photoUrls,
         })
         .select()
         .single();
@@ -65,4 +67,7 @@ Review _reviewFromRow(Map<String, dynamic> row) => Review(
       rating: row['rating'] as int,
       text: row['text'] as String,
       createdAt: DateTime.parse(row['created_at'] as String).toLocal(),
+      photoUrls: (row['photo_urls'] as List<dynamic>? ?? const [])
+          .map((e) => e as String)
+          .toList(),
     );

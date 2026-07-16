@@ -57,6 +57,28 @@ class SupabaseAuthRepository implements AuthRepository {
   @override
   Future<void> signOut() => _client.auth.signOut();
 
+  @override
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      // Supabase never reveals whether the address has an account here —
+      // it always succeeds regardless, by design — so any thrown exception
+      // is a genuine failure (bad email format, rate limit, network).
+      await _client.auth.resetPasswordForEmail(email.trim());
+    } on supabase.AuthException catch (e) {
+      throw AuthFailure(_friendlyMessage(e));
+    }
+  }
+
+  @override
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      await _client.auth
+          .updateUser(supabase.UserAttributes(password: newPassword));
+    } on supabase.AuthException catch (e) {
+      throw AuthFailure(_friendlyMessage(e));
+    }
+  }
+
   AppUser? _toAppUser(User? user) {
     if (user == null) return null;
     final email = user.email ?? '';

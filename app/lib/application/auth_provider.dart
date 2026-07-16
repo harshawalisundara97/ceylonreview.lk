@@ -30,6 +30,18 @@ class AuthNotifier extends Notifier<AppUser?> {
     await ref.read(authRepositoryProvider).signOut();
     state = null;
   }
+
+  Future<void> sendPasswordResetEmail(String email) =>
+      ref.read(authRepositoryProvider).sendPasswordResetEmail(email);
+
+  Future<void> updatePassword(String newPassword) =>
+      ref.read(authRepositoryProvider).updatePassword(newPassword);
+
+  /// Re-reads the current session, e.g. after a password-recovery session
+  /// was established outside of [signIn]/[signUp].
+  void refresh() {
+    state = ref.read(authRepositoryProvider).currentUser;
+  }
 }
 
 final authProvider =

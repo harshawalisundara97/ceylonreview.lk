@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -9,6 +11,8 @@ import 'package:ceylon_review/application/auth_provider.dart';
 import 'package:ceylon_review/application/favorites_provider.dart';
 import 'package:ceylon_review/application/leaderboard_provider.dart';
 import 'package:ceylon_review/application/repository_providers.dart';
+import 'package:ceylon_review/application/reviews_provider.dart';
+import 'package:ceylon_review/core/sri_lanka_districts.dart';
 import 'package:ceylon_review/core/theme/app_theme.dart';
 import 'package:ceylon_review/data/sample/sample_favorites_repository.dart';
 import 'package:ceylon_review/data/sample/sample_leaderboard_repository.dart';
@@ -18,17 +22,158 @@ import 'package:ceylon_review/data/sample/sample_reviews_repository.dart';
 import 'package:ceylon_review/domain/models/category.dart';
 import 'package:ceylon_review/domain/models/leaderboard_entry.dart';
 import 'package:ceylon_review/domain/models/place.dart';
+import 'package:ceylon_review/domain/models/review.dart';
 import 'package:ceylon_review/domain/models/user.dart';
 import 'package:ceylon_review/domain/repositories/favorites_repository.dart';
+import 'package:ceylon_review/domain/repositories/geocoding_repository.dart';
 import 'package:ceylon_review/domain/repositories/places_repository.dart';
 import 'package:ceylon_review/domain/repositories/leaderboard_repository.dart';
+import 'package:ceylon_review/domain/repositories/reviews_repository.dart';
 import 'package:ceylon_review/presentation/screens/add_place/add_place_screen.dart';
 import 'package:ceylon_review/presentation/screens/leaderboard/leaderboard_screen.dart';
+import 'package:ceylon_review/presentation/screens/place_detail/place_detail_screen.dart';
+import 'package:ceylon_review/presentation/screens/write_review/write_review_screen.dart';
+import 'package:ceylon_review/presentation/widgets/photo_viewer.dart';
 import 'package:ceylon_review/presentation/widgets/place_card.dart';
 import 'package:ceylon_review/presentation/widgets/rating_stars.dart';
+import 'package:ceylon_review/presentation/widgets/review_tile.dart';
 import 'package:ceylon_review/presentation/widgets/star_picker.dart';
+import 'package:latlong2/latlong.dart';
+
+class _TestHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return _MockHttpClient();
+  }
+}
+
+class _MockHttpClient implements HttpClient {
+  @override
+  bool autoUncompress = true;
+
+  @override
+  Future<HttpClientRequest> getUrl(Uri url) async {
+    // Mock image URLs, pass through others
+    if (_isImageUrl(url)) {
+      return _MockHttpRequest();
+    }
+    return _realHttpClient.getUrl(url);
+  }
+
+  @override
+  Future<HttpClientRequest> postUrl(Uri url) async {
+    return _realHttpClient.postUrl(url);
+  }
+
+  @override
+  Future<HttpClientRequest> openUrl(String method, Uri url) async {
+    // Mock image URLs, pass through others
+    if (_isImageUrl(url)) {
+      return _MockHttpRequest();
+    }
+    return _realHttpClient.openUrl(method, url);
+  }
+
+  bool _isImageUrl(Uri url) {
+    return url.scheme == 'https' && url.host.contains('photos.example');
+  }
+
+  @override
+  void close({bool force = false}) {
+    _realHttpClient.close(force: force);
+  }
+
+  @override
+  noSuchMethod(Invocation invocation) {
+    return super.noSuchMethod(invocation);
+  }
+}
+
+class _MockHttpRequest implements HttpClientRequest {
+  @override
+  Future<HttpClientResponse> close() async {
+    return _MockHttpResponse();
+  }
+
+  @override
+  HttpHeaders get headers => _MockHttpHeaders();
+
+  @override
+  noSuchMethod(Invocation invocation) {
+    return super.noSuchMethod(invocation);
+  }
+}
+
+class _MockHttpHeaders implements HttpHeaders {
+  @override
+  noSuchMethod(Invocation invocation) {
+    return null;
+  }
+}
+
+class _MockHttpResponse extends Stream<List<int>> implements HttpClientResponse {
+  @override
+  int get statusCode => 200;
+
+  @override
+  int get contentLength => _pngData.length;
+
+  @override
+  bool get persistentConnection => false;
+
+  @override
+  HttpClientResponseCompressionState get compressionState =>
+      HttpClientResponseCompressionState.notCompressed;
+
+  @override
+  StreamSubscription<List<int>> listen(
+    void Function(List<int> event)? onData, {
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
+  }) {
+    return Stream.value(_pngData).listen(
+      onData,
+      onError: onError,
+      onDone: onDone,
+      cancelOnError: cancelOnError ?? false,
+    );
+  }
+
+  // Minimal 1x1 transparent PNG
+  static const List<int> _pngData = [
+    137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82,
+    0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 0, 0, 0, 144, 119, 83,
+    222, 0, 0, 0, 12, 73, 68, 65, 84, 8, 223, 99, 248, 15, 0, 0,
+    1, 1, 1, 0, 24, 221, 184, 84, 0, 0, 0, 0, 73, 69, 78, 68,
+    174, 66, 96, 130
+  ];
+
+  @override
+  noSuchMethod(Invocation invocation) {
+    return super.noSuchMethod(invocation);
+  }
+}
+
+late HttpClient _realHttpClient;
 
 void main() {
+  setUpAll(() {
+    // Save the original HttpClient before setting overrides to avoid infinite recursion
+    _realHttpClient = HttpClient();
+    // Use custom HttpClient to mock network image loading in tests
+    HttpOverrides.global = _TestHttpOverrides();
+  });
+
+  group('sriLankaDistricts', () {
+    test('contains all 25 districts with no duplicates', () {
+      expect(sriLankaDistricts.length, 25);
+      expect(sriLankaDistricts.toSet().length, 25);
+      expect(sriLankaDistricts, contains('Colombo'));
+      expect(sriLankaDistricts, contains('Jaffna'));
+    });
+  });
+
   group('SamplePlacesRepository', () {
     final repo = SamplePlacesRepository();
 
@@ -77,6 +222,21 @@ void main() {
       final reviews = await repo.fetchForPlace('odel');
       expect(reviews.first.authorName, 'Test User');
       expect(await repo.fetchMine(), hasLength(1));
+    });
+
+    test('add() stores photoUrls and fetchForPlace returns them', () async {
+      final repo = SampleReviewsRepository(seed: []);
+      final added = await repo.add(
+        placeId: 'ministry-of-crab',
+        authorName: 'Nadeesha Perera',
+        rating: 5,
+        text: 'Loved the crab curry and the service.',
+        photoUrls: const ['https://photos.example/crab-1.jpg'],
+      );
+      expect(added.photoUrls, ['https://photos.example/crab-1.jpg']);
+
+      final stored = await repo.fetchForPlace('ministry-of-crab');
+      expect(stored.single.photoUrls, ['https://photos.example/crab-1.jpg']);
     });
   });
 
@@ -323,6 +483,55 @@ void main() {
     });
   });
 
+  group('ReviewSubmitter', () {
+    test('submit uploads photos, stores them on the review, and cleans up '
+        'nothing on success', () async {
+      final reviewsRepo = SampleReviewsRepository(seed: []);
+      final photoRepo = SamplePhotoStorageRepository();
+      final container = ProviderContainer(overrides: [
+        reviewsRepositoryProvider.overrideWithValue(reviewsRepo),
+        photoStorageRepositoryProvider.overrideWithValue(photoRepo),
+        authProvider.overrideWith(() => _FakeAuthNotifier(
+            const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'))),
+      ]);
+      addTearDown(container.dispose);
+
+      await container.read(reviewSubmitterProvider).submit(
+            placeId: 'ministry-of-crab',
+            rating: 5,
+            text: 'Wonderful crab curry and warm service all evening.',
+            photoBytes: [Uint8List.fromList([1, 2, 3])],
+          );
+
+      final stored = await reviewsRepo.fetchForPlace('ministry-of-crab');
+      expect(stored.single.photoUrls, hasLength(1));
+      expect(photoRepo.uploads, hasLength(1));
+    });
+
+    test('submit deletes uploaded photos if the review insert fails',
+        () async {
+      final photoRepo = SamplePhotoStorageRepository();
+      final container = ProviderContainer(overrides: [
+        reviewsRepositoryProvider.overrideWithValue(_ThrowingReviewsRepository()),
+        photoStorageRepositoryProvider.overrideWithValue(photoRepo),
+        authProvider.overrideWith(() => _FakeAuthNotifier(
+            const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'))),
+      ]);
+      addTearDown(container.dispose);
+
+      await expectLater(
+        container.read(reviewSubmitterProvider).submit(
+              placeId: 'ministry-of-crab',
+              rating: 5,
+              text: 'Wonderful crab curry and warm service all evening.',
+              photoBytes: [Uint8List.fromList([1, 2, 3])],
+            ),
+        throwsA(isA<StateError>()),
+      );
+      expect(photoRepo.uploads, isEmpty);
+    });
+  });
+
   group('LeaderboardEntry', () {
     test('carries rank, points, and an optional rank change', () {
       const withChange = LeaderboardEntry(
@@ -459,6 +668,71 @@ void main() {
       expect(find.text('District is required'), findsOneWidget);
     });
 
+    testWidgets(
+        'AddPlaceScreen district dropdown lists all districts and satisfies '
+        'validation once picked', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(400, 2400));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(themed(
+        const AddPlaceScreen(),
+        overrides: [
+          authProvider.overrideWith(() => _FakeAuthNotifier(
+              const AppUser(id: 'user-1', name: 'Test', email: 't@example.com'))),
+        ],
+      ));
+      await tester.pump();
+
+      await tester.ensureVisible(find.text('Add Place'));
+      await tester.tap(find.text('Add Place'));
+      await tester.pump();
+      expect(find.text('District is required'), findsOneWidget);
+
+      await tester.tap(find.text('Choose a district'));
+      await tester.pumpAndSettle();
+      expect(find.text('Colombo'), findsWidgets);
+      await tester.tap(find.text('Colombo').last);
+      await tester.pumpAndSettle();
+
+      await tester.ensureVisible(find.text('Add Place'));
+      await tester.tap(find.text('Add Place'));
+      await tester.pump();
+      expect(find.text('District is required'), findsNothing);
+    });
+
+    testWidgets(
+        'AddPlaceScreen search box moves the pin on a match and shows an '
+        'error when nothing is found', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(400, 2400));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(themed(
+        const AddPlaceScreen(),
+        overrides: [
+          authProvider.overrideWith(() => _FakeAuthNotifier(
+              const AppUser(id: 'user-1', name: 'Test', email: 't@example.com'))),
+          geocodingRepositoryProvider
+              .overrideWithValue(_FakeGeocodingRepository()),
+        ],
+      ));
+      await tester.pump();
+
+      await tester.ensureVisible(find.byKey(const Key('locationSearchField')));
+      await tester.enterText(
+          find.byKey(const Key('locationSearchField')), 'Ella');
+      await tester.tap(find.byKey(const Key('locationSearchButton')));
+      await tester.pump();
+      expect(find.byIcon(Icons.location_pin), findsOneWidget);
+      expect(find.textContaining('No results found'), findsNothing);
+
+      await tester.enterText(
+          find.byKey(const Key('locationSearchField')), 'Nowhereville');
+      await tester.tap(find.byKey(const Key('locationSearchButton')));
+      await tester.pump();
+      expect(find.text('No results found for "Nowhereville".'),
+          findsOneWidget);
+    });
+
     testWidgets('LeaderboardScreen shows a podium for the top 3',
         (tester) async {
       await tester.pumpWidget(themed(
@@ -519,6 +793,125 @@ void main() {
 
       expect(find.text('#5'), findsOneWidget);
     });
+
+    testWidgets(
+        'WriteReviewScreen shows an Add photos section and posts a review '
+        'without photos', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(400, 2400));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final reviewsRepo = SampleReviewsRepository(seed: []);
+      await tester.pumpWidget(themed(
+        const WriteReviewScreen(initialPlaceId: 'ministry-of-crab'),
+        overrides: [
+          placesRepositoryProvider.overrideWithValue(SamplePlacesRepository()),
+          reviewsRepositoryProvider.overrideWithValue(reviewsRepo),
+          authProvider.overrideWith(() => _FakeAuthNotifier(
+              const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'))),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Add photos (optional, up to 3)'), findsOneWidget);
+      expect(find.text('Camera'), findsOneWidget);
+      expect(find.text('Gallery'), findsOneWidget);
+
+      await tester.tap(find.byType(IconButton).at(4));
+      await tester.enterText(find.byType(TextField),
+          'Wonderful crab curry and warm service all evening.');
+      await tester.ensureVisible(find.text('Post Review'));
+      await tester.tap(find.text('Post Review'));
+      await tester.pumpAndSettle();
+
+      final stored = await reviewsRepo.fetchForPlace('ministry-of-crab');
+      expect(stored, hasLength(1));
+      expect(stored.single.photoUrls, isEmpty);
+    });
+
+    testWidgets(
+        'ReviewTile shows photo thumbnails and opens the full-screen viewer '
+        'on tap', (tester) async {
+      final review = Review(
+        id: 'r1',
+        placeId: 'ministry-of-crab',
+        authorName: 'Nadeesha Perera',
+        rating: 5,
+        text: 'Loved it!',
+        createdAt: DateTime(2026, 5, 18),
+        photoUrls: const [
+          'https://photos.example/one.jpg',
+          'https://photos.example/two.jpg',
+        ],
+      );
+
+      await tester.pumpWidget(themed(ReviewTile(review: review)));
+      await tester.pump();
+
+      expect(find.byType(Image), findsNWidgets(2));
+
+      await tester.tap(find.byType(Image).first);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PhotoViewer), findsOneWidget);
+    });
+
+    testWidgets(
+        'PlaceDetailScreen shows a Photos strip built from review photos',
+        (tester) async {
+      final reviewsRepo = SampleReviewsRepository(seed: [
+        Review(
+          id: 'r1',
+          placeId: 'ministry-of-crab',
+          authorName: 'Nadeesha Perera',
+          rating: 5,
+          text: 'Loved it!',
+          createdAt: DateTime(2026, 5, 18),
+          photoUrls: const ['https://photos.example/crab.jpg'],
+        ),
+      ]);
+
+      await tester.pumpWidget(themed(
+        const PlaceDetailScreen(placeId: 'ministry-of-crab'),
+        overrides: [
+          placesRepositoryProvider.overrideWithValue(SamplePlacesRepository()),
+          reviewsRepositoryProvider.overrideWithValue(reviewsRepo),
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Photos'), findsOneWidget);
+    });
+
+    testWidgets(
+        'PlaceDetailScreen hides the Photos strip when no review has a photo',
+        (tester) async {
+      final reviewsRepo = SampleReviewsRepository(seed: [
+        Review(
+          id: 'r1',
+          placeId: 'ministry-of-crab',
+          authorName: 'Nadeesha Perera',
+          rating: 5,
+          text: 'Loved it!',
+          createdAt: DateTime(2026, 5, 18),
+        ),
+      ]);
+
+      await tester.pumpWidget(themed(
+        const PlaceDetailScreen(placeId: 'ministry-of-crab'),
+        overrides: [
+          placesRepositoryProvider.overrideWithValue(SamplePlacesRepository()),
+          reviewsRepositoryProvider.overrideWithValue(reviewsRepo),
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Photos'), findsNothing);
+    });
   });
 }
 
@@ -544,6 +937,25 @@ class _ThrowingPlacesRepository implements PlacesRepository {
   Future<List<Place>> search(String query) async => [];
 }
 
+class _ThrowingReviewsRepository implements ReviewsRepository {
+  @override
+  Future<Review> add({
+    required String placeId,
+    required String authorName,
+    required int rating,
+    required String text,
+    List<String> photoUrls = const [],
+  }) async {
+    throw StateError('insert failed');
+  }
+
+  @override
+  Future<List<Review>> fetchForPlace(String placeId) async => [];
+
+  @override
+  Future<List<Review>> fetchMine() async => [];
+}
+
 class _EmptyLeaderboardRepository implements LeaderboardRepository {
   @override
   Future<List<LeaderboardEntry>> fetchLeaderboard() async => [];
@@ -558,4 +970,12 @@ class _FakeAuthNotifier extends AuthNotifier {
 
   @override
   AppUser? build() => _user;
+}
+
+class _FakeGeocodingRepository implements GeocodingRepository {
+  @override
+  Future<LatLng?> search(String query) async {
+    if (query == 'Ella') return const LatLng(6.8667, 81.0466);
+    return null;
+  }
 }

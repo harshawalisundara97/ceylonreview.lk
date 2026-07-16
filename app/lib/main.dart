@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -8,6 +10,7 @@ import 'core/supabase_config.dart';
 import 'core/theme/app_spacing.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/screens/login/login_screen.dart';
+import 'presentation/screens/login/reset_password_screen.dart';
 import 'presentation/screens/splash/splash_screen.dart';
 import 'presentation/shell/app_shell.dart';
 
@@ -30,6 +33,28 @@ class CeylonReviewApp extends ConsumerStatefulWidget {
 
 class _CeylonReviewAppState extends ConsumerState<CeylonReviewApp> {
   bool _splashDone = false;
+  bool _passwordRecovery = false;
+  StreamSubscription<AuthState>? _authSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    // Following a password-reset email link lands here with a temporary
+    // recovery session — intercept it to force the reset-password screen
+    // instead of dropping the user straight into the app.
+    _authSubscription =
+        Supabase.instance.client.auth.onAuthStateChange.listen((state) {
+      if (state.event == AuthChangeEvent.passwordRecovery) {
+        setState(() => _passwordRecovery = true);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _authSubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +64,12 @@ class _CeylonReviewAppState extends ConsumerState<CeylonReviewApp> {
 
     final Widget home = !_splashDone
         ? SplashScreen(onFinished: () => setState(() => _splashDone = true))
-        : signedIn
-            ? const AppShell()
-            : const LoginScreen();
+        : _passwordRecovery
+            ? ResetPasswordScreen(
+                onDone: () => setState(() => _passwordRecovery = false))
+            : signedIn
+                ? const AppShell()
+                : const LoginScreen();
 
     return MaterialApp(
       title: 'Ceylon Review',

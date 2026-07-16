@@ -12,5 +12,6 @@ abstract interface class ReviewsRepository {
     required String authorName,
     required int rating,
     required String text,
+    List<String> photoUrls = const [],
   });
 }

@@ -6,6 +6,8 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../application/add_place_controller.dart';
 import '../../../application/location_provider.dart';
+import '../../../application/repository_providers.dart';
+import '../../../core/sri_lanka_districts.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../domain/models/category.dart';
 import '../../widgets/filters_bottom_sheet.dart' show categoryHasPricing;
@@ -28,7 +30,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
 
   final _formKey = GlobalKey<FormState>();
   late final _nameController = TextEditingController(text: widget.initialName);
-  final _districtController = TextEditingController();
+  String? _district;
   final _descriptionController = TextEditingController();
 
   PlaceCategory? _category;
@@ -38,12 +40,16 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
   XFile? _photo;
   LatLng? _pin;
   bool _submitting = false;
+  final _mapController = MapController();
+  final _searchController = TextEditingController();
+  bool _searching = false;
+  String? _searchError;
 
   @override
   void dispose() {
     _nameController.dispose();
-    _districtController.dispose();
     _descriptionController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -70,6 +76,29 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
     setState(() => _pin = LatLng(position.latitude, position.longitude));
   }
 
+  Future<void> _searchLocation() async {
+    final query = _searchController.text.trim();
+    if (query.isEmpty) return;
+    setState(() {
+      _searching = true;
+      _searchError = null;
+    });
+    try {
+      final result =
+          await ref.read(geocodingRepositoryProvider).search(query);
+      if (result == null) {
+        setState(() => _searchError = 'No results found for "$query".');
+        return;
+      }
+      setState(() => _pin = result);
+      _mapController.move(result, 13);
+    } catch (_) {
+      setState(() => _searchError = 'Search failed — check your connection.');
+    } finally {
+      setState(() => _searching = false);
+    }
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     if (_category == null || _pin == null) {
@@ -84,7 +113,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
       final place = await ref.read(addPlaceControllerProvider.notifier).submit(
             name: _nameController.text.trim(),
             category: _category!,
-            district: _districtController.text.trim(),
+            district: _district!,
             description: _descriptionController.text.trim(),
             latitude: _pin!.latitude,
             longitude: _pin!.longitude,
@@ -137,12 +166,18 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
               ],
             ),
             const SizedBox(height: AppSpacing.lg),
-            TextFormField(
-              controller: _districtController,
+            DropdownButtonFormField<String>(
+              value: _district,
+              isExpanded: true,
               decoration: const InputDecoration(labelText: 'District'),
-              validator: (v) => (v == null || v.trim().isEmpty)
-                  ? 'District is required'
-                  : null,
+              hint: const Text('Choose a district'),
+              items: [
+                for (final d in sriLankaDistricts)
+                  DropdownMenuItem(value: d, child: Text(d)),
+              ],
+              onChanged: (v) => setState(() => _district = v),
+              validator: (v) =>
+                  v == null ? 'District is required' : null,
             ),
             const SizedBox(height: AppSpacing.lg),
             TextFormField(
@@ -234,11 +269,48 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
             Text('Location — tap the map or use your position',
                 style: theme.textTheme.titleSmall),
             const SizedBox(height: AppSpacing.sm),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: TextField(
+                    key: const Key('locationSearchField'),
+                    controller: _searchController,
+                    decoration: const InputDecoration(
+                      labelText: 'Search a town or landmark',
+                      hintText: 'e.g. Ella, Galle Fort',
+                    ),
+                    textInputAction: TextInputAction.search,
+                    onSubmitted: (_) => _searchLocation(),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                IconButton(
+                  key: const Key('locationSearchButton'),
+                  icon: _searching
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2))
+                      : const Icon(Icons.search_rounded),
+                  onPressed: _searching ? null : _searchLocation,
+                ),
+              ],
+            ),
+            if (_searchError != null)
+              Padding(
+                padding: const EdgeInsets.only(top: AppSpacing.xs),
+                child: Text(_searchError!,
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(color: theme.colorScheme.error)),
+              ),
+            const SizedBox(height: AppSpacing.sm),
             SizedBox(
               height: 240,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: FlutterMap(
+                  mapController: _mapController,
                   options: MapOptions(
                     initialCenter: _pin ?? _islandCenter,
                     initialZoom: _pin == null ? 7.3 : 13,

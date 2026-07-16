@@ -53,5 +53,11 @@
 		<string>Take a photo of the place you are adding.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>Choose a photo of the place you are adding.</string>
+		<key>NSLocalNetworkUsageDescription</key>
+		<string>Used by Flutter's debug tooling to connect to the app during development.</string>
+		<key>NSBonjourServices</key>
+		<array>
+			<string>_dartobservatory._tcp</string>
+		</array>
 	</dict>
 </plist>
