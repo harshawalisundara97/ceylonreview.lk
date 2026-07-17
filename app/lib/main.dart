@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'application/auth_provider.dart';
 import 'application/category_theme_provider.dart';
 import 'core/supabase_config.dart';
+import 'core/l10n_ext.dart';
 import 'core/theme/app_spacing.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/screens/login/login_screen.dart';
@@ -73,6 +74,8 @@ class _CeylonReviewAppState extends ConsumerState<CeylonReviewApp> {
 
     return MaterialApp(
       title: 'Ceylon Review',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.of(category, Brightness.light),
       darkTheme: AppTheme.of(category, Brightness.dark),

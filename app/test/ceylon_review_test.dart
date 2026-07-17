@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:ceylon_review/core/l10n_ext.dart';
 import 'package:ceylon_review/application/add_place_controller.dart';
 import 'package:ceylon_review/application/auth_provider.dart';
 import 'package:ceylon_review/application/favorites_provider.dart';
@@ -558,6 +559,8 @@ void main() {
           overrides: overrides,
           child: MaterialApp(
             theme: AppTheme.of(PlaceCategory.home, Brightness.light),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(body: Center(child: child)),
           ),
         );
@@ -911,6 +914,28 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Photos'), findsNothing);
+    });
+  });
+
+  group('Localization', () {
+    testWidgets('resolves Sinhala and Tamil strings', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        locale: const Locale('si'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(builder: (context) => Text(context.l10n.language)),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.text('භාෂාව'), findsOneWidget);
+
+      await tester.pumpWidget(MaterialApp(
+        locale: const Locale('ta'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(builder: (context) => Text(context.l10n.language)),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.text('மொழி'), findsOneWidget);
     });
   });
 }
