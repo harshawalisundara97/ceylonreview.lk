@@ -62,16 +62,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     } on EmailConfirmationRequired {
       if (mounted) {
-        _showMessage('Account created! Check your email to confirm, '
-            'then sign in.');
+        _showMessage(context.l10n.accountCreatedCheckEmail);
         setState(() => _creatingAccount = false);
       }
     } on AuthFailure catch (e) {
       if (mounted) _showMessage(e.message);
     } catch (_) {
       if (mounted) {
-        _showMessage('Something went wrong. Check your connection '
-            'and try again.');
+        _showMessage(context.l10n.genericConnectionError);
       }
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -111,13 +109,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           size: 64, color: AppColors.ceylonGreen),
                       const SizedBox(height: AppSpacing.md),
                       Text(
-                        'Ceylon Review',
+                        context.l10n.appTitle,
                         textAlign: TextAlign.center,
                         style: theme.textTheme.displayMedium,
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
-                        'Places you\'ll love, across the island',
+                        context.l10n.tagline,
                         textAlign: TextAlign.center,
                         style: theme.textTheme.bodyMedium,
                       ),
@@ -128,9 +126,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           keyboardType: TextInputType.name,
                           textCapitalization: TextCapitalization.words,
                           autofillHints: const [AutofillHints.name],
-                          decoration: const InputDecoration(labelText: 'Name'),
+                          decoration: InputDecoration(labelText: context.l10n.name),
                           validator: (v) => (v == null || v.trim().isEmpty)
-                              ? 'Enter your name'
+                              ? context.l10n.enterYourName
                               : null,
                         ),
                         const SizedBox(height: AppSpacing.lg),
@@ -139,9 +137,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         controller: _email,
                         keyboardType: TextInputType.emailAddress,
                         autofillHints: const [AutofillHints.email],
-                        decoration: const InputDecoration(labelText: 'Email'),
+                        decoration: InputDecoration(labelText: context.l10n.email),
                         validator: (v) => (v == null || !v.contains('@'))
-                            ? 'Enter a valid email'
+                            ? context.l10n.enterValidEmail
                             : null,
                       ),
                       const SizedBox(height: AppSpacing.lg),
@@ -150,9 +148,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         obscureText: true,
                         autofillHints: const [AutofillHints.password],
                         decoration:
-                            const InputDecoration(labelText: 'Password'),
+                            InputDecoration(labelText: context.l10n.password),
                         validator: (v) => (v == null || v.length < 6)
-                            ? 'Password must be at least 6 characters'
+                            ? context.l10n.passwordMin6
                             : null,
                         onFieldSubmitted: (_) => _submit(),
                       ),
@@ -161,7 +159,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           alignment: Alignment.centerRight,
                           child: TextButton(
                             onPressed: _busy ? null : _showForgotPasswordDialog,
-                            child: const Text('Forgot password?'),
+                            child: Text(context.l10n.forgotPassword),
                           ),
                         ),
                       ],
@@ -176,8 +174,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     CircularProgressIndicator(strokeWidth: 2),
                               )
                             : Text(_creatingAccount
-                                ? 'Create account'
-                                : 'Explore'),
+                                ? context.l10n.createAccount
+                                : context.l10n.explore),
                       ),
                       const SizedBox(height: AppSpacing.md),
                       TextButton(
@@ -186,8 +184,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             : () => setState(
                                 () => _creatingAccount = !_creatingAccount),
                         child: Text(_creatingAccount
-                            ? 'Already have an account? Sign in'
-                            : 'New here? Create an account'),
+                            ? context.l10n.alreadyHaveAccountSignIn
+                            : context.l10n.newHereCreateAccount),
                       ),
                     ],
                   ),
@@ -241,9 +239,8 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
       if (mounted) {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
-          ..showSnackBar(const SnackBar(
-              content: Text('Something went wrong. Check your connection '
-                  'and try again.')));
+          ..showSnackBar(SnackBar(
+              content: Text(context.l10n.genericConnectionError)));
       }
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -254,37 +251,37 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
   Widget build(BuildContext context) {
     if (_sent) {
       return AlertDialog(
-        title: const Text('Check your email'),
+        title: Text(context.l10n.checkYourEmail),
         content: Text(
-            'If an account exists for $_emailText, a reset link is on its way.'),
+            context.l10n.resetLinkSent(_emailText)),
         actions: [
           FilledButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Done'),
+            child: Text(context.l10n.done),
           ),
         ],
       );
     }
     return AlertDialog(
-      title: const Text('Reset your password'),
+      title: Text(context.l10n.resetYourPassword),
       content: Form(
         key: _formKey,
         child: TextFormField(
           controller: _email,
           keyboardType: TextInputType.emailAddress,
           autofillHints: const [AutofillHints.email],
-          decoration: const InputDecoration(labelText: 'Email'),
+          decoration: InputDecoration(labelText: context.l10n.email),
           autofocus: true,
           enabled: !_busy,
           validator: (v) =>
-              (v == null || !v.contains('@')) ? 'Enter a valid email' : null,
+              (v == null || !v.contains('@')) ? context.l10n.enterValidEmail : null,
           onFieldSubmitted: (_) => _send(),
         ),
       ),
       actions: [
         TextButton(
           onPressed: _busy ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.cancel),
         ),
         FilledButton(
           onPressed: _busy ? null : _send,
@@ -294,7 +291,7 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
                   height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text('Send reset link'),
+              : Text(context.l10n.sendResetLink),
         ),
       ],
     );

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/l10n_ext.dart';
 
 /// Animated brand splash: the map pin drops in with a bounce, the lotus
 /// petals bloom one by one, the amber heart pulses in, then the wordmark
@@ -111,7 +112,7 @@ class _SplashScreenState extends State<SplashScreen>
                       child: Column(
                         children: [
                           Text(
-                            'Ceylon Review',
+                            context.l10n.appTitle,
                             style: GoogleFonts.bricolageGrotesque(
                               fontSize: 32,
                               fontWeight: FontWeight.w800,
@@ -120,7 +121,7 @@ class _SplashScreenState extends State<SplashScreen>
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            'DISCOVER SRI LANKA',
+                            context.l10n.discoverSriLanka,
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
