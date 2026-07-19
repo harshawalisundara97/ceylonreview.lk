@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'application/auth_provider.dart';
 import 'application/category_theme_provider.dart';
+import 'application/locale_provider.dart';
 import 'core/supabase_config.dart';
 import 'core/l10n_ext.dart';
 import 'core/theme/app_spacing.dart';
@@ -61,6 +62,7 @@ class _CeylonReviewAppState extends ConsumerState<CeylonReviewApp> {
   Widget build(BuildContext context) {
     final category = ref.watch(activeCategoryProvider);
     final themeMode = ref.watch(themeModeProvider);
+    final locale = ref.watch(localeProvider);
     final signedIn = ref.watch(authProvider) != null;
 
     final Widget home = !_splashDone
@@ -76,6 +78,7 @@ class _CeylonReviewAppState extends ConsumerState<CeylonReviewApp> {
       title: 'Ceylon Review',
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
+      locale: locale,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.of(category, Brightness.light),
       darkTheme: AppTheme.of(category, Brightness.dark),

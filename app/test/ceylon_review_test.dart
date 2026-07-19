@@ -5,12 +5,14 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:ceylon_review/core/l10n_ext.dart';
 import 'package:ceylon_review/application/add_place_controller.dart';
 import 'package:ceylon_review/application/auth_provider.dart';
 import 'package:ceylon_review/application/favorites_provider.dart';
 import 'package:ceylon_review/application/leaderboard_provider.dart';
+import 'package:ceylon_review/application/locale_provider.dart';
 import 'package:ceylon_review/application/repository_providers.dart';
 import 'package:ceylon_review/application/reviews_provider.dart';
 import 'package:ceylon_review/core/sri_lanka_districts.dart';
@@ -936,6 +938,36 @@ void main() {
       ));
       await tester.pumpAndSettle();
       expect(find.text('மொழி'), findsOneWidget);
+    });
+  });
+
+  group('localeProvider', () {
+    test('defaults to null and restores persisted locale', () async {
+      SharedPreferences.setMockInitialValues({});
+      var container = ProviderContainer();
+      addTearDown(container.dispose);
+      expect(container.read(localeProvider), isNull);
+
+      await container.read(localeProvider.notifier).setLocale(const Locale('si'));
+      expect(container.read(localeProvider), const Locale('si'));
+
+      // A fresh container simulates an app restart reading the same prefs.
+      container = ProviderContainer();
+      addTearDown(container.dispose);
+      // Allow the async restore to complete.
+      container.read(localeProvider);
+      await Future<void>.delayed(Duration.zero);
+      expect(container.read(localeProvider), const Locale('si'));
+    });
+
+    test('setLocale(null) clears persistence', () async {
+      SharedPreferences.setMockInitialValues({'app_locale': 'ta'});
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      await container.read(localeProvider.notifier).setLocale(null);
+      expect(container.read(localeProvider), isNull);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getString('app_locale'), isNull);
     });
   });
 }
