@@ -10,10 +10,10 @@
 
 | Source | URL / Path | Notes |
 |---|---|---|
-| GitHub (app stub) | https://github.com/harshawalisundara97/ceylonreview-app | Empty repo at time of system creation — no production code yet |
+| GitHub (app) | https://github.com/harshawalisundara97/ceylonreview.lk | Production Flutter app, actively developed with CI — see [app/README.md](app/README.md) for current state |
 | Design brief | Provided in project prompt | Full feature spec, category list, screen priority order |
 
-The GitHub repository is currently a stub (README only). The design system was authored from the detailed product brief. When source code becomes available, re-import to tighten token values, extract exact component logic, and validate asset usage. Explore the repo at the link above for the latest state.
+This design system was authored from the detailed product brief and remains the source of truth for tokens, voice, and visual rules. For the current state of the shipped app — features, tech stack, architecture, testing, and CI — see [app/README.md](app/README.md).
 
 ---
 
