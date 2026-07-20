@@ -42,7 +42,7 @@ dependencies:
   supabase_flutter: ^2.14.2
   geolocator: ^13.0.2
   uuid: ^4.6.0
-  image_picker: ^1.1.2
+  image_picker: ^1.2.3
   shared_preferences: ^2.3.0
   flutter_localizations:
     sdk: flutter
