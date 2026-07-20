@@ -130,5 +130,9 @@
   "categoryBeaches": "Beaches",
   "categoryHotels": "Hotels",
   "categoryTemples": "Temples",
-  "categoryShopping": "Shopping"
+  "categoryShopping": "Shopping",
+  "placesYoullLove": "Places You'll Love",
+  "exploreSriLanka": "Explore Sri Lanka",
+  "cantFindAddPlace": "Can't find it? Add this place",
+  "locationAccessSortByDistance": "Enable location access to sort by distance."
 }

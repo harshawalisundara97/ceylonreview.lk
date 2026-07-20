@@ -389,4 +389,16 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get categoryShopping => 'கடைத்தொகுப்பு';
+
+  @override
+  String get placesYoullLove => 'நீங்கள் விரும்பும் இடங்கள்';
+
+  @override
+  String get exploreSriLanka => 'இலங்கையை ஆராயுங்கள்';
+
+  @override
+  String get cantFindAddPlace => 'கண்டுபிடிக்க முடியவில்லையா? இந்த இடத்தைச் சேர்க்கவும்';
+
+  @override
+  String get locationAccessSortByDistance => 'தூரத்தின்படி வரிசைப்படுத்த இருப்பிட அணுகலை இயக்கவும்.';
 }

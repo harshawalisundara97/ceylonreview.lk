@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/l10n_ext.dart';
+
 import '../../application/location_provider.dart';
 import '../../application/place_filters_provider.dart';
 import '../../core/theme/app_spacing.dart';
@@ -32,6 +34,7 @@ class _FiltersSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     final filters = ref.watch(placeFiltersProvider);
     final notifier = ref.read(placeFiltersProvider.notifier);
     final location = ref.watch(locationProvider);
@@ -43,10 +46,10 @@ class _FiltersSheet extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Filters', style: theme.textTheme.headlineSmall),
+          Text(l10n.filters, style: theme.textTheme.headlineSmall),
           const SizedBox(height: AppSpacing.lg),
           if (categoryHasPricing(category)) ...[
-            Text('Price', style: theme.textTheme.titleSmall),
+            Text(l10n.price, style: theme.textTheme.titleSmall),
             const SizedBox(height: AppSpacing.sm),
             Wrap(
               spacing: AppSpacing.sm,
@@ -62,16 +65,16 @@ class _FiltersSheet extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.lg),
           ],
-          Text('Hours', style: theme.textTheme.titleSmall),
+          Text(l10n.hours, style: theme.textTheme.titleSmall),
           const SizedBox(height: AppSpacing.sm),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Open now'),
+            title: Text(l10n.openNow),
             value: filters.openNowOnly,
             onChanged: notifier.setOpenNowOnly,
           ),
           const SizedBox(height: AppSpacing.md),
-          Text('Sort by', style: theme.textTheme.titleSmall),
+          Text(l10n.sortBy, style: theme.textTheme.titleSmall),
           const SizedBox(height: AppSpacing.sm),
           Wrap(
             spacing: AppSpacing.sm,
@@ -95,7 +98,7 @@ class _FiltersSheet extends ConsumerWidget {
               !location.isLoading) ...[
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Enable location access to sort by distance.',
+              l10n.locationAccessSortByDistance,
               style: theme.textTheme.bodySmall
                   ?.copyWith(color: theme.colorScheme.error),
             ),
@@ -105,12 +108,12 @@ class _FiltersSheet extends ConsumerWidget {
             children: [
               TextButton(
                 onPressed: notifier.reset,
-                child: const Text('Reset'),
+                child: Text(l10n.reset),
               ),
               const Spacer(),
               FilledButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Apply'),
+                child: Text(l10n.apply),
               ),
             ],
           ),

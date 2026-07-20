@@ -389,4 +389,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get categoryShopping => 'Shopping';
+
+  @override
+  String get placesYoullLove => 'Places You\'ll Love';
+
+  @override
+  String get exploreSriLanka => 'Explore Sri Lanka';
+
+  @override
+  String get cantFindAddPlace => 'Can\'t find it? Add this place';
+
+  @override
+  String get locationAccessSortByDistance => 'Enable location access to sort by distance.';
 }

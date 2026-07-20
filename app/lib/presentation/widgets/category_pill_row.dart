@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/l10n_ext.dart';
+
 import '../../application/category_theme_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 import '../../domain/models/category.dart';
+import '../l10n/category_labels.dart';
 
 /// Horizontal category selector. Tapping a pill re-themes the entire app
 /// (the signature 360ms cross-fade); tapping again clears back to brand.
@@ -26,6 +29,7 @@ class CategoryPillRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final active = ref.watch(activeCategoryProvider);
     final scheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
 
     return SizedBox(
       height: 44,
@@ -63,7 +67,7 @@ class CategoryPillRow extends ConsumerWidget {
                           color: selected ? scheme.onPrimary : seed),
                       const SizedBox(width: 6),
                       Text(
-                        category.label,
+                        category.localizedLabel(l10n),
                         style: AppTypography.overline(
                           selected ? scheme.onPrimary : scheme.onSurfaceVariant,
                         ),

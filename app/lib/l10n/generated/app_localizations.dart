@@ -828,6 +828,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Shopping'**
   String get categoryShopping;
+
+  /// No description provided for @placesYoullLove.
+  ///
+  /// In en, this message translates to:
+  /// **'Places You\'ll Love'**
+  String get placesYoullLove;
+
+  /// No description provided for @exploreSriLanka.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore Sri Lanka'**
+  String get exploreSriLanka;
+
+  /// No description provided for @cantFindAddPlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t find it? Add this place'**
+  String get cantFindAddPlace;
+
+  /// No description provided for @locationAccessSortByDistance.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable location access to sort by distance.'**
+  String get locationAccessSortByDistance;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -121,5 +121,9 @@
   "categoryBeaches": "වෙරළ",
   "categoryHotels": "හෝටල්",
   "categoryTemples": "පන්සල්",
-  "categoryShopping": "සාප්පු"
+  "categoryShopping": "සාප්පු",
+  "placesYoullLove": "ඔබ ප්‍රිය කරන ස්ථාන",
+  "exploreSriLanka": "ශ්‍රී ලංකාව ගවේෂණය කරන්න",
+  "cantFindAddPlace": "සොයාගත නොහැකිද? මෙම ස්ථානය එක් කරන්න",
+  "locationAccessSortByDistance": "දුර අනුව අනුපිළිවෙල කිරීමට ස්ථාන ප්‍රවේශය සක්‍රීය කරන්න."
 }

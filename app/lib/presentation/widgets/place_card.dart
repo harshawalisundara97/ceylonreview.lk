@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/l10n_ext.dart';
+
 import '../../application/favorites_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_typography.dart';
 import '../../domain/models/place.dart';
+import '../l10n/category_labels.dart';
 
 /// Place card: full-bleed photo with bottom scrim, name, category overline,
 /// rating and review count. Two layouts: carousel (fixed width) and list.
@@ -32,6 +35,7 @@ class PlaceCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     final tokens = theme.extension<CeylonTokens>()!;
     final seed = AppColors.seedOf(place.category);
     final isFavorite =
@@ -76,7 +80,7 @@ class PlaceCard extends ConsumerWidget {
                     child: Row(
                       children: [
                         Text(
-                          place.category.label,
+                          place.category.localizedLabel(l10n),
                           style: AppTypography.overline(Colors.white),
                         ),
                         if (place.addedBy != null) ...[
@@ -88,7 +92,7 @@ class PlaceCard extends ConsumerWidget {
                               color: Colors.black45,
                               borderRadius: BorderRadius.circular(999),
                             ),
-                            child: Text('COMMUNITY',
+                            child: Text(l10n.community,
                                 style: AppTypography.overline(Colors.white)),
                           ),
                         ],
@@ -137,7 +141,7 @@ class PlaceCard extends ConsumerWidget {
                           style: theme.textTheme.labelMedium),
                       Flexible(
                         child: Text(
-                          ' · ${place.reviewCountLabel} reviews',
+                          ' · ${l10n.nReviews(place.reviewCountLabel)}',
                           style: theme.textTheme.bodySmall,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -189,7 +193,7 @@ class _OpenNowChip extends StatelessWidget {
         Icon(Icons.circle, size: 8, color: color),
         const SizedBox(width: 4),
         Text(
-          isOpen ? 'Open now' : 'Closed',
+          isOpen ? context.l10n.openNow : context.l10n.closed,
           style: theme.textTheme.labelSmall?.copyWith(color: color),
         ),
       ],

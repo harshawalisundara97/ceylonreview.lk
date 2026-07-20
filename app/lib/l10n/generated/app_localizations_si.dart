@@ -389,4 +389,16 @@ class AppLocalizationsSi extends AppLocalizations {
 
   @override
   String get categoryShopping => 'සාප්පු';
+
+  @override
+  String get placesYoullLove => 'ඔබ ප්‍රිය කරන ස්ථාන';
+
+  @override
+  String get exploreSriLanka => 'ශ්‍රී ලංකාව ගවේෂණය කරන්න';
+
+  @override
+  String get cantFindAddPlace => 'සොයාගත නොහැකිද? මෙම ස්ථානය එක් කරන්න';
+
+  @override
+  String get locationAccessSortByDistance => 'දුර අනුව අනුපිළිවෙල කිරීමට ස්ථාන ප්‍රවේශය සක්‍රීය කරන්න.';
 }
