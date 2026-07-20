@@ -409,4 +409,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchFailedCheckConnection => 'Search failed — check your connection.';
+
+  @override
+  String get leaderboardEmptyState => 'Be the first to post a review and claim #1!';
+
+  @override
+  String get you => 'You';
+
+  @override
+  String get noFavoritesYetTapHeart => 'No favorites yet. Tap the heart on a place you love!';
+
+  @override
+  String get aPlace => 'A place';
 }

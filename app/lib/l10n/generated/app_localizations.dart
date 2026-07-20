@@ -864,6 +864,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search failed — check your connection.'**
   String get searchFailedCheckConnection;
+
+  /// No description provided for @leaderboardEmptyState.
+  ///
+  /// In en, this message translates to:
+  /// **'Be the first to post a review and claim #1!'**
+  String get leaderboardEmptyState;
+
+  /// No description provided for @you.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get you;
+
+  /// No description provided for @noFavoritesYetTapHeart.
+  ///
+  /// In en, this message translates to:
+  /// **'No favorites yet. Tap the heart on a place you love!'**
+  String get noFavoritesYetTapHeart;
+
+  /// No description provided for @aPlace.
+  ///
+  /// In en, this message translates to:
+  /// **'A place'**
+  String get aPlace;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

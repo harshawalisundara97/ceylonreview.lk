@@ -409,4 +409,16 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get searchFailedCheckConnection => 'தேடல் தோல்வியடைந்தது — உங்கள் இணைப்பைச் சரிபார்க்கவும்.';
+
+  @override
+  String get leaderboardEmptyState => 'முதலில் ஒரு விமர்சனத்தை பதிவிட்டு #1 ஐப் பெறுங்கள்!';
+
+  @override
+  String get you => 'நீங்கள்';
+
+  @override
+  String get noFavoritesYetTapHeart => 'இன்னும் பிடித்தவை இல்லை. நீங்கள் விரும்பும் இடத்தில் இதயத்தைத் தட்டவும்!';
+
+  @override
+  String get aPlace => 'ஒரு இடம்';
 }

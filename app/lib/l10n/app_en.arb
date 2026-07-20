@@ -137,5 +137,9 @@
   "locationAccessSortByDistance": "Enable location access to sort by distance.",
   "noResultsFoundForQuery": "No results found for \"{query}\".",
   "@noResultsFoundForQuery": {"placeholders": {"query": {"type": "String"}}},
-  "searchFailedCheckConnection": "Search failed — check your connection."
+  "searchFailedCheckConnection": "Search failed — check your connection.",
+  "leaderboardEmptyState": "Be the first to post a review and claim #1!",
+  "you": "You",
+  "noFavoritesYetTapHeart": "No favorites yet. Tap the heart on a place you love!",
+  "aPlace": "A place"
 }

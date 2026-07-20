@@ -127,5 +127,9 @@
   "cantFindAddPlace": "සොයාගත නොහැකිද? මෙම ස්ථානය එක් කරන්න",
   "locationAccessSortByDistance": "දුර අනුව අනුපිළිවෙල කිරීමට ස්ථාන ප්‍රවේශය සක්‍රීය කරන්න.",
   "noResultsFoundForQuery": "\"{query}\" සඳහා ප්‍රතිඵල හමු නොවීය.",
-  "searchFailedCheckConnection": "සෙවීම අසාර්ථක විය — සම්බන්ධතාවය පරීක්ෂා කරන්න."
+  "searchFailedCheckConnection": "සෙවීම අසාර්ථක විය — සම්බන්ධතාවය පරීක්ෂා කරන්න.",
+  "leaderboardEmptyState": "ප්‍රථම වරට සමාලෝචනයක් පළ කර #1 ලබාගන්න!",
+  "you": "ඔබ",
+  "noFavoritesYetTapHeart": "තවම ප්‍රියතම නැත. ඔබ ප්‍රිය කරන ස්ථානයක හදවත ස්පර්ශ කරන්න!",
+  "aPlace": "ස්ථානයක්"
 }

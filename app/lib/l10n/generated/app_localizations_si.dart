@@ -409,4 +409,16 @@ class AppLocalizationsSi extends AppLocalizations {
 
   @override
   String get searchFailedCheckConnection => 'සෙවීම අසාර්ථක විය — සම්බන්ධතාවය පරීක්ෂා කරන්න.';
+
+  @override
+  String get leaderboardEmptyState => 'ප්‍රථම වරට සමාලෝචනයක් පළ කර #1 ලබාගන්න!';
+
+  @override
+  String get you => 'ඔබ';
+
+  @override
+  String get noFavoritesYetTapHeart => 'තවම ප්‍රියතම නැත. ඔබ ප්‍රිය කරන ස්ථානයක හදවත ස්පර්ශ කරන්න!';
+
+  @override
+  String get aPlace => 'ස්ථානයක්';
 }
