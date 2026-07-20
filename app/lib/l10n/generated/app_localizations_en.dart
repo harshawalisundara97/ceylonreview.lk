@@ -401,4 +401,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get locationAccessSortByDistance => 'Enable location access to sort by distance.';
+
+  @override
+  String noResultsFoundForQuery(String query) {
+    return 'No results found for \"$query\".';
+  }
+
+  @override
+  String get searchFailedCheckConnection => 'Search failed — check your connection.';
 }

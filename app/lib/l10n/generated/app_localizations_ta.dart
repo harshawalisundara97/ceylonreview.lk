@@ -401,4 +401,12 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get locationAccessSortByDistance => 'தூரத்தின்படி வரிசைப்படுத்த இருப்பிட அணுகலை இயக்கவும்.';
+
+  @override
+  String noResultsFoundForQuery(String query) {
+    return '\"$query\" க்கு முடிவுகள் இல்லை.';
+  }
+
+  @override
+  String get searchFailedCheckConnection => 'தேடல் தோல்வியடைந்தது — உங்கள் இணைப்பைச் சரிபார்க்கவும்.';
 }

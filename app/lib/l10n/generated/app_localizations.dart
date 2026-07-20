@@ -852,6 +852,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enable location access to sort by distance.'**
   String get locationAccessSortByDistance;
+
+  /// No description provided for @noResultsFoundForQuery.
+  ///
+  /// In en, this message translates to:
+  /// **'No results found for \"{query}\".'**
+  String noResultsFoundForQuery(String query);
+
+  /// No description provided for @searchFailedCheckConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Search failed — check your connection.'**
+  String get searchFailedCheckConnection;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

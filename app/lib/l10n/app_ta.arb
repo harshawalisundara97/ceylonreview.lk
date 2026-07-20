@@ -125,5 +125,7 @@
   "placesYoullLove": "நீங்கள் விரும்பும் இடங்கள்",
   "exploreSriLanka": "இலங்கையை ஆராயுங்கள்",
   "cantFindAddPlace": "கண்டுபிடிக்க முடியவில்லையா? இந்த இடத்தைச் சேர்க்கவும்",
-  "locationAccessSortByDistance": "தூரத்தின்படி வரிசைப்படுத்த இருப்பிட அணுகலை இயக்கவும்."
+  "locationAccessSortByDistance": "தூரத்தின்படி வரிசைப்படுத்த இருப்பிட அணுகலை இயக்கவும்.",
+  "noResultsFoundForQuery": "\"{query}\" க்கு முடிவுகள் இல்லை.",
+  "searchFailedCheckConnection": "தேடல் தோல்வியடைந்தது — உங்கள் இணைப்பைச் சரிபார்க்கவும்."
 }

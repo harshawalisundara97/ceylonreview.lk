@@ -134,5 +134,8 @@
   "placesYoullLove": "Places You'll Love",
   "exploreSriLanka": "Explore Sri Lanka",
   "cantFindAddPlace": "Can't find it? Add this place",
-  "locationAccessSortByDistance": "Enable location access to sort by distance."
+  "locationAccessSortByDistance": "Enable location access to sort by distance.",
+  "noResultsFoundForQuery": "No results found for \"{query}\".",
+  "@noResultsFoundForQuery": {"placeholders": {"query": {"type": "String"}}},
+  "searchFailedCheckConnection": "Search failed — check your connection."
 }

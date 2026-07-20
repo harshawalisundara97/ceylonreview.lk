@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../application/places_provider.dart';
 import '../../../application/reviews_provider.dart';
+import '../../../core/l10n_ext.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../domain/models/place.dart';
 import '../../widgets/star_picker.dart';
@@ -55,17 +56,17 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
     final messenger = ScaffoldMessenger.of(context);
     if (_placeId == null) {
       messenger.showSnackBar(
-          const SnackBar(content: Text('Choose a place to review.')));
+          SnackBar(content: Text(context.l10n.chooseAPlaceToReview)));
       return;
     }
     if (_rating == 0) {
       messenger.showSnackBar(
-          const SnackBar(content: Text('Tap the stars to rate your visit.')));
+          SnackBar(content: Text(context.l10n.tapStarsToRate)));
       return;
     }
     if (_text.text.trim().length < 10) {
-      messenger.showSnackBar(const SnackBar(
-          content: Text('Tell us a little more — at least 10 characters.')));
+      messenger.showSnackBar(SnackBar(
+          content: Text(context.l10n.tellUsMore)));
       return;
     }
 
@@ -79,7 +80,7 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
           );
       if (!mounted) return;
       messenger.showSnackBar(
-          const SnackBar(content: Text('Review posted. Thank you!')));
+          SnackBar(content: Text(context.l10n.reviewPostedThankYou)));
       if (Navigator.of(context).canPop()) {
         Navigator.of(context).pop();
       } else {
@@ -101,20 +102,20 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
     final placesAsync = ref.watch(allPlacesProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Write a Review')),
+      appBar: AppBar(title: Text(context.l10n.writeAReview)),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.gutter),
           children: [
-            Text('Place', style: theme.textTheme.titleMedium),
+            Text(context.l10n.place, style: theme.textTheme.titleMedium),
             const SizedBox(height: AppSpacing.sm),
             placesAsync.when(
               loading: () => const LinearProgressIndicator(),
-              error: (_, __) => const Text('Could not load places.'),
+              error: (_, __) => Text(context.l10n.couldNotLoadPlaces),
               data: (places) => DropdownButtonFormField<String>(
                 value: _placeId,
                 isExpanded: true,
-                hint: const Text('Choose a place'),
+                hint: Text(context.l10n.chooseAPlace),
                 items: [
                   for (final Place p in places)
                     DropdownMenuItem(
@@ -128,14 +129,14 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
               ),
             ),
             const SizedBox(height: AppSpacing.xl),
-            Text('Your rating', style: theme.textTheme.titleMedium),
+            Text(context.l10n.yourRating, style: theme.textTheme.titleMedium),
             const SizedBox(height: AppSpacing.sm),
             StarPicker(
               value: _rating,
               onChanged: (v) => setState(() => _rating = v),
             ),
             const SizedBox(height: AppSpacing.xl),
-            Text('Add photos (optional, up to 3)',
+            Text(context.l10n.addPhotosOptional,
                 style: theme.textTheme.titleMedium),
             const SizedBox(height: AppSpacing.sm),
             Row(
@@ -143,7 +144,7 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
                 Expanded(
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.photo_camera_rounded),
-                    label: const Text('Camera'),
+                    label: Text(context.l10n.camera),
                     onPressed: _photoBytes.length >= 3
                         ? null
                         : () => _pickPhoto(ImageSource.camera),
@@ -153,7 +154,7 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
                 Expanded(
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.photo_library_rounded),
-                    label: const Text('Gallery'),
+                    label: Text(context.l10n.gallery),
                     onPressed: _photoBytes.length >= 3
                         ? null
                         : () => _pickPhoto(ImageSource.gallery),
@@ -196,15 +197,14 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
               ),
             ],
             const SizedBox(height: AppSpacing.xl),
-            Text('Your review', style: theme.textTheme.titleMedium),
+            Text(context.l10n.yourReview, style: theme.textTheme.titleMedium),
             const SizedBox(height: AppSpacing.sm),
             TextField(
               controller: _text,
               maxLines: 6,
               textCapitalization: TextCapitalization.sentences,
-              decoration: const InputDecoration(
-                hintText:
-                    'Share what you loved — the food, the views, the welcome…',
+              decoration: InputDecoration(
+                hintText: context.l10n.shareWhatYouLoved,
               ),
             ),
             const SizedBox(height: AppSpacing.xl),
@@ -216,7 +216,7 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
                       height: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Text('Post Review'),
+                  : Text(context.l10n.postReview),
             ),
           ],
         ),

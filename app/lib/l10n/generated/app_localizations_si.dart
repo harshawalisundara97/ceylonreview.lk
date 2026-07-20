@@ -401,4 +401,12 @@ class AppLocalizationsSi extends AppLocalizations {
 
   @override
   String get locationAccessSortByDistance => 'දුර අනුව අනුපිළිවෙල කිරීමට ස්ථාන ප්‍රවේශය සක්‍රීය කරන්න.';
+
+  @override
+  String noResultsFoundForQuery(String query) {
+    return '\"$query\" සඳහා ප්‍රතිඵල හමු නොවීය.';
+  }
+
+  @override
+  String get searchFailedCheckConnection => 'සෙවීම අසාර්ථක විය — සම්බන්ධතාවය පරීක්ෂා කරන්න.';
 }
