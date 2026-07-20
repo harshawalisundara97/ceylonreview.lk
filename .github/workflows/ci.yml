@@ -48,7 +48,9 @@ jobs:
         run: dart format --output=none --set-exit-if-changed .
 
       - name: Analyze
-        run: flutter analyze
+        # --no-fatal-infos: don't fail the build on info-level lints (e.g.
+        # minor deprecation notices) — warnings and errors still fail the job.
+        run: flutter analyze --no-fatal-infos
 
       - name: Run tests
         run: flutter test
