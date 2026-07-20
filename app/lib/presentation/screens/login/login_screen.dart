@@ -5,6 +5,8 @@ import '../../../application/auth_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../domain/repositories/auth_repository.dart';
+import '../../../core/l10n_ext.dart';
+import '../../widgets/language_picker.dart';
 
 /// Email + password auth against the real backend, with a toggle between
 /// signing in and creating an account.
@@ -60,16 +62,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     } on EmailConfirmationRequired {
       if (mounted) {
-        _showMessage('Account created! Check your email to confirm, '
-            'then sign in.');
+        _showMessage(context.l10n.accountCreatedCheckEmail);
         setState(() => _creatingAccount = false);
       }
     } on AuthFailure catch (e) {
       if (mounted) _showMessage(e.message);
     } catch (_) {
       if (mounted) {
-        _showMessage('Something went wrong. Check your connection '
-            'and try again.');
+        _showMessage(context.l10n.genericConnectionError);
       }
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -82,98 +82,117 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Logo mark: pin + brand name.
-                  Icon(Icons.location_pin,
-                      size: 64, color: AppColors.ceylonGreen),
-                  const SizedBox(height: AppSpacing.md),
-                  Text(
-                    'Ceylon Review',
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.displayMedium,
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    'Places you\'ll love, across the island',
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                  const SizedBox(height: AppSpacing.xxl),
-                  if (_creatingAccount) ...[
-                    TextFormField(
-                      controller: _name,
-                      keyboardType: TextInputType.name,
-                      textCapitalization: TextCapitalization.words,
-                      autofillHints: const [AutofillHints.name],
-                      decoration: const InputDecoration(labelText: 'Name'),
-                      validator: (v) => (v == null || v.trim().isEmpty)
-                          ? 'Enter your name'
-                          : null,
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                  ],
-                  TextFormField(
-                    controller: _email,
-                    keyboardType: TextInputType.emailAddress,
-                    autofillHints: const [AutofillHints.email],
-                    decoration: const InputDecoration(labelText: 'Email'),
-                    validator: (v) => (v == null || !v.contains('@'))
-                        ? 'Enter a valid email'
-                        : null,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  TextFormField(
-                    controller: _password,
-                    obscureText: true,
-                    autofillHints: const [AutofillHints.password],
-                    decoration: const InputDecoration(labelText: 'Password'),
-                    validator: (v) => (v == null || v.length < 6)
-                        ? 'Password must be at least 6 characters'
-                        : null,
-                    onFieldSubmitted: (_) => _submit(),
-                  ),
-                  if (!_creatingAccount) ...[
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: _busy ? null : _showForgotPasswordDialog,
-                        child: const Text('Forgot password?'),
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: AppSpacing.xl),
-                  FilledButton(
-                    onPressed: _busy ? null : _submit,
-                    child: _busy
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Text(_creatingAccount ? 'Create account' : 'Explore'),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  TextButton(
-                    onPressed: _busy
-                        ? null
-                        : () => setState(
-                            () => _creatingAccount = !_creatingAccount),
-                    child: Text(_creatingAccount
-                        ? 'Already have an account? Sign in'
-                        : 'New here? Create an account'),
-                  ),
-                ],
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                child: IconButton(
+                  tooltip: context.l10n.language,
+                  icon: const Icon(Icons.language_rounded),
+                  onPressed: () => showLanguagePicker(context),
+                ),
               ),
             ),
-          ),
+            Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(AppSpacing.xl),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Logo mark: pin + brand name.
+                      Icon(Icons.location_pin,
+                          size: 64, color: AppColors.ceylonGreen),
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        context.l10n.appTitle,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.displayMedium,
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        context.l10n.tagline,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                      const SizedBox(height: AppSpacing.xxl),
+                      if (_creatingAccount) ...[
+                        TextFormField(
+                          controller: _name,
+                          keyboardType: TextInputType.name,
+                          textCapitalization: TextCapitalization.words,
+                          autofillHints: const [AutofillHints.name],
+                          decoration: InputDecoration(labelText: context.l10n.name),
+                          validator: (v) => (v == null || v.trim().isEmpty)
+                              ? context.l10n.enterYourName
+                              : null,
+                        ),
+                        const SizedBox(height: AppSpacing.lg),
+                      ],
+                      TextFormField(
+                        controller: _email,
+                        keyboardType: TextInputType.emailAddress,
+                        autofillHints: const [AutofillHints.email],
+                        decoration: InputDecoration(labelText: context.l10n.email),
+                        validator: (v) => (v == null || !v.contains('@'))
+                            ? context.l10n.enterValidEmail
+                            : null,
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      TextFormField(
+                        controller: _password,
+                        obscureText: true,
+                        autofillHints: const [AutofillHints.password],
+                        decoration:
+                            InputDecoration(labelText: context.l10n.password),
+                        validator: (v) => (v == null || v.length < 6)
+                            ? context.l10n.passwordMin6
+                            : null,
+                        onFieldSubmitted: (_) => _submit(),
+                      ),
+                      if (!_creatingAccount) ...[
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: _busy ? null : _showForgotPasswordDialog,
+                            child: Text(context.l10n.forgotPassword),
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: AppSpacing.xl),
+                      FilledButton(
+                        onPressed: _busy ? null : _submit,
+                        child: _busy
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : Text(_creatingAccount
+                                ? context.l10n.createAccount
+                                : context.l10n.explore),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      TextButton(
+                        onPressed: _busy
+                            ? null
+                            : () => setState(
+                                () => _creatingAccount = !_creatingAccount),
+                        child: Text(_creatingAccount
+                            ? context.l10n.alreadyHaveAccountSignIn
+                            : context.l10n.newHereCreateAccount),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -192,8 +211,7 @@ class _ForgotPasswordDialog extends ConsumerStatefulWidget {
       _ForgotPasswordDialogState();
 }
 
-class _ForgotPasswordDialogState
-    extends ConsumerState<_ForgotPasswordDialog> {
+class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
   final _formKey = GlobalKey<FormState>();
   late final _email = TextEditingController(text: widget.initialEmail);
   bool _busy = false;
@@ -209,9 +227,7 @@ class _ForgotPasswordDialogState
     if (!_formKey.currentState!.validate()) return;
     setState(() => _busy = true);
     try {
-      await ref
-          .read(authProvider.notifier)
-          .sendPasswordResetEmail(_email.text);
+      await ref.read(authProvider.notifier).sendPasswordResetEmail(_email.text);
       if (mounted) setState(() => _sent = true);
     } on AuthFailure catch (e) {
       if (mounted) {
@@ -223,9 +239,8 @@ class _ForgotPasswordDialogState
       if (mounted) {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
-          ..showSnackBar(const SnackBar(
-              content: Text('Something went wrong. Check your connection '
-                  'and try again.')));
+          ..showSnackBar(SnackBar(
+              content: Text(context.l10n.genericConnectionError)));
       }
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -236,37 +251,37 @@ class _ForgotPasswordDialogState
   Widget build(BuildContext context) {
     if (_sent) {
       return AlertDialog(
-        title: const Text('Check your email'),
+        title: Text(context.l10n.checkYourEmail),
         content: Text(
-            'If an account exists for $_emailText, a reset link is on its way.'),
+            context.l10n.resetLinkSent(_emailText)),
         actions: [
           FilledButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Done'),
+            child: Text(context.l10n.done),
           ),
         ],
       );
     }
     return AlertDialog(
-      title: const Text('Reset your password'),
+      title: Text(context.l10n.resetYourPassword),
       content: Form(
         key: _formKey,
         child: TextFormField(
           controller: _email,
           keyboardType: TextInputType.emailAddress,
           autofillHints: const [AutofillHints.email],
-          decoration: const InputDecoration(labelText: 'Email'),
+          decoration: InputDecoration(labelText: context.l10n.email),
           autofocus: true,
           enabled: !_busy,
           validator: (v) =>
-              (v == null || !v.contains('@')) ? 'Enter a valid email' : null,
+              (v == null || !v.contains('@')) ? context.l10n.enterValidEmail : null,
           onFieldSubmitted: (_) => _send(),
         ),
       ),
       actions: [
         TextButton(
           onPressed: _busy ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.cancel),
         ),
         FilledButton(
           onPressed: _busy ? null : _send,
@@ -276,7 +291,7 @@ class _ForgotPasswordDialogState
                   height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text('Send reset link'),
+              : Text(context.l10n.sendResetLink),
         ),
       ],
     );

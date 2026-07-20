@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart' as latlong;
 
+import '../../../core/l10n_ext.dart';
+
 import '../../../application/auth_provider.dart';
 import '../../../application/category_theme_provider.dart';
 import '../../../application/location_provider.dart';
@@ -10,6 +12,7 @@ import '../../../application/places_provider.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../domain/models/category.dart';
+import '../../l10n/category_labels.dart';
 import '../../widgets/category_pill_row.dart';
 import '../../widgets/filters_bottom_sheet.dart';
 import '../../widgets/place_card.dart';
@@ -50,6 +53,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final user = ref.watch(authProvider);
     final activeCategory = ref.watch(activeCategoryProvider);
     final searching = _query.trim().isNotEmpty;
+    final l10n = context.l10n;
 
     return Scaffold(
       body: SafeArea(
@@ -70,10 +74,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Ayubowan${user != null ? ', ${user.name.split(' ').first}' : ''}!',
+                            Text(
+                                user != null
+                                    ? context.l10n.ayubowanUser(user.name.split(' ').first)
+                                    : context.l10n.ayubowan,
                                 style: theme.textTheme.headlineMedium),
                             const SizedBox(height: 2),
-                            Text('Where to next in Sri Lanka?',
+                            Text(context.l10n.whereToNext,
                                 style: theme.textTheme.bodyMedium),
                           ],
                         ),
@@ -86,7 +93,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     controller: _searchController,
                     onChanged: (v) => setState(() => _query = v),
                     decoration: InputDecoration(
-                      hintText: 'Search places, beaches, food…',
+                      hintText: context.l10n.searchHint,
                       prefixIcon: const Icon(Icons.search_rounded),
                       suffixIcon: searching
                           ? IconButton(
@@ -109,19 +116,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             if (searching)
               _SearchResults(query: _query, onOpen: _openPlace)
             else ...[
-              const SectionHeader(title: 'Trending This Week'),
+              SectionHeader(title: l10n.trendingThisWeek),
               _TrendingCarousel(onOpen: _openPlace),
               SectionHeader(
                 title: activeCategory == PlaceCategory.home
-                    ? 'Places You\'ll Love'
-                    : activeCategory.displayName,
+                    ? l10n.placesYoullLove
+                    : activeCategory.localizedDisplayName(l10n),
                 action: Consumer(
                   builder: (context, ref, _) => IconButton(
                     icon: Badge(
                       isLabelVisible: ref.watch(placeFiltersProvider).isActive,
                       child: const Icon(Icons.tune_rounded),
                     ),
-                    tooltip: 'Filters',
+                    tooltip: l10n.filters,
                     onPressed: () =>
                         showFiltersSheet(context, ref, activeCategory),
                   ),
@@ -230,13 +237,13 @@ class _SearchResults extends ConsumerWidget {
                 Icon(Icons.travel_explore_rounded,
                     size: 48, color: theme.colorScheme.outline),
                 const SizedBox(height: AppSpacing.md),
-                Text('No places found for "$query"',
+                Text(context.l10n.noPlacesFound(query),
                     style: theme.textTheme.bodyMedium),
                 if (user != null) ...[
                   const SizedBox(height: AppSpacing.md),
                   FilledButton.icon(
                     icon: const Icon(Icons.add_location_alt_rounded),
-                    label: const Text("Can't find it? Add this place"),
+                    label: Text(context.l10n.cantFindAddPlace),
                     onPressed: () => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => AddPlaceScreen(initialName: query),
@@ -272,7 +279,7 @@ class _ErrorNote extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.xl),
       child: Center(
-        child: Text('Something went wrong. Pull to refresh.',
+        child: Text(context.l10n.pullToRefreshError,
             style: Theme.of(context).textTheme.bodyMedium),
       ),
     );

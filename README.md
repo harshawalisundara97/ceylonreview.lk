@@ -33,6 +33,7 @@ The production Flutter app lives in [`app/`](app/) — see [app/README.md](app/R
 - Favorites: bookmark any place from its card or detail page, view them all under "Your Favorites" on your profile
 - Add a Place: users add missing places with a photo and map-pinned location; community places are instantly public and reviewable
 - Leaderboard: reviews earn points, with an animated podium for the top 3 and daily rank-change indicators on a dedicated Ranks tab
+- 3 languages — English, Sinhala (සිංහල), Tamil (தமிழ்) — switchable in-app, persisted
 
 ### Tech Stack
 | Layer | Technology |
@@ -46,6 +47,7 @@ The production Flutter app lives in [`app/`](app/) — see [app/README.md](app/R
 | Typography | google_fonts (Bricolage Grotesque + Plus Jakarta Sans) |
 | Architecture | Clean layering: domain / data / application / presentation |
 | Platforms | Android, iOS, Web, macOS, Linux, Windows |
+| Localization | flutter_localizations + intl (gen-l10n), shared_preferences for persisted locale |
 
 ---
 

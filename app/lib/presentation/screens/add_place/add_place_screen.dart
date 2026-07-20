@@ -7,9 +7,11 @@ import 'package:latlong2/latlong.dart';
 import '../../../application/add_place_controller.dart';
 import '../../../application/location_provider.dart';
 import '../../../application/repository_providers.dart';
+import '../../../core/l10n_ext.dart';
 import '../../../core/sri_lanka_districts.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../domain/models/category.dart';
+import '../../l10n/category_labels.dart';
 import '../../widgets/filters_bottom_sheet.dart' show categoryHasPricing;
 import '../place_detail/place_detail_screen.dart';
 
@@ -68,8 +70,8 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
     final position = ref.read(locationProvider).valueOrNull;
     if (position == null) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Enable location to use your position.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(context.l10n.enableLocationToUse)));
       }
       return;
     }
@@ -87,13 +89,13 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
       final result =
           await ref.read(geocodingRepositoryProvider).search(query);
       if (result == null) {
-        setState(() => _searchError = 'No results found for "$query".');
+        setState(() => _searchError = context.l10n.noResultsFoundForQuery(query));
         return;
       }
       setState(() => _pin = result);
       _mapController.move(result, 13);
     } catch (_) {
-      setState(() => _searchError = 'Search failed — check your connection.');
+      setState(() => _searchError = context.l10n.searchFailedCheckConnection);
     } finally {
       setState(() => _searching = false);
     }
@@ -104,8 +106,8 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
     if (_category == null || _pin == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(_category == null
-              ? 'Pick a category.'
-              : 'Drop a pin for the location.')));
+              ? context.l10n.pickACategory
+              : context.l10n.dropAPin)));
       return;
     }
     setState(() => _submitting = true);
@@ -129,8 +131,8 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
     } catch (_) {
       if (mounted) {
         setState(() => _submitting = false);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Could not add the place. Please try again.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(context.l10n.couldNotAddPlace)));
       }
     }
   }
@@ -139,7 +141,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Add a Place')),
+      appBar: AppBar(title: Text(context.l10n.addAPlace)),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -147,19 +149,19 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
           children: [
             TextFormField(
               controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Name'),
+              decoration: InputDecoration(labelText: context.l10n.name),
               validator: (v) =>
-                  (v == null || v.trim().isEmpty) ? 'Name is required' : null,
+                  (v == null || v.trim().isEmpty) ? context.l10n.nameRequired : null,
             ),
             const SizedBox(height: AppSpacing.lg),
-            Text('Category', style: theme.textTheme.titleSmall),
+            Text(context.l10n.category, style: theme.textTheme.titleSmall),
             const SizedBox(height: AppSpacing.sm),
             Wrap(
               spacing: AppSpacing.sm,
               children: [
                 for (final c in PlaceCategory.selectable)
                   ChoiceChip(
-                    label: Text(c.label),
+                    label: Text(c.localizedLabel(context.l10n)),
                     selected: _category == c,
                     onSelected: (_) => setState(() => _category = c),
                   ),
@@ -169,26 +171,26 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
             DropdownButtonFormField<String>(
               value: _district,
               isExpanded: true,
-              decoration: const InputDecoration(labelText: 'District'),
-              hint: const Text('Choose a district'),
+              decoration: InputDecoration(labelText: context.l10n.district),
+              hint: Text(context.l10n.chooseADistrict),
               items: [
                 for (final d in sriLankaDistricts)
                   DropdownMenuItem(value: d, child: Text(d)),
               ],
               onChanged: (v) => setState(() => _district = v),
               validator: (v) =>
-                  v == null ? 'District is required' : null,
+                  v == null ? context.l10n.districtRequired : null,
             ),
             const SizedBox(height: AppSpacing.lg),
             TextFormField(
               controller: _descriptionController,
               decoration:
-                  const InputDecoration(labelText: 'Description (optional)'),
+                  InputDecoration(labelText: context.l10n.descriptionOptional),
               maxLines: 3,
             ),
             if (_category != null && categoryHasPricing(_category!)) ...[
               const SizedBox(height: AppSpacing.lg),
-              Text('Price level', style: theme.textTheme.titleSmall),
+              Text(context.l10n.priceLevel, style: theme.textTheme.titleSmall),
               const SizedBox(height: AppSpacing.sm),
               Wrap(
                 spacing: AppSpacing.sm,
@@ -204,7 +206,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
               ),
             ],
             const SizedBox(height: AppSpacing.lg),
-            Text('Opening hours (optional)', style: theme.textTheme.titleSmall),
+            Text(context.l10n.openingHoursOptional, style: theme.textTheme.titleSmall),
             const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
@@ -218,8 +220,8 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
                       if (t != null) setState(() => _opensAt = t);
                     },
                     child: Text(_opensAt == null
-                        ? 'Opens at'
-                        : 'Opens ${_hhmm(_opensAt)}'),
+                        ? context.l10n.opensAt
+                        : context.l10n.opensTime(_hhmm(_opensAt)!)),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
@@ -233,21 +235,21 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
                       if (t != null) setState(() => _closesAt = t);
                     },
                     child: Text(_closesAt == null
-                        ? 'Closes at'
-                        : 'Closes ${_hhmm(_closesAt)}'),
+                        ? context.l10n.closesAt
+                        : context.l10n.closesTime(_hhmm(_closesAt)!)),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: AppSpacing.lg),
-            Text('Photo (optional)', style: theme.textTheme.titleSmall),
+            Text(context.l10n.photoOptional, style: theme.textTheme.titleSmall),
             const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
                 Expanded(
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.photo_camera_rounded),
-                    label: const Text('Camera'),
+                    label: Text(context.l10n.camera),
                     onPressed: () => _pickPhoto(ImageSource.camera),
                   ),
                 ),
@@ -255,7 +257,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
                 Expanded(
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.photo_library_rounded),
-                    label: const Text('Gallery'),
+                    label: Text(context.l10n.gallery),
                     onPressed: () => _pickPhoto(ImageSource.gallery),
                   ),
                 ),
@@ -266,7 +268,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
               ],
             ),
             const SizedBox(height: AppSpacing.lg),
-            Text('Location — tap the map or use your position',
+            Text(context.l10n.locationTapMap,
                 style: theme.textTheme.titleSmall),
             const SizedBox(height: AppSpacing.sm),
             Row(
@@ -276,9 +278,9 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
                   child: TextField(
                     key: const Key('locationSearchField'),
                     controller: _searchController,
-                    decoration: const InputDecoration(
-                      labelText: 'Search a town or landmark',
-                      hintText: 'e.g. Ella, Galle Fort',
+                    decoration: InputDecoration(
+                      labelText: context.l10n.searchTownOrLandmark,
+                      hintText: context.l10n.searchExampleHint,
                     ),
                     textInputAction: TextInputAction.search,
                     onSubmitted: (_) => _searchLocation(),
@@ -339,7 +341,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
             const SizedBox(height: AppSpacing.sm),
             OutlinedButton.icon(
               icon: const Icon(Icons.my_location_rounded),
-              label: const Text('Use my current location'),
+              label: Text(context.l10n.useMyCurrentLocation),
               onPressed: _useCurrentLocation,
             ),
             const SizedBox(height: AppSpacing.xl),
@@ -350,7 +352,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
                       height: 20,
                       width: 20,
                       child: CircularProgressIndicator(strokeWidth: 2))
-                  : const Text('Add Place'),
+                  : Text(context.l10n.addPlace),
             ),
             const SizedBox(height: AppSpacing.xl),
           ],

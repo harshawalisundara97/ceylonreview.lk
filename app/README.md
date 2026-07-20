@@ -15,6 +15,7 @@ Sri Lanka's all-in-one place review app — discover, rate and review restaurant
 - **Favorites** — bookmark places from any card or the detail screen; saved places appear under "Your Favorites" on your profile
 - **Add a Place** — signed-in users add missing places with full details, a camera/gallery photo, and a map-pinned location (or their current position); community places are public instantly and badged "COMMUNITY"
 - **Leaderboard** — every review earns 10 points; a "Ranks" tab shows an animated podium for the top 3 and a live, all-time ranked list for everyone, with daily rank-change indicators
+- **3 languages** — English, Sinhala (සිංහල), Tamil (தமிழ்) — switchable in-app, persisted
 
 ## Tech Stack
 
@@ -31,6 +32,7 @@ Sri Lanka's all-in-one place review app — discover, rate and review restaurant
 | Typography | [google_fonts](https://pub.dev/packages/google_fonts) — Bricolage Grotesque (display) + Plus Jakarta Sans (UI/body) |
 | Linting | flutter_lints |
 | Platforms | Android, iOS, Web, macOS, Linux, Windows |
+| Localization | [flutter_localizations](https://api.flutter.dev/flutter/flutter_localizations/flutter_localizations-library.html) + [intl](https://pub.dev/packages/intl) (gen-l10n), [shared_preferences](https://pub.dev/packages/shared_preferences) for persisted locale |
 
 ## Architecture
 
@@ -65,3 +67,42 @@ flutter run
 ```
 
 Use `flutter devices` to list available targets and `flutter run -d <device-id>` to pick one.
+
+## Testing
+
+All tests live in `app/test/ceylon_review_test.dart`. Run them with:
+
+```bash
+cd app
+flutter analyze
+flutter test
+```
+
+Test groups, by area:
+
+| Group | Covers |
+|---|---|
+| `sriLankaDistricts` | The 25-district list used by the Add Place dropdown |
+| `SamplePlacesRepository` | In-memory places repository (fetch, search, category filter) |
+| `SampleReviewsRepository` | In-memory reviews repository (add, fetch by place/user) |
+| `SampleFavoritesRepository` | In-memory favorites toggle/fetch |
+| `SampleLeaderboardRepository` | In-memory leaderboard ranking |
+| `Leaderboard providers` | Riverpod providers for rank/points derivation |
+| `SamplePhotoStorageRepository` | In-memory photo upload/delete |
+| `myFavoriteIdsProvider` | Derived favorites-id-set provider, incl. signed-out case |
+| `Place formatting` | Rating/review-count label formatting |
+| `Place addedBy` | Community-added place attribution |
+| `AddPlaceController` | Add Place form submission, validation, rollback on failure |
+| `ReviewSubmitter` | Review submission incl. photo upload + rollback |
+| `LeaderboardEntry` | Leaderboard entry model/points math |
+| `Widgets` | Screen/widget tests: Home, Category, Map, Place Detail, Add Place, Write Review, Leaderboard, Profile, Login, ReviewTile, PhotoViewer, filters sheet |
+| `Localization` | Sinhala/Tamil string resolution smoke test |
+| `localeProvider` | Persisted locale restore/clear |
+| `LanguagePicker` | Language picker selection updates the locale |
+| `Locale end-to-end` | Login screen renders correctly in Sinhala and Tamil |
+
+When adding a feature or fixing a bug, add or update the relevant group above — this table should stay in sync with the actual `group(...)` blocks in the test file.
+
+## Continuous Integration
+
+GitHub Actions (`.github/workflows/flutter-ci.yml`) runs `flutter analyze` and `flutter test` on every push to `main` and every pull request targeting `main`. A PR cannot be merged with a red CI run — check the "Checks" tab on the PR before merging.

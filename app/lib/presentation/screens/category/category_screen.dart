@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart' as latlong;
 
+import '../../../core/l10n_ext.dart';
+
 import '../../../application/category_theme_provider.dart';
 import '../../../application/location_provider.dart';
 import '../../../application/place_filters_provider.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../domain/models/category.dart';
+import '../../l10n/category_labels.dart';
 import '../../widgets/category_pill_row.dart';
 import '../../widgets/filters_bottom_sheet.dart';
 import '../../widgets/place_card.dart';
@@ -21,6 +24,7 @@ class CategoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     final tokens = theme.extension<CeylonTokens>()!;
     final category = ref.watch(activeCategoryProvider);
     final places = ref.watch(filteredPlacesProvider(category));
@@ -47,8 +51,8 @@ class CategoryScreen extends ConsumerWidget {
                   Expanded(
                     child: Text(
                       category == PlaceCategory.home
-                          ? 'Explore Sri Lanka'
-                          : category.displayName,
+                          ? l10n.exploreSriLanka
+                          : category.localizedDisplayName(l10n),
                       style: theme.textTheme.headlineMedium,
                     ),
                   ),
@@ -57,7 +61,7 @@ class CategoryScreen extends ConsumerWidget {
                       isLabelVisible: ref.watch(placeFiltersProvider).isActive,
                       child: const Icon(Icons.tune_rounded),
                     ),
-                    tooltip: 'Filters',
+                    tooltip: l10n.filters,
                     onPressed: () => showFiltersSheet(context, ref, category),
                   ),
                 ],
@@ -71,7 +75,7 @@ class CategoryScreen extends ConsumerWidget {
                 loading: () =>
                     const Center(child: CircularProgressIndicator()),
                 error: (_, __) =>
-                    const Center(child: Text('Could not load places.')),
+                    Center(child: Text(l10n.couldNotLoadPlaces)),
                 data: (list) => ListView.separated(
                   padding: const EdgeInsets.fromLTRB(AppSpacing.gutter, 0,
                       AppSpacing.gutter, AppSpacing.xl),

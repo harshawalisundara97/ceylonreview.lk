@@ -5,11 +5,14 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:ceylon_review/core/l10n_ext.dart';
 import 'package:ceylon_review/application/add_place_controller.dart';
 import 'package:ceylon_review/application/auth_provider.dart';
 import 'package:ceylon_review/application/favorites_provider.dart';
 import 'package:ceylon_review/application/leaderboard_provider.dart';
+import 'package:ceylon_review/application/locale_provider.dart';
 import 'package:ceylon_review/application/repository_providers.dart';
 import 'package:ceylon_review/application/reviews_provider.dart';
 import 'package:ceylon_review/core/sri_lanka_districts.dart';
@@ -31,6 +34,7 @@ import 'package:ceylon_review/domain/repositories/leaderboard_repository.dart';
 import 'package:ceylon_review/domain/repositories/reviews_repository.dart';
 import 'package:ceylon_review/presentation/screens/add_place/add_place_screen.dart';
 import 'package:ceylon_review/presentation/screens/leaderboard/leaderboard_screen.dart';
+import 'package:ceylon_review/presentation/screens/login/login_screen.dart';
 import 'package:ceylon_review/presentation/screens/place_detail/place_detail_screen.dart';
 import 'package:ceylon_review/presentation/screens/write_review/write_review_screen.dart';
 import 'package:ceylon_review/presentation/widgets/photo_viewer.dart';
@@ -38,6 +42,7 @@ import 'package:ceylon_review/presentation/widgets/place_card.dart';
 import 'package:ceylon_review/presentation/widgets/rating_stars.dart';
 import 'package:ceylon_review/presentation/widgets/review_tile.dart';
 import 'package:ceylon_review/presentation/widgets/star_picker.dart';
+import 'package:ceylon_review/presentation/widgets/language_picker.dart';
 import 'package:latlong2/latlong.dart';
 
 class _TestHttpOverrides extends HttpOverrides {
@@ -111,7 +116,8 @@ class _MockHttpHeaders implements HttpHeaders {
   }
 }
 
-class _MockHttpResponse extends Stream<List<int>> implements HttpClientResponse {
+class _MockHttpResponse extends Stream<List<int>>
+    implements HttpClientResponse {
   @override
   int get statusCode => 200;
 
@@ -142,11 +148,74 @@ class _MockHttpResponse extends Stream<List<int>> implements HttpClientResponse 
 
   // Minimal 1x1 transparent PNG
   static const List<int> _pngData = [
-    137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82,
-    0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 0, 0, 0, 144, 119, 83,
-    222, 0, 0, 0, 12, 73, 68, 65, 84, 8, 223, 99, 248, 15, 0, 0,
-    1, 1, 1, 0, 24, 221, 184, 84, 0, 0, 0, 0, 73, 69, 78, 68,
-    174, 66, 96, 130
+    137,
+    80,
+    78,
+    71,
+    13,
+    10,
+    26,
+    10,
+    0,
+    0,
+    0,
+    13,
+    73,
+    72,
+    68,
+    82,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    1,
+    8,
+    2,
+    0,
+    0,
+    0,
+    144,
+    119,
+    83,
+    222,
+    0,
+    0,
+    0,
+    12,
+    73,
+    68,
+    65,
+    84,
+    8,
+    223,
+    99,
+    248,
+    15,
+    0,
+    0,
+    1,
+    1,
+    1,
+    0,
+    24,
+    221,
+    184,
+    84,
+    0,
+    0,
+    0,
+    0,
+    73,
+    69,
+    78,
+    68,
+    174,
+    66,
+    96,
+    130
   ];
 
   @override
@@ -198,9 +267,16 @@ void main() {
     test('addPlace makes the place visible in fetches', () async {
       final repo = SamplePlacesRepository();
       const place = Place(
-        id: 'new-cafe', name: 'New Cafe', category: PlaceCategory.food,
-        district: 'Galle', latitude: 6.03, longitude: 80.22,
-        rating: 0, reviewCount: 0, description: 'Cozy.', imageUrl: '',
+        id: 'new-cafe',
+        name: 'New Cafe',
+        category: PlaceCategory.food,
+        district: 'Galle',
+        latitude: 6.03,
+        longitude: 80.22,
+        rating: 0,
+        reviewCount: 0,
+        description: 'Cozy.',
+        imageUrl: '',
         addedBy: 'user-1',
       );
       final created = await repo.addPlace(place);
@@ -290,8 +366,7 @@ void main() {
   });
 
   group('Leaderboard providers', () {
-    test('leaderboardProvider returns the repository\'s ranked list',
-        () async {
+    test('leaderboardProvider returns the repository\'s ranked list', () async {
       final container = ProviderContainer(overrides: [
         leaderboardRepositoryProvider
             .overrideWithValue(SampleLeaderboardRepository()),
@@ -318,8 +393,8 @@ void main() {
       final container = ProviderContainer(overrides: [
         leaderboardRepositoryProvider
             .overrideWithValue(SampleLeaderboardRepository()),
-        authProvider.overrideWith(() => _FakeAuthNotifier(
-            const AppUser(id: 'u-dilan', name: 'Dilan', email: 'd@example.com'))),
+        authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+            id: 'u-dilan', name: 'Dilan', email: 'd@example.com'))),
       ]);
       addTearDown(container.dispose);
 
@@ -360,7 +435,9 @@ void main() {
         () async {
       final repo = SampleFavoritesRepository();
       final container = buildContainer(
-          repo, const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'));
+          repo,
+          const AppUser(
+              id: 'user-1', name: 'Test User', email: 't@example.com'));
       addTearDown(container.dispose);
 
       await container.read(myFavoriteIdsProvider.future);
@@ -386,14 +463,29 @@ void main() {
   group('Place addedBy', () {
     test('defaults to null and carries a value when set', () {
       const seeded = Place(
-        id: 'x', name: 'X', category: PlaceCategory.food, district: 'Colombo',
-        latitude: 6.9, longitude: 79.8, rating: 4, reviewCount: 1,
-        description: 'd', imageUrl: 'u',
+        id: 'x',
+        name: 'X',
+        category: PlaceCategory.food,
+        district: 'Colombo',
+        latitude: 6.9,
+        longitude: 79.8,
+        rating: 4,
+        reviewCount: 1,
+        description: 'd',
+        imageUrl: 'u',
       );
       const community = Place(
-        id: 'y', name: 'Y', category: PlaceCategory.food, district: 'Colombo',
-        latitude: 6.9, longitude: 79.8, rating: 0, reviewCount: 0,
-        description: 'd', imageUrl: 'u', addedBy: 'user-1',
+        id: 'y',
+        name: 'Y',
+        category: PlaceCategory.food,
+        district: 'Colombo',
+        latitude: 6.9,
+        longitude: 79.8,
+        rating: 0,
+        reviewCount: 0,
+        description: 'd',
+        imageUrl: 'u',
+        addedBy: 'user-1',
       );
       expect(seeded.addedBy, isNull);
       expect(community.addedBy, 'user-1');
@@ -407,22 +499,21 @@ void main() {
       final container = ProviderContainer(overrides: [
         placesRepositoryProvider.overrideWithValue(placesRepo),
         photoStorageRepositoryProvider.overrideWithValue(photoRepo),
-        authProvider.overrideWith(() => _FakeAuthNotifier(
-            const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'))),
+        authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+            id: 'user-1', name: 'Test User', email: 't@example.com'))),
       ]);
       addTearDown(container.dispose);
 
-      final place = await container
-          .read(addPlaceControllerProvider.notifier)
-          .submit(
-            name: 'Hidden Waterfall',
-            category: PlaceCategory.nature,
-            district: 'Badulla',
-            description: 'A quiet spot.',
-            latitude: 6.87,
-            longitude: 81.05,
-            photoBytes: Uint8List.fromList([9, 9]),
-          );
+      final place =
+          await container.read(addPlaceControllerProvider.notifier).submit(
+                name: 'Hidden Waterfall',
+                category: PlaceCategory.nature,
+                district: 'Badulla',
+                description: 'A quiet spot.',
+                latitude: 6.87,
+                longitude: 81.05,
+                photoBytes: Uint8List.fromList([9, 9]),
+              );
 
       expect(place.name, 'Hidden Waterfall');
       expect(place.addedBy, isNotNull);
@@ -431,28 +522,26 @@ void main() {
       expect(photoRepo.uploads, hasLength(1));
     });
 
-    test('submit without photo uses empty imageUrl and stores place',
-        () async {
+    test('submit without photo uses empty imageUrl and stores place', () async {
       final placesRepo = SamplePlacesRepository(places: []);
       final container = ProviderContainer(overrides: [
         placesRepositoryProvider.overrideWithValue(placesRepo),
         photoStorageRepositoryProvider
             .overrideWithValue(SamplePhotoStorageRepository()),
-        authProvider.overrideWith(() => _FakeAuthNotifier(
-            const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'))),
+        authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+            id: 'user-1', name: 'Test User', email: 't@example.com'))),
       ]);
       addTearDown(container.dispose);
 
-      final place = await container
-          .read(addPlaceControllerProvider.notifier)
-          .submit(
-            name: 'No Photo Cafe',
-            category: PlaceCategory.food,
-            district: 'Colombo',
-            description: '',
-            latitude: 6.9,
-            longitude: 79.8,
-          );
+      final place =
+          await container.read(addPlaceControllerProvider.notifier).submit(
+                name: 'No Photo Cafe',
+                category: PlaceCategory.food,
+                district: 'Colombo',
+                description: '',
+                latitude: 6.9,
+                longitude: 79.8,
+              );
       expect(place.imageUrl, '');
     });
 
@@ -462,8 +551,8 @@ void main() {
       final container = ProviderContainer(overrides: [
         placesRepositoryProvider.overrideWithValue(_ThrowingPlacesRepository()),
         photoStorageRepositoryProvider.overrideWithValue(photoRepo),
-        authProvider.overrideWith(() => _FakeAuthNotifier(
-            const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'))),
+        authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+            id: 'user-1', name: 'Test User', email: 't@example.com'))),
       ]);
       addTearDown(container.dispose);
 
@@ -484,48 +573,53 @@ void main() {
   });
 
   group('ReviewSubmitter', () {
-    test('submit uploads photos, stores them on the review, and cleans up '
+    test(
+        'submit uploads photos, stores them on the review, and cleans up '
         'nothing on success', () async {
       final reviewsRepo = SampleReviewsRepository(seed: []);
       final photoRepo = SamplePhotoStorageRepository();
       final container = ProviderContainer(overrides: [
         reviewsRepositoryProvider.overrideWithValue(reviewsRepo),
         photoStorageRepositoryProvider.overrideWithValue(photoRepo),
-        authProvider.overrideWith(() => _FakeAuthNotifier(
-            const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'))),
+        authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+            id: 'user-1', name: 'Test User', email: 't@example.com'))),
       ]);
       addTearDown(container.dispose);
 
       await container.read(reviewSubmitterProvider).submit(
-            placeId: 'ministry-of-crab',
-            rating: 5,
-            text: 'Wonderful crab curry and warm service all evening.',
-            photoBytes: [Uint8List.fromList([1, 2, 3])],
-          );
+        placeId: 'ministry-of-crab',
+        rating: 5,
+        text: 'Wonderful crab curry and warm service all evening.',
+        photoBytes: [
+          Uint8List.fromList([1, 2, 3])
+        ],
+      );
 
       final stored = await reviewsRepo.fetchForPlace('ministry-of-crab');
       expect(stored.single.photoUrls, hasLength(1));
       expect(photoRepo.uploads, hasLength(1));
     });
 
-    test('submit deletes uploaded photos if the review insert fails',
-        () async {
+    test('submit deletes uploaded photos if the review insert fails', () async {
       final photoRepo = SamplePhotoStorageRepository();
       final container = ProviderContainer(overrides: [
-        reviewsRepositoryProvider.overrideWithValue(_ThrowingReviewsRepository()),
+        reviewsRepositoryProvider
+            .overrideWithValue(_ThrowingReviewsRepository()),
         photoStorageRepositoryProvider.overrideWithValue(photoRepo),
-        authProvider.overrideWith(() => _FakeAuthNotifier(
-            const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'))),
+        authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+            id: 'user-1', name: 'Test User', email: 't@example.com'))),
       ]);
       addTearDown(container.dispose);
 
       await expectLater(
         container.read(reviewSubmitterProvider).submit(
-              placeId: 'ministry-of-crab',
-              rating: 5,
-              text: 'Wonderful crab curry and warm service all evening.',
-              photoBytes: [Uint8List.fromList([1, 2, 3])],
-            ),
+          placeId: 'ministry-of-crab',
+          rating: 5,
+          text: 'Wonderful crab curry and warm service all evening.',
+          photoBytes: [
+            Uint8List.fromList([1, 2, 3])
+          ],
+        ),
         throwsA(isA<StateError>()),
       );
       expect(photoRepo.uploads, isEmpty);
@@ -558,6 +652,8 @@ void main() {
           overrides: overrides,
           child: MaterialApp(
             theme: AppTheme.of(PlaceCategory.home, Brightness.light),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(body: Center(child: child)),
           ),
         );
@@ -593,8 +689,8 @@ void main() {
         PlaceCard(place: place, onTap: () {}),
         overrides: [
           favoritesRepositoryProvider.overrideWithValue(repo),
-          authProvider.overrideWith(() => _FakeAuthNotifier(
-              const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'))),
+          authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+              id: 'user-1', name: 'Test User', email: 't@example.com'))),
         ],
       ));
       await tester.pumpAndSettle();
@@ -656,8 +752,8 @@ void main() {
       await tester.pumpWidget(themed(
         const AddPlaceScreen(),
         overrides: [
-          authProvider.overrideWith(() => _FakeAuthNotifier(
-              const AppUser(id: 'user-1', name: 'Test', email: 't@example.com'))),
+          authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+              id: 'user-1', name: 'Test', email: 't@example.com'))),
         ],
       ));
       await tester.pump();
@@ -677,8 +773,8 @@ void main() {
       await tester.pumpWidget(themed(
         const AddPlaceScreen(),
         overrides: [
-          authProvider.overrideWith(() => _FakeAuthNotifier(
-              const AppUser(id: 'user-1', name: 'Test', email: 't@example.com'))),
+          authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+              id: 'user-1', name: 'Test', email: 't@example.com'))),
         ],
       ));
       await tester.pump();
@@ -709,8 +805,8 @@ void main() {
       await tester.pumpWidget(themed(
         const AddPlaceScreen(),
         overrides: [
-          authProvider.overrideWith(() => _FakeAuthNotifier(
-              const AppUser(id: 'user-1', name: 'Test', email: 't@example.com'))),
+          authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+              id: 'user-1', name: 'Test', email: 't@example.com'))),
           geocodingRepositoryProvider
               .overrideWithValue(_FakeGeocodingRepository()),
         ],
@@ -729,8 +825,7 @@ void main() {
           find.byKey(const Key('locationSearchField')), 'Nowhereville');
       await tester.tap(find.byKey(const Key('locationSearchButton')));
       await tester.pump();
-      expect(find.text('No results found for "Nowhereville".'),
-          findsOneWidget);
+      expect(find.text('No results found for "Nowhereville".'), findsOneWidget);
     });
 
     testWidgets('LeaderboardScreen shows a podium for the top 3',
@@ -781,8 +876,8 @@ void main() {
         overrides: [
           leaderboardRepositoryProvider
               .overrideWithValue(SampleLeaderboardRepository()),
-          authProvider.overrideWith(() => _FakeAuthNotifier(
-              const AppUser(id: 'u-kasun', name: 'Kasun R.', email: 'k@example.com'))),
+          authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+              id: 'u-kasun', name: 'Kasun R.', email: 'k@example.com'))),
         ],
       ));
       // Same bobbing-crown caveat as above: pump a fixed duration instead of
@@ -805,8 +900,8 @@ void main() {
         overrides: [
           placesRepositoryProvider.overrideWithValue(SamplePlacesRepository()),
           reviewsRepositoryProvider.overrideWithValue(reviewsRepo),
-          authProvider.overrideWith(() => _FakeAuthNotifier(
-              const AppUser(id: 'user-1', name: 'Test User', email: 't@example.com'))),
+          authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+              id: 'user-1', name: 'Test User', email: 't@example.com'))),
         ],
       ));
       await tester.pumpAndSettle();
@@ -911,6 +1006,110 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Photos'), findsNothing);
+    });
+  });
+
+  group('Localization', () {
+    testWidgets('resolves Sinhala and Tamil strings', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        locale: const Locale('si'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(builder: (context) => Text(context.l10n.language)),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.text('භාෂාව'), findsOneWidget);
+
+      await tester.pumpWidget(MaterialApp(
+        locale: const Locale('ta'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(builder: (context) => Text(context.l10n.language)),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.text('மொழி'), findsOneWidget);
+    });
+  });
+
+  group('localeProvider', () {
+    test('defaults to null and restores persisted locale', () async {
+      SharedPreferences.setMockInitialValues({});
+      var container = ProviderContainer();
+      addTearDown(container.dispose);
+      expect(container.read(localeProvider), isNull);
+
+      await container
+          .read(localeProvider.notifier)
+          .setLocale(const Locale('si'));
+      expect(container.read(localeProvider), const Locale('si'));
+
+      // A fresh container simulates an app restart reading the same prefs.
+      container = ProviderContainer();
+      addTearDown(container.dispose);
+      // Allow the async restore to complete.
+      container.read(localeProvider);
+      await Future<void>.delayed(Duration.zero);
+      expect(container.read(localeProvider), const Locale('si'));
+    });
+
+    test('setLocale(null) clears persistence', () async {
+      SharedPreferences.setMockInitialValues({'app_locale': 'ta'});
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      await container.read(localeProvider.notifier).setLocale(null);
+      expect(container.read(localeProvider), isNull);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getString('app_locale'), isNull);
+    });
+  });
+
+  group('LanguagePicker', () {
+    testWidgets('selecting Sinhala updates localeProvider', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      await tester.pumpWidget(UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (context) => TextButton(
+              onPressed: () => showLanguagePicker(context),
+              child: const Text('open'),
+            ),
+          ),
+        ),
+      ));
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('සිංහල'));
+      await tester.pumpAndSettle();
+      expect(container.read(localeProvider), const Locale('si'));
+    });
+  });
+
+  group('Locale end-to-end', () {
+    testWidgets('login screen renders in Sinhala and Tamil', (tester) async {
+      for (final (locale, expected) in [
+        (const Locale('si'), 'ගවේෂණය කරන්න'),
+        (const Locale('ta'), 'ஆராயுங்கள்'),
+      ]) {
+        await tester.pumpWidget(ProviderScope(
+          overrides: [
+            authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+          ],
+          child: MaterialApp(
+            locale: locale,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const LoginScreen(),
+          ),
+        ));
+        await tester.pumpAndSettle();
+        expect(find.text(expected), findsOneWidget,
+            reason: 'Explore button should be translated for $locale');
+      }
     });
   });
 }

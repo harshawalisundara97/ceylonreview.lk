@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/l10n_ext.dart';
+
 import '../screens/category/category_screen.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/leaderboard/leaderboard_screen.dart';
@@ -31,6 +33,7 @@ class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
 
     return Scaffold(
       body: IndexedStack(index: _index, children: _tabs),
@@ -38,35 +41,35 @@ class _AppShellState extends State<AppShell> {
         selectedIndex: _index,
         onDestinationSelected: (i) => setState(() => _index = i),
         destinations: [
-          const NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home_rounded),
-            label: 'Home',
+          NavigationDestination(
+            icon: const Icon(Icons.home_outlined),
+            selectedIcon: const Icon(Icons.home_rounded),
+            label: l10n.navHome,
           ),
-          const NavigationDestination(
-            icon: Icon(Icons.map_outlined),
-            selectedIcon: Icon(Icons.map_rounded),
-            label: 'Map',
+          NavigationDestination(
+            icon: const Icon(Icons.map_outlined),
+            selectedIcon: const Icon(Icons.map_rounded),
+            label: l10n.navMap,
           ),
-          const NavigationDestination(
-            icon: Icon(Icons.leaderboard_outlined),
-            selectedIcon: Icon(Icons.leaderboard_rounded),
-            label: 'Ranks',
+          NavigationDestination(
+            icon: const Icon(Icons.leaderboard_outlined),
+            selectedIcon: const Icon(Icons.leaderboard_rounded),
+            label: l10n.navRanks,
           ),
           NavigationDestination(
             icon: Icon(Icons.add_circle_rounded,
                 color: scheme.primary, size: 32),
-            label: 'Post',
+            label: l10n.navPost,
           ),
-          const NavigationDestination(
-            icon: Icon(Icons.dynamic_feed_outlined),
-            selectedIcon: Icon(Icons.dynamic_feed_rounded),
-            label: 'Feed',
+          NavigationDestination(
+            icon: const Icon(Icons.dynamic_feed_outlined),
+            selectedIcon: const Icon(Icons.dynamic_feed_rounded),
+            label: l10n.navFeed,
           ),
-          const NavigationDestination(
-            icon: Icon(Icons.person_outline_rounded),
-            selectedIcon: Icon(Icons.person_rounded),
-            label: 'Profile',
+          NavigationDestination(
+            icon: const Icon(Icons.person_outline_rounded),
+            selectedIcon: const Icon(Icons.person_rounded),
+            label: l10n.navProfile,
           ),
         ],
       ),

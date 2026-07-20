@@ -4,10 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../application/favorites_provider.dart';
 import '../../../application/places_provider.dart';
 import '../../../application/reviews_provider.dart';
+import '../../../core/l10n_ext.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../domain/models/place.dart';
+import '../../l10n/category_labels.dart';
 import '../../widgets/photo_viewer.dart';
 import '../../widgets/rating_stars.dart';
 import '../../widgets/review_tile.dart';
@@ -29,13 +31,13 @@ class PlaceDetailScreen extends ConsumerWidget {
           const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (_, __) => Scaffold(
         appBar: AppBar(),
-        body: const Center(child: Text('Could not load this place.')),
+        body: Center(child: Text(context.l10n.couldNotLoadThisPlace)),
       ),
       data: (place) {
         if (place == null) {
           return Scaffold(
             appBar: AppBar(),
-            body: const Center(child: Text('This place no longer exists.')),
+            body: Center(child: Text(context.l10n.thisPlaceNoLongerExists)),
           );
         }
         return _PlaceDetailBody(place: place);
@@ -94,11 +96,11 @@ class _PlaceDetailBody extends ConsumerWidget {
                       children: [
                         Row(
                           children: [
-                            Text(place.category.label,
+                            Text(place.category.localizedLabel(context.l10n),
                                 style: AppTypography.overline(Colors.white)),
                             if (place.addedBy != null) ...[
                               const SizedBox(width: AppSpacing.sm),
-                              Text('· COMMUNITY',
+                              Text('· ${context.l10n.community}',
                                   style:
                                       AppTypography.overline(Colors.white70)),
                             ],
@@ -132,7 +134,7 @@ class _PlaceDetailBody extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           RatingStars(rating: place.rating),
-                          Text('${place.reviewCountLabel} reviews',
+                          Text(context.l10n.nReviews(place.reviewCountLabel),
                               style: theme.textTheme.bodySmall),
                         ],
                       ),
@@ -165,7 +167,7 @@ class _PlaceDetailBody extends ConsumerWidget {
                       Expanded(
                         child: FilledButton.icon(
                           icon: const Icon(Icons.rate_review_rounded),
-                          label: const Text('Write a Review'),
+                          label: Text(context.l10n.writeAReview),
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) =>
@@ -178,25 +180,25 @@ class _PlaceDetailBody extends ConsumerWidget {
                       Expanded(
                         child: OutlinedButton.icon(
                           icon: const Icon(Icons.directions_rounded),
-                          label: const Text('Get Directions'),
+                          label: Text(context.l10n.getDirections),
                           onPressed: () => ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
+                              .showSnackBar(SnackBar(
                                   content: Text(
-                                      'Directions open in the Map tab.'))),
+                                      context.l10n.directionsOpenInMapTab))),
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.xl),
-                  Text('Reviews', style: theme.textTheme.titleLarge),
+                  Text(context.l10n.reviews, style: theme.textTheme.titleLarge),
                   reviews.when(
                     loading: () => const Padding(
                       padding: EdgeInsets.all(AppSpacing.xl),
                       child: Center(child: CircularProgressIndicator()),
                     ),
-                    error: (_, __) => const Padding(
+                    error: (_, __) => Padding(
                       padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
-                      child: Text('Could not load reviews.'),
+                      child: Text(context.l10n.couldNotLoadReviews),
                     ),
                     data: (list) {
                       final reviewPhotos = [
@@ -210,7 +212,7 @@ class _PlaceDetailBody extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (reviewPhotos.isNotEmpty) ...[
-                            Text('Photos', style: theme.textTheme.titleLarge),
+                            Text(context.l10n.photos, style: theme.textTheme.titleLarge),
                             const SizedBox(height: AppSpacing.sm),
                             SizedBox(
                               height: 96,
@@ -244,7 +246,7 @@ class _PlaceDetailBody extends ConsumerWidget {
                           ],
                           if (list.isEmpty)
                             Text(
-                              'No reviews yet — be the first to share your visit!',
+                              context.l10n.noReviewsYetBeFirst,
                               style: theme.textTheme.bodyMedium,
                             )
                           else

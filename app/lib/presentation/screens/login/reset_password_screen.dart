@@ -5,6 +5,7 @@ import '../../../application/auth_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../domain/repositories/auth_repository.dart';
+import '../../../core/l10n_ext.dart';
 
 /// Shown after the user follows a password-reset email link, which
 /// establishes a temporary recovery session. Lets them set a new password
@@ -54,8 +55,8 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
-          ..showSnackBar(const SnackBar(
-              content: Text('Could not update your password. Try again.')));
+          ..showSnackBar(SnackBar(
+              content: Text(context.l10n.couldNotUpdatePassword)));
       }
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -86,7 +87,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                       size: 64, color: AppColors.ceylonGreen),
                   const SizedBox(height: AppSpacing.md),
                   Text(
-                    'Set a new password',
+                    context.l10n.setNewPassword,
                     textAlign: TextAlign.center,
                     style: theme.textTheme.displaySmall,
                   ),
@@ -96,9 +97,9 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                     obscureText: true,
                     autofillHints: const [AutofillHints.newPassword],
                     decoration:
-                        const InputDecoration(labelText: 'New password'),
+                        InputDecoration(labelText: context.l10n.newPassword),
                     validator: (v) => (v == null || v.length < 6)
-                        ? 'Password must be at least 6 characters'
+                        ? context.l10n.passwordMin6
                         : null,
                   ),
                   const SizedBox(height: AppSpacing.lg),
@@ -107,9 +108,9 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                     obscureText: true,
                     autofillHints: const [AutofillHints.newPassword],
                     decoration:
-                        const InputDecoration(labelText: 'Confirm password'),
+                        InputDecoration(labelText: context.l10n.confirmPassword),
                     validator: (v) => v != _password.text
-                        ? 'Passwords don\'t match'
+                        ? context.l10n.passwordsDontMatch
                         : null,
                     onFieldSubmitted: (_) => _submit(),
                   ),
@@ -122,12 +123,12 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                             height: 20,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text('Update password'),
+                        : Text(context.l10n.updatePassword),
                   ),
                   const SizedBox(height: AppSpacing.md),
                   TextButton(
                     onPressed: _busy ? null : _cancel,
-                    child: const Text('Cancel'),
+                    child: Text(context.l10n.cancel),
                   ),
                 ],
               ),

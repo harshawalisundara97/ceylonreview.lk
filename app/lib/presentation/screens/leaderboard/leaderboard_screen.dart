@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../application/leaderboard_provider.dart';
+import '../../../core/l10n_ext.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../domain/models/leaderboard_entry.dart';
@@ -18,11 +19,11 @@ class LeaderboardScreen extends ConsumerWidget {
     final myRank = ref.watch(myRankProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Leaderboard')),
+      appBar: AppBar(title: Text(context.l10n.leaderboard)),
       body: leaderboard.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) =>
-            const Center(child: Text('Could not load the leaderboard.')),
+            Center(child: Text(context.l10n.couldNotLoadLeaderboard)),
         data: (entries) {
           if (entries.isEmpty) {
             return const _EmptyLeaderboard();
@@ -76,7 +77,7 @@ class _EmptyLeaderboard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xl),
         child: Text(
-          'Be the first to post a review and claim #1!',
+          context.l10n.leaderboardEmptyState,
           textAlign: TextAlign.center,
           style: theme.textTheme.titleMedium,
         ),
@@ -277,7 +278,7 @@ class _CountUpPoints extends StatelessWidget {
       duration: const Duration(milliseconds: 900),
       curve: Curves.easeOutCubic,
       builder: (context, value, _) => Text(
-        '${value.round()} pts',
+        context.l10n.nPts('${value.round()}'),
         style: theme.textTheme.labelMedium?.copyWith(color: tokens.star),
       ),
     );
@@ -313,14 +314,14 @@ class _YourRankCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('You', style: theme.textTheme.titleSmall),
+                Text(context.l10n.you, style: theme.textTheme.titleSmall),
                 if (pointsToNext != null)
-                  Text('$pointsToNext pts to reach #${entry.rank - 1}',
+                  Text(context.l10n.ptsToReach('$pointsToNext', '${entry.rank - 1}'),
                       style: theme.textTheme.bodySmall),
               ],
             ),
           ),
-          Text('${entry.points} pts',
+          Text(context.l10n.nPts('${entry.points}'),
               style: theme.textTheme.titleSmall?.copyWith(color: tokens.star)),
         ],
       ),
@@ -404,14 +405,14 @@ class _LeaderboardRowState extends State<_LeaderboardRow>
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
-                widget.isMe ? 'You' : widget.entry.name,
+                widget.isMe ? context.l10n.you : widget.entry.name,
                 style: theme.textTheme.bodyMedium
                     ?.copyWith(fontWeight: FontWeight.w600),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            Text('${widget.entry.points} pts', style: theme.textTheme.labelMedium),
+            Text(context.l10n.nPts('${widget.entry.points}'), style: theme.textTheme.labelMedium),
             if (change != null && change != 0) ...[
               const SizedBox(width: AppSpacing.xs),
               Text(

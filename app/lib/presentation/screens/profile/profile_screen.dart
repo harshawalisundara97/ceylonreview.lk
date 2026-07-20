@@ -11,6 +11,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../widgets/place_card.dart';
 import '../../widgets/review_tile.dart';
 import '../../widgets/user_avatar.dart';
+import '../../widgets/language_picker.dart';
+import '../../../core/l10n_ext.dart';
 import '../place_detail/place_detail_screen.dart';
 
 /// Profile: avatar + identity, dark-mode toggle, the user's reviews,
@@ -64,23 +66,28 @@ class ProfileScreen extends ConsumerWidget {
                   .set(v ? ThemeMode.dark : ThemeMode.light),
               secondary: Icon(
                   isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded),
-              title: const Text('Dark Mode'),
+              title: Text(context.l10n.darkMode),
+            ),
+            ListTile(
+              leading: const Icon(Icons.language_rounded),
+              title: Text(context.l10n.language),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () => showLanguagePicker(context),
             ),
             const Divider(height: 1),
             Padding(
               padding: const EdgeInsets.fromLTRB(AppSpacing.gutter,
                   AppSpacing.xl, AppSpacing.gutter, AppSpacing.sm),
-              child:
-                  Text('Your Favorites', style: theme.textTheme.titleLarge),
+              child: Text(context.l10n.yourFavorites, style: theme.textTheme.titleLarge),
             ),
             favoriteIds.when(
               loading: () => const Padding(
                 padding: EdgeInsets.all(AppSpacing.xl),
                 child: Center(child: CircularProgressIndicator()),
               ),
-              error: (_, __) => const Padding(
+              error: (_, __) => Padding(
                 padding: EdgeInsets.all(AppSpacing.gutter),
-                child: Text('Could not load your favorites.'),
+                child: Text(context.l10n.couldNotLoadYourFavorites),
               ),
               data: (ids) {
                 final places = (placesAsync.valueOrNull ?? [])
@@ -90,7 +97,7 @@ class ProfileScreen extends ConsumerWidget {
                   return Padding(
                     padding: const EdgeInsets.all(AppSpacing.gutter),
                     child: Text(
-                      'No favorites yet. Tap the heart on a place you love!',
+                      context.l10n.noFavoritesYetTapHeart,
                       style: theme.textTheme.bodyMedium,
                     ),
                   );
@@ -99,8 +106,8 @@ class ProfileScreen extends ConsumerWidget {
                   children: [
                     for (final place in places)
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(AppSpacing.gutter,
-                            0, AppSpacing.gutter, AppSpacing.md),
+                        padding: const EdgeInsets.fromLTRB(AppSpacing.gutter, 0,
+                            AppSpacing.gutter, AppSpacing.md),
                         child: PlaceCard(
                           place: place,
                           onTap: () => Navigator.of(context).push(
@@ -119,24 +126,23 @@ class ProfileScreen extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(AppSpacing.gutter,
                   AppSpacing.xl, AppSpacing.gutter, AppSpacing.sm),
-              child:
-                  Text('Your Reviews', style: theme.textTheme.titleLarge),
+              child: Text(context.l10n.yourReviews, style: theme.textTheme.titleLarge),
             ),
             myReviews.when(
               loading: () => const Padding(
                 padding: EdgeInsets.all(AppSpacing.xl),
                 child: Center(child: CircularProgressIndicator()),
               ),
-              error: (_, __) => const Padding(
+              error: (_, __) => Padding(
                 padding: EdgeInsets.all(AppSpacing.gutter),
-                child: Text('Could not load your reviews.'),
+                child: Text(context.l10n.couldNotLoadYourReviews),
               ),
               data: (reviews) {
                 if (reviews.isEmpty) {
                   return Padding(
                     padding: const EdgeInsets.all(AppSpacing.gutter),
                     child: Text(
-                      'No reviews yet. Visit a place and share your experience!',
+                      context.l10n.noReviewsYetVisit,
                       style: theme.textTheme.bodyMedium,
                     ),
                   );
@@ -155,9 +161,9 @@ class ProfileScreen extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              placeNames[review.placeId] ?? 'A place',
-                              style: theme.textTheme.titleSmall?.copyWith(
-                                  color: theme.colorScheme.primary),
+                              placeNames[review.placeId] ?? context.l10n.aPlace,
+                              style: theme.textTheme.titleSmall
+                                  ?.copyWith(color: theme.colorScheme.primary),
                             ),
                             ReviewTile(review: review),
                             const Divider(height: 1),
@@ -174,7 +180,7 @@ class ProfileScreen extends ConsumerWidget {
                   const EdgeInsets.symmetric(horizontal: AppSpacing.gutter),
               child: OutlinedButton.icon(
                 icon: const Icon(Icons.logout_rounded),
-                label: const Text('Sign Out'),
+                label: Text(context.l10n.signOut),
                 onPressed: () => ref.read(authProvider.notifier).signOut(),
               ),
             ),

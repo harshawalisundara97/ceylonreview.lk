@@ -3,6 +3,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../core/l10n_ext.dart';
+
 import '../../../application/auth_provider.dart';
 import '../../../application/category_theme_provider.dart';
 import '../../../application/places_provider.dart';
@@ -37,12 +39,13 @@ class MapScreen extends ConsumerWidget {
     final category = ref.watch(activeCategoryProvider);
     final placesAsync = ref.watch(placesByCategoryProvider(category));
     final user = ref.watch(authProvider);
+    final l10n = context.l10n;
 
     return Scaffold(
       floatingActionButton: user == null
           ? null
           : FloatingActionButton(
-              tooltip: 'Add a place',
+              tooltip: l10n.addAPlace,
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const AddPlaceScreen()),
               ),
@@ -50,7 +53,7 @@ class MapScreen extends ConsumerWidget {
             ),
       body: placesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Could not load the map.')),
+        error: (_, __) => Center(child: Text(l10n.couldNotLoadMap)),
         data: (places) => Stack(
           children: [
             FlutterMap(
@@ -113,6 +116,7 @@ class _PlaceSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.xl),
       child: Column(
@@ -125,7 +129,7 @@ class _PlaceSheet extends StatelessWidget {
             children: [
               RatingStars(rating: place.rating, size: 16),
               const SizedBox(width: AppSpacing.xs),
-              Text('${place.ratingLabel} · ${place.reviewCountLabel} reviews',
+              Text('${place.ratingLabel} · ${l10n.nReviews(place.reviewCountLabel)}',
                   style: theme.textTheme.bodySmall),
             ],
           ),
@@ -146,7 +150,7 @@ class _PlaceSheet extends StatelessWidget {
                 ),
               );
             },
-            child: const Text('View Place'),
+            child: Text(l10n.viewPlace),
           ),
           SizedBox(height: MediaQuery.paddingOf(context).bottom),
         ],
