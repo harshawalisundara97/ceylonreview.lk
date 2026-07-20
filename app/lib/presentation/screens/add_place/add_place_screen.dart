@@ -11,6 +11,7 @@ import '../../../core/l10n_ext.dart';
 import '../../../core/sri_lanka_districts.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../domain/models/category.dart';
+import '../../l10n/category_labels.dart';
 import '../../widgets/filters_bottom_sheet.dart' show categoryHasPricing;
 import '../place_detail/place_detail_screen.dart';
 
@@ -160,7 +161,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
               children: [
                 for (final c in PlaceCategory.selectable)
                   ChoiceChip(
-                    label: Text(c.label),
+                    label: Text(c.localizedLabel(context.l10n)),
                     selected: _category == c,
                     onSelected: (_) => setState(() => _category = c),
                   ),

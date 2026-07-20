@@ -9,6 +9,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../domain/models/place.dart';
+import '../../l10n/category_labels.dart';
 import '../../widgets/photo_viewer.dart';
 import '../../widgets/rating_stars.dart';
 import '../../widgets/review_tile.dart';
@@ -95,7 +96,7 @@ class _PlaceDetailBody extends ConsumerWidget {
                       children: [
                         Row(
                           children: [
-                            Text(place.category.label,
+                            Text(place.category.localizedLabel(context.l10n),
                                 style: AppTypography.overline(Colors.white)),
                             if (place.addedBy != null) ...[
                               const SizedBox(width: AppSpacing.sm),

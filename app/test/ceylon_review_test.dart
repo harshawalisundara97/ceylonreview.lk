@@ -34,6 +34,7 @@ import 'package:ceylon_review/domain/repositories/leaderboard_repository.dart';
 import 'package:ceylon_review/domain/repositories/reviews_repository.dart';
 import 'package:ceylon_review/presentation/screens/add_place/add_place_screen.dart';
 import 'package:ceylon_review/presentation/screens/leaderboard/leaderboard_screen.dart';
+import 'package:ceylon_review/presentation/screens/login/login_screen.dart';
 import 'package:ceylon_review/presentation/screens/place_detail/place_detail_screen.dart';
 import 'package:ceylon_review/presentation/screens/write_review/write_review_screen.dart';
 import 'package:ceylon_review/presentation/widgets/photo_viewer.dart';
@@ -1085,6 +1086,30 @@ void main() {
       await tester.tap(find.text('සිංහල'));
       await tester.pumpAndSettle();
       expect(container.read(localeProvider), const Locale('si'));
+    });
+  });
+
+  group('Locale end-to-end', () {
+    testWidgets('login screen renders in Sinhala and Tamil', (tester) async {
+      for (final (locale, expected) in [
+        (const Locale('si'), 'ගවේෂණය කරන්න'),
+        (const Locale('ta'), 'ஆராயுங்கள்'),
+      ]) {
+        await tester.pumpWidget(ProviderScope(
+          overrides: [
+            authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+          ],
+          child: MaterialApp(
+            locale: locale,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const LoginScreen(),
+          ),
+        ));
+        await tester.pumpAndSettle();
+        expect(find.text(expected), findsOneWidget,
+            reason: 'Explore button should be translated for $locale');
+      }
     });
   });
 }
