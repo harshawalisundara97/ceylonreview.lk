@@ -454,7 +454,6 @@ void main() {
   group('myReviewRatingsProvider', () {
     test('maps each place to the most recent rating, newest review wins',
         () async {
-      final now = DateTime.now();
       final repo = SampleReviewsRepository();
       // Oldest first into the repo; fetchMine() must still return newest-first
       // for this test to be meaningful, matching production ordering.
