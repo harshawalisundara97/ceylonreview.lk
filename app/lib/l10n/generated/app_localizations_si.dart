@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -64,10 +66,12 @@ class AppLocalizationsSi extends AppLocalizations {
   String get forgotPassword => 'මුරපදය අමතකද?';
 
   @override
-  String get accountCreatedCheckEmail => 'ගිණුම සෑදුවා! තහවුරු කිරීමට ඔබේ විද්‍යුත් තැපෑල බලා, පසුව පුරන්න.';
+  String get accountCreatedCheckEmail =>
+      'ගිණුම සෑදුවා! තහවුරු කිරීමට ඔබේ විද්‍යුත් තැපෑල බලා, පසුව පුරන්න.';
 
   @override
-  String get genericConnectionError => 'යමක් වැරදුණා. සම්බන්ධතාවය පරීක්ෂා කර නැවත උත්සාහ කරන්න.';
+  String get genericConnectionError =>
+      'යමක් වැරදුණා. සම්බන්ධතාවය පරීක්ෂා කර නැවත උත්සාහ කරන්න.';
 
   @override
   String get resetYourPassword => 'මුරපදය යළි සකසන්න';
@@ -105,7 +109,8 @@ class AppLocalizationsSi extends AppLocalizations {
   String get updatePassword => 'මුරපදය යාවත්කාලීන කරන්න';
 
   @override
-  String get couldNotUpdatePassword => 'මුරපදය යාවත්කාලීන කළ නොහැකි විය. නැවත උත්සාහ කරන්න.';
+  String get couldNotUpdatePassword =>
+      'මුරපදය යාවත්කාලීන කළ නොහැකි විය. නැවත උත්සාහ කරන්න.';
 
   @override
   String get discoverSriLanka => 'ශ්‍රී ලංකාව සොයා යන්න';
@@ -188,7 +193,8 @@ class AppLocalizationsSi extends AppLocalizations {
   String get getDirections => 'මාර්ග උපදෙස්';
 
   @override
-  String get directionsOpenInMapTab => 'මාර්ග උපදෙස් සිතියම් පටිත්තෙන් විවෘත වේ.';
+  String get directionsOpenInMapTab =>
+      'මාර්ග උපදෙස් සිතියම් පටිත්තෙන් විවෘත වේ.';
 
   @override
   String get writeAReview => 'සමාලෝචනයක් ලියන්න';
@@ -200,7 +206,8 @@ class AppLocalizationsSi extends AppLocalizations {
   String get couldNotLoadReviews => 'සමාලෝචන පූරණය කළ නොහැකි විය.';
 
   @override
-  String get noReviewsYetBeFirst => 'තවම සමාලෝචන නැත — ඔබේ සංචාරය බෙදාගන්නා පළමුවැන්නා වන්න!';
+  String get noReviewsYetBeFirst =>
+      'තවම සමාලෝචන නැත — ඔබේ සංචාරය බෙදාගන්නා පළමුවැන්නා වන්න!';
 
   @override
   String nReviews(String count) {
@@ -234,13 +241,15 @@ class AppLocalizationsSi extends AppLocalizations {
   String get yourReview => 'ඔබේ සමාලෝචනය';
 
   @override
-  String get shareWhatYouLoved => 'ඔබ ප්‍රිය කළ දේ බෙදාගන්න — කෑම, දර්ශන, පිළිගැනීම…';
+  String get shareWhatYouLoved =>
+      'ඔබ ප්‍රිය කළ දේ බෙදාගන්න — කෑම, දර්ශන, පිළිගැනීම…';
 
   @override
   String get tellUsMore => 'තව ටිකක් කියන්න — අවම වශයෙන් අක්ෂර 10ක්.';
 
   @override
-  String get addPhotosOptional => 'ඡායාරූප එක් කරන්න (අත්‍යවශ්‍ය නොවේ, උපරිම 3)';
+  String get addPhotosOptional =>
+      'ඡායාරූප එක් කරන්න (අත්‍යවශ්‍ය නොවේ, උපරිම 3)';
 
   @override
   String get camera => 'කැමරාව';
@@ -288,7 +297,8 @@ class AppLocalizationsSi extends AppLocalizations {
   String get photoOptional => 'ඡායාරූපය (අත්‍යවශ්‍ය නොවේ)';
 
   @override
-  String get locationTapMap => 'පිහිටීම — සිතියම ස්පර්ශ කරන්න හෝ ඔබේ පිහිටීම භාවිතා කරන්න';
+  String get locationTapMap =>
+      'පිහිටීම — සිතියම ස්පර්ශ කරන්න හෝ ඔබේ පිහිටීම භාවිතා කරන්න';
 
   @override
   String get searchTownOrLandmark => 'නගරයක් හෝ ස්ථානයක් සොයන්න';
@@ -300,7 +310,8 @@ class AppLocalizationsSi extends AppLocalizations {
   String get useMyCurrentLocation => 'මගේ වත්මන් පිහිටීම භාවිතා කරන්න';
 
   @override
-  String get enableLocationToUse => 'ඔබේ පිහිටීම භාවිතා කිරීමට ස්ථාන සේවාව සක්‍රීය කරන්න.';
+  String get enableLocationToUse =>
+      'ඔබේ පිහිටීම භාවිතා කිරීමට ස්ථාන සේවාව සක්‍රීය කරන්න.';
 
   @override
   String get dropAPin => 'පිහිටීම සඳහා පින් එකක් තබන්න.';
@@ -321,7 +332,8 @@ class AppLocalizationsSi extends AppLocalizations {
   String get leaderboard => 'ප්‍රමුඛ ලැයිස්තුව';
 
   @override
-  String get couldNotLoadLeaderboard => 'ප්‍රමුඛ ලැයිස්තුව පූරණය කළ නොහැකි විය.';
+  String get couldNotLoadLeaderboard =>
+      'ප්‍රමුඛ ලැයිස්තුව පූරණය කළ නොහැකි විය.';
 
   @override
   String nPts(String points) {
@@ -355,7 +367,8 @@ class AppLocalizationsSi extends AppLocalizations {
   String get couldNotLoadYourFavorites => 'ඔබේ ප්‍රියතම පූරණය කළ නොහැකි විය.';
 
   @override
-  String get noReviewsYetVisit => 'තවම සමාලෝචන නැත. ස්ථානයකට ගොස් ඔබේ අත්දැකීම බෙදාගන්න!';
+  String get noReviewsYetVisit =>
+      'තවම සමාලෝචන නැත. ස්ථානයකට ගොස් ඔබේ අත්දැකීම බෙදාගන්න!';
 
   @override
   String get signOut => 'වරන්න';
@@ -400,7 +413,8 @@ class AppLocalizationsSi extends AppLocalizations {
   String get cantFindAddPlace => 'සොයාගත නොහැකිද? මෙම ස්ථානය එක් කරන්න';
 
   @override
-  String get locationAccessSortByDistance => 'දුර අනුව අනුපිළිවෙල කිරීමට ස්ථාන ප්‍රවේශය සක්‍රීය කරන්න.';
+  String get locationAccessSortByDistance =>
+      'දුර අනුව අනුපිළිවෙල කිරීමට ස්ථාන ප්‍රවේශය සක්‍රීය කරන්න.';
 
   @override
   String noResultsFoundForQuery(String query) {
@@ -408,7 +422,8 @@ class AppLocalizationsSi extends AppLocalizations {
   }
 
   @override
-  String get searchFailedCheckConnection => 'සෙවීම අසාර්ථක විය — සම්බන්ධතාවය පරීක්ෂා කරන්න.';
+  String get searchFailedCheckConnection =>
+      'සෙවීම අසාර්ථක විය — සම්බන්ධතාවය පරීක්ෂා කරන්න.';
 
   @override
   String get leaderboardEmptyState => 'ප්‍රථම වරට සමාලෝචනයක් පළ කර #1 ලබාගන්න!';
@@ -417,7 +432,8 @@ class AppLocalizationsSi extends AppLocalizations {
   String get you => 'ඔබ';
 
   @override
-  String get noFavoritesYetTapHeart => 'තවම ප්‍රියතම නැත. ඔබ ප්‍රිය කරන ස්ථානයක හදවත ස්පර්ශ කරන්න!';
+  String get noFavoritesYetTapHeart =>
+      'තවම ප්‍රියතම නැත. ඔබ ප්‍රිය කරන ස්ථානයක හදවත ස්පර්ශ කරන්න!';
 
   @override
   String get aPlace => 'ස්ථානයක්';

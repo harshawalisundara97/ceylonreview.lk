@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -64,10 +66,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgotPassword => 'Forgot password?';
 
   @override
-  String get accountCreatedCheckEmail => 'Account created! Check your email to confirm, then sign in.';
+  String get accountCreatedCheckEmail =>
+      'Account created! Check your email to confirm, then sign in.';
 
   @override
-  String get genericConnectionError => 'Something went wrong. Check your connection and try again.';
+  String get genericConnectionError =>
+      'Something went wrong. Check your connection and try again.';
 
   @override
   String get resetYourPassword => 'Reset your password';
@@ -105,7 +109,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updatePassword => 'Update password';
 
   @override
-  String get couldNotUpdatePassword => 'Could not update your password. Try again.';
+  String get couldNotUpdatePassword =>
+      'Could not update your password. Try again.';
 
   @override
   String get discoverSriLanka => 'DISCOVER SRI LANKA';
@@ -200,7 +205,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get couldNotLoadReviews => 'Could not load reviews.';
 
   @override
-  String get noReviewsYetBeFirst => 'No reviews yet — be the first to share your visit!';
+  String get noReviewsYetBeFirst =>
+      'No reviews yet — be the first to share your visit!';
 
   @override
   String nReviews(String count) {
@@ -234,7 +240,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yourReview => 'Your review';
 
   @override
-  String get shareWhatYouLoved => 'Share what you loved — the food, the views, the welcome…';
+  String get shareWhatYouLoved =>
+      'Share what you loved — the food, the views, the welcome…';
 
   @override
   String get tellUsMore => 'Tell us a little more — at least 10 characters.';
@@ -355,7 +362,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get couldNotLoadYourFavorites => 'Could not load your favorites.';
 
   @override
-  String get noReviewsYetVisit => 'No reviews yet. Visit a place and share your experience!';
+  String get noReviewsYetVisit =>
+      'No reviews yet. Visit a place and share your experience!';
 
   @override
   String get signOut => 'Sign Out';
@@ -400,7 +408,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cantFindAddPlace => 'Can\'t find it? Add this place';
 
   @override
-  String get locationAccessSortByDistance => 'Enable location access to sort by distance.';
+  String get locationAccessSortByDistance =>
+      'Enable location access to sort by distance.';
 
   @override
   String noResultsFoundForQuery(String query) {
@@ -408,16 +417,19 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get searchFailedCheckConnection => 'Search failed — check your connection.';
+  String get searchFailedCheckConnection =>
+      'Search failed — check your connection.';
 
   @override
-  String get leaderboardEmptyState => 'Be the first to post a review and claim #1!';
+  String get leaderboardEmptyState =>
+      'Be the first to post a review and claim #1!';
 
   @override
   String get you => 'You';
 
   @override
-  String get noFavoritesYetTapHeart => 'No favorites yet. Tap the heart on a place you love!';
+  String get noFavoritesYetTapHeart =>
+      'No favorites yet. Tap the heart on a place you love!';
 
   @override
   String get aPlace => 'A place';
