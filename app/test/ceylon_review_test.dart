@@ -749,6 +749,45 @@ void main() {
       expect(await repo.fetchMyFavoriteIds(), {'odel'});
     });
 
+    testWidgets('PlaceCard shows a past-rating badge when the user has '
+        'reviewed this place', (tester) async {
+      final place = (await SamplePlacesRepository().fetchAll())
+          .firstWhere((p) => p.id == 'odel');
+
+      await tester.pumpWidget(themed(
+        PlaceCard(place: place, onTap: () {}),
+        overrides: [
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+          myReviewRatingsProvider.overrideWithValue({'odel': 4}),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('You: 4★'), findsOneWidget);
+    });
+
+    testWidgets(
+        'PlaceCard shows no past-rating badge when the user has not '
+        'reviewed this place', (tester) async {
+      final place = (await SamplePlacesRepository().fetchAll())
+          .firstWhere((p) => p.id == 'odel');
+
+      await tester.pumpWidget(themed(
+        PlaceCard(place: place, onTap: () {}),
+        overrides: [
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+          myReviewRatingsProvider.overrideWithValue(const {}),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('You:'), findsNothing);
+    });
+
     testWidgets('PlaceCard with open-hours chip fits the trending carousel',
         (tester) async {
       // Same constraints as the Trending This Week carousel on Home:
