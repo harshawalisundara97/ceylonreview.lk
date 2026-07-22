@@ -94,6 +94,24 @@ create index on public.reviews (place_id, created_at desc);
 create index on public.reviews (user_id, created_at desc);
 ```
 
+Phase 1 moderation additions (2026-07-22):
+```sql
+alter table public.profiles
+  add column role text not null default 'user'
+    check (role in ('user', 'admin'));
+
+create table public.reports (
+  id uuid primary key default gen_random_uuid(),
+  review_id uuid not null references public.reviews on delete cascade,
+  reporter_id uuid not null references public.profiles on delete cascade,
+  reason text not null check (reason in ('spam', 'inappropriate', 'fake', 'other')),
+  note text,
+  status text not null default 'open' check (status in ('open', 'actioned', 'dismissed')),
+  created_at timestamptz not null default now()
+);
+create index on public.reports (status, created_at desc);
+```
+
 Plus:
 - **Trigger** on `reviews` (insert/delete/update) → recompute `places.rating`
   (avg, 1 decimal) and `places.review_count`.
