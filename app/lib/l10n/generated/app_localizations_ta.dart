@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -46,7 +48,8 @@ class AppLocalizationsTa extends AppLocalizations {
   String get enterValidEmail => 'சரியான மின்னஞ்சலை உள்ளிடவும்';
 
   @override
-  String get passwordMin6 => 'கடவுச்சொல் குறைந்தது 6 எழுத்துகள் இருக்க வேண்டும்';
+  String get passwordMin6 =>
+      'கடவுச்சொல் குறைந்தது 6 எழுத்துகள் இருக்க வேண்டும்';
 
   @override
   String get explore => 'ஆராயுங்கள்';
@@ -64,10 +67,12 @@ class AppLocalizationsTa extends AppLocalizations {
   String get forgotPassword => 'கடவுச்சொல் மறந்துவிட்டதா?';
 
   @override
-  String get accountCreatedCheckEmail => 'கணக்கு உருவாக்கப்பட்டது! உறுதிப்படுத்த உங்கள் மின்னஞ்சலைப் பார்த்து, பின் உள்நுழையவும்.';
+  String get accountCreatedCheckEmail =>
+      'கணக்கு உருவாக்கப்பட்டது! உறுதிப்படுத்த உங்கள் மின்னஞ்சலைப் பார்த்து, பின் உள்நுழையவும்.';
 
   @override
-  String get genericConnectionError => 'ஏதோ தவறு நடந்தது. இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.';
+  String get genericConnectionError =>
+      'ஏதோ தவறு நடந்தது. இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.';
 
   @override
   String get resetYourPassword => 'கடவுச்சொல்லை மீட்டமைக்கவும்';
@@ -105,7 +110,8 @@ class AppLocalizationsTa extends AppLocalizations {
   String get updatePassword => 'கடவுச்சொல்லைப் புதுப்பிக்கவும்';
 
   @override
-  String get couldNotUpdatePassword => 'கடவுச்சொல்லைப் புதுப்பிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
+  String get couldNotUpdatePassword =>
+      'கடவுச்சொல்லைப் புதுப்பிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
 
   @override
   String get discoverSriLanka => 'இலங்கையைக் கண்டறியுங்கள்';
@@ -131,7 +137,8 @@ class AppLocalizationsTa extends AppLocalizations {
   String get couldNotLoadPlaces => 'இடங்களை ஏற்ற முடியவில்லை.';
 
   @override
-  String get pullToRefreshError => 'ஏதோ தவறு நடந்தது. புதுப்பிக்க கீழே இழுக்கவும்.';
+  String get pullToRefreshError =>
+      'ஏதோ தவறு நடந்தது. புதுப்பிக்க கீழே இழுக்கவும்.';
 
   @override
   String noPlacesFound(String query) {
@@ -188,7 +195,8 @@ class AppLocalizationsTa extends AppLocalizations {
   String get getDirections => 'வழிகாட்டுதல்';
 
   @override
-  String get directionsOpenInMapTab => 'வழிகாட்டுதல் வரைபடத் தாவலில் திறக்கும்.';
+  String get directionsOpenInMapTab =>
+      'வழிகாட்டுதல் வரைபடத் தாவலில் திறக்கும்.';
 
   @override
   String get writeAReview => 'விமர்சனம் எழுதுங்கள்';
@@ -200,7 +208,8 @@ class AppLocalizationsTa extends AppLocalizations {
   String get couldNotLoadReviews => 'விமர்சனங்களை ஏற்ற முடியவில்லை.';
 
   @override
-  String get noReviewsYetBeFirst => 'இன்னும் விமர்சனங்கள் இல்லை — உங்கள் வருகையைப் பகிரும் முதல் நபராகுங்கள்!';
+  String get noReviewsYetBeFirst =>
+      'இன்னும் விமர்சனங்கள் இல்லை — உங்கள் வருகையைப் பகிரும் முதல் நபராகுங்கள்!';
 
   @override
   String nReviews(String count) {
@@ -222,25 +231,30 @@ class AppLocalizationsTa extends AppLocalizations {
   String get chooseAPlace => 'ஒரு இடத்தைத் தேர்ந்தெடுக்கவும்';
 
   @override
-  String get chooseAPlaceToReview => 'விமர்சிக்க ஒரு இடத்தைத் தேர்ந்தெடுக்கவும்.';
+  String get chooseAPlaceToReview =>
+      'விமர்சிக்க ஒரு இடத்தைத் தேர்ந்தெடுக்கவும்.';
 
   @override
   String get yourRating => 'உங்கள் மதிப்பீடு';
 
   @override
-  String get tapStarsToRate => 'உங்கள் வருகையை மதிப்பிட நட்சத்திரங்களைத் தட்டவும்.';
+  String get tapStarsToRate =>
+      'உங்கள் வருகையை மதிப்பிட நட்சத்திரங்களைத் தட்டவும்.';
 
   @override
   String get yourReview => 'உங்கள் விமர்சனம்';
 
   @override
-  String get shareWhatYouLoved => 'நீங்கள் விரும்பியதைப் பகிருங்கள் — உணவு, காட்சிகள், வரவேற்பு…';
+  String get shareWhatYouLoved =>
+      'நீங்கள் விரும்பியதைப் பகிருங்கள் — உணவு, காட்சிகள், வரவேற்பு…';
 
   @override
-  String get tellUsMore => 'இன்னும் கொஞ்சம் சொல்லுங்கள் — குறைந்தது 10 எழுத்துகள்.';
+  String get tellUsMore =>
+      'இன்னும் கொஞ்சம் சொல்லுங்கள் — குறைந்தது 10 எழுத்துகள்.';
 
   @override
-  String get addPhotosOptional => 'புகைப்படங்களைச் சேர்க்கவும் (விருப்பம், அதிகபட்சம் 3)';
+  String get addPhotosOptional =>
+      'புகைப்படங்களைச் சேர்க்கவும் (விருப்பம், அதிகபட்சம் 3)';
 
   @override
   String get camera => 'கேமரா';
@@ -288,7 +302,8 @@ class AppLocalizationsTa extends AppLocalizations {
   String get photoOptional => 'புகைப்படம் (விருப்பம்)';
 
   @override
-  String get locationTapMap => 'இடம் — வரைபடத்தைத் தட்டவும் அல்லது உங்கள் இருப்பிடத்தைப் பயன்படுத்தவும்';
+  String get locationTapMap =>
+      'இடம் — வரைபடத்தைத் தட்டவும் அல்லது உங்கள் இருப்பிடத்தைப் பயன்படுத்தவும்';
 
   @override
   String get searchTownOrLandmark => 'ஊர் அல்லது அடையாள இடத்தைத் தேடுங்கள்';
@@ -300,7 +315,8 @@ class AppLocalizationsTa extends AppLocalizations {
   String get useMyCurrentLocation => 'என் தற்போதைய இருப்பிடத்தைப் பயன்படுத்து';
 
   @override
-  String get enableLocationToUse => 'உங்கள் இருப்பிடத்தைப் பயன்படுத்த இருப்பிடச் சேவையை இயக்கவும்.';
+  String get enableLocationToUse =>
+      'உங்கள் இருப்பிடத்தைப் பயன்படுத்த இருப்பிடச் சேவையை இயக்கவும்.';
 
   @override
   String get dropAPin => 'இடத்திற்காக ஒரு பின்னை வைக்கவும்.';
@@ -315,7 +331,8 @@ class AppLocalizationsTa extends AppLocalizations {
   String get closesAt => 'மூடும் நேரம்';
 
   @override
-  String get couldNotAddPlace => 'இடத்தைச் சேர்க்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
+  String get couldNotAddPlace =>
+      'இடத்தைச் சேர்க்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
 
   @override
   String get leaderboard => 'தரவரிசைப் பட்டியல்';
@@ -352,10 +369,12 @@ class AppLocalizationsTa extends AppLocalizations {
   String get couldNotLoadYourReviews => 'உங்கள் விமர்சனங்களை ஏற்ற முடியவில்லை.';
 
   @override
-  String get couldNotLoadYourFavorites => 'உங்கள் பிடித்தவற்றை ஏற்ற முடியவில்லை.';
+  String get couldNotLoadYourFavorites =>
+      'உங்கள் பிடித்தவற்றை ஏற்ற முடியவில்லை.';
 
   @override
-  String get noReviewsYetVisit => 'இன்னும் விமர்சனங்கள் இல்லை. ஒரு இடத்திற்குச் சென்று உங்கள் அனுபவத்தைப் பகிருங்கள்!';
+  String get noReviewsYetVisit =>
+      'இன்னும் விமர்சனங்கள் இல்லை. ஒரு இடத்திற்குச் சென்று உங்கள் அனுபவத்தைப் பகிருங்கள்!';
 
   @override
   String get signOut => 'வெளியேறு';
@@ -397,10 +416,12 @@ class AppLocalizationsTa extends AppLocalizations {
   String get exploreSriLanka => 'இலங்கையை ஆராயுங்கள்';
 
   @override
-  String get cantFindAddPlace => 'கண்டுபிடிக்க முடியவில்லையா? இந்த இடத்தைச் சேர்க்கவும்';
+  String get cantFindAddPlace =>
+      'கண்டுபிடிக்க முடியவில்லையா? இந்த இடத்தைச் சேர்க்கவும்';
 
   @override
-  String get locationAccessSortByDistance => 'தூரத்தின்படி வரிசைப்படுத்த இருப்பிட அணுகலை இயக்கவும்.';
+  String get locationAccessSortByDistance =>
+      'தூரத்தின்படி வரிசைப்படுத்த இருப்பிட அணுகலை இயக்கவும்.';
 
   @override
   String noResultsFoundForQuery(String query) {
@@ -408,16 +429,19 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String get searchFailedCheckConnection => 'தேடல் தோல்வியடைந்தது — உங்கள் இணைப்பைச் சரிபார்க்கவும்.';
+  String get searchFailedCheckConnection =>
+      'தேடல் தோல்வியடைந்தது — உங்கள் இணைப்பைச் சரிபார்க்கவும்.';
 
   @override
-  String get leaderboardEmptyState => 'முதலில் ஒரு விமர்சனத்தை பதிவிட்டு #1 ஐப் பெறுங்கள்!';
+  String get leaderboardEmptyState =>
+      'முதலில் ஒரு விமர்சனத்தை பதிவிட்டு #1 ஐப் பெறுங்கள்!';
 
   @override
   String get you => 'நீங்கள்';
 
   @override
-  String get noFavoritesYetTapHeart => 'இன்னும் பிடித்தவை இல்லை. நீங்கள் விரும்பும் இடத்தில் இதயத்தைத் தட்டவும்!';
+  String get noFavoritesYetTapHeart =>
+      'இன்னும் பிடித்தவை இல்லை. நீங்கள் விரும்பும் இடத்தில் இதயத்தைத் தட்டவும்!';
 
   @override
   String get aPlace => 'ஒரு இடம்';
