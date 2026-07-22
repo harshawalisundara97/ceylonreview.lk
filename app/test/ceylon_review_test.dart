@@ -451,6 +451,51 @@ void main() {
     });
   });
 
+  group('myReviewRatingsProvider', () {
+    test('maps each place to the most recent rating, newest review wins',
+        () async {
+      final repo = SampleReviewsRepository();
+      // Oldest first into the repo; fetchMine() must still return newest-first
+      // for this test to be meaningful, matching production ordering.
+      await repo.add(
+        placeId: 'odel',
+        authorName: 'Test User',
+        rating: 2,
+        text: 'First visit, not great.',
+      );
+      await repo.add(
+        placeId: 'odel',
+        authorName: 'Test User',
+        rating: 5,
+        text: 'Came back, loved it this time!',
+      );
+
+      final container = ProviderContainer(overrides: [
+        reviewsRepositoryProvider.overrideWithValue(repo),
+        authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+            id: 'user-1', name: 'Test User', email: 't@example.com'))),
+      ]);
+      addTearDown(container.dispose);
+
+      // Prime myReviewsProvider by awaiting it directly.
+      await container.read(myReviewsProvider.future);
+
+      final map = container.read(myReviewRatingsProvider);
+      expect(map['odel'], 5);
+    });
+
+    test('empty when signed out', () {
+      final container = ProviderContainer(overrides: [
+        reviewsRepositoryProvider
+            .overrideWithValue(SampleReviewsRepository()),
+        authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+      ]);
+      addTearDown(container.dispose);
+
+      expect(container.read(myReviewRatingsProvider), isEmpty);
+    });
+  });
+
   group('Place formatting', () {
     test('rating shows one decimal and counts abbreviate to k', () async {
       final places = await SamplePlacesRepository().fetchAll();
@@ -702,6 +747,45 @@ void main() {
 
       expect(find.byIcon(Icons.favorite_rounded), findsOneWidget);
       expect(await repo.fetchMyFavoriteIds(), {'odel'});
+    });
+
+    testWidgets('PlaceCard shows a past-rating badge when the user has '
+        'reviewed this place', (tester) async {
+      final place = (await SamplePlacesRepository().fetchAll())
+          .firstWhere((p) => p.id == 'odel');
+
+      await tester.pumpWidget(themed(
+        PlaceCard(place: place, onTap: () {}),
+        overrides: [
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+          myReviewRatingsProvider.overrideWithValue({'odel': 4}),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('You: 4★'), findsOneWidget);
+    });
+
+    testWidgets(
+        'PlaceCard shows no past-rating badge when the user has not '
+        'reviewed this place', (tester) async {
+      final place = (await SamplePlacesRepository().fetchAll())
+          .firstWhere((p) => p.id == 'odel');
+
+      await tester.pumpWidget(themed(
+        PlaceCard(place: place, onTap: () {}),
+        overrides: [
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+          myReviewRatingsProvider.overrideWithValue(const {}),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('You:'), findsNothing);
     });
 
     testWidgets('PlaceCard with open-hours chip fits the trending carousel',

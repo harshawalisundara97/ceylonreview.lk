@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/l10n_ext.dart';
 
 import '../../application/favorites_provider.dart';
+import '../../application/reviews_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_theme.dart';
@@ -41,6 +42,7 @@ class PlaceCard extends ConsumerWidget {
     final isFavorite =
         (ref.watch(myFavoriteIdsProvider).valueOrNull ?? const {})
             .contains(place.id);
+    final myRating = ref.watch(myReviewRatingsProvider)[place.id];
 
     final card = Card(
       clipBehavior: Clip.antiAlias,
@@ -99,6 +101,31 @@ class PlaceCard extends ConsumerWidget {
                       ],
                     ),
                   ),
+                  if (myRating != null)
+                    Positioned(
+                      top: AppSpacing.sm,
+                      left: AppSpacing.sm,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: Colors.black45,
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.star_rounded,
+                                size: 12, color: tokens.star),
+                            const SizedBox(width: 4),
+                            Text(
+                              l10n.youRated('$myRating'),
+                              style: AppTypography.overline(Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   Positioned(
                     top: AppSpacing.sm,
                     right: AppSpacing.sm,
