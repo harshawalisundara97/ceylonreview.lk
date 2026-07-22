@@ -21,10 +21,12 @@ import 'package:ceylon_review/data/sample/sample_favorites_repository.dart';
 import 'package:ceylon_review/data/sample/sample_leaderboard_repository.dart';
 import 'package:ceylon_review/data/sample/sample_photo_storage_repository.dart';
 import 'package:ceylon_review/data/sample/sample_places_repository.dart';
+import 'package:ceylon_review/data/sample/sample_reports_repository.dart';
 import 'package:ceylon_review/data/sample/sample_reviews_repository.dart';
 import 'package:ceylon_review/domain/models/category.dart';
 import 'package:ceylon_review/domain/models/leaderboard_entry.dart';
 import 'package:ceylon_review/domain/models/place.dart';
+import 'package:ceylon_review/domain/models/report.dart';
 import 'package:ceylon_review/domain/models/review.dart';
 import 'package:ceylon_review/domain/models/user.dart';
 import 'package:ceylon_review/domain/repositories/favorites_repository.dart';
@@ -434,6 +436,39 @@ void main() {
       expect(repo.uploads.keys, contains('user-1/abc.jpg'));
       await repo.deletePhoto(url);
       expect(repo.uploads, isEmpty);
+    });
+  });
+
+  group('SampleReportsRepository', () {
+    test('submit then fetchOpen returns it with status open', () async {
+      final repo = SampleReportsRepository();
+      await repo.submit(
+        reviewId: 'r1',
+        reporterId: 'user-1',
+        reason: ReportReason.spam,
+        note: null,
+      );
+      final open = await repo.fetchOpen();
+      expect(open, hasLength(1));
+      expect(open.first.reviewId, 'r1');
+      expect(open.first.reason, ReportReason.spam);
+      expect(open.first.status, ReportStatus.open);
+    });
+
+    test('resolve marks it actioned or dismissed and removes it from '
+        'fetchOpen', () async {
+      final repo = SampleReportsRepository();
+      await repo.submit(
+        reviewId: 'r1',
+        reporterId: 'user-1',
+        reason: ReportReason.fake,
+        note: 'looks copy-pasted',
+      );
+      final id = (await repo.fetchOpen()).first.id;
+
+      await repo.resolve(id, actioned: true);
+
+      expect(await repo.fetchOpen(), isEmpty);
     });
   });
 

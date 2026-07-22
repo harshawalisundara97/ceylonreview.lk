@@ -7,6 +7,7 @@ import '../data/supabase/supabase_favorites_repository.dart';
 import '../data/supabase/supabase_leaderboard_repository.dart';
 import '../data/supabase/supabase_photo_storage_repository.dart';
 import '../data/supabase/supabase_places_repository.dart';
+import '../data/supabase/supabase_reports_repository.dart';
 import '../data/supabase/supabase_reviews_repository.dart';
 import '../domain/repositories/auth_repository.dart';
 import '../domain/repositories/favorites_repository.dart';
@@ -14,6 +15,7 @@ import '../domain/repositories/geocoding_repository.dart';
 import '../domain/repositories/leaderboard_repository.dart';
 import '../domain/repositories/photo_storage_repository.dart';
 import '../domain/repositories/places_repository.dart';
+import '../domain/repositories/reports_repository.dart';
 import '../domain/repositories/reviews_repository.dart';
 
 /// Dependency injection seam: the app runs against Supabase; the sample
@@ -39,3 +41,6 @@ final photoStorageRepositoryProvider = Provider<PhotoStorageRepository>(
 
 final geocodingRepositoryProvider = Provider<GeocodingRepository>(
     (ref) => NominatimGeocodingRepository());
+
+final reportsRepositoryProvider = Provider<ReportsRepository>(
+    (ref) => SupabaseReportsRepository(Supabase.instance.client));
