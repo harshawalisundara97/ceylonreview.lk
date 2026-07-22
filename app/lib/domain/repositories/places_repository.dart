@@ -16,4 +16,7 @@ abstract interface class PlacesRepository {
 
   /// Adds a community place and returns it as stored.
   Future<Place> addPlace(Place place);
+
+  /// Deletes a place by id. Requires admin role, enforced by RLS.
+  Future<void> delete(String id);
 }

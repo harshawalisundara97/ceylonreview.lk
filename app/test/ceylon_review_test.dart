@@ -284,6 +284,15 @@ void main() {
       expect((await repo.fetchAll()).map((p) => p.id), contains('new-cafe'));
       expect(await repo.fetchById('new-cafe'), isNotNull);
     });
+
+    test('delete removes the place', () async {
+      final repo = SamplePlacesRepository();
+      final all = await repo.fetchAll();
+      final target = all.first;
+      await repo.delete(target.id);
+      final remaining = await repo.fetchAll();
+      expect(remaining.any((p) => p.id == target.id), isFalse);
+    });
   });
 
   group('SampleReviewsRepository', () {
@@ -313,6 +322,19 @@ void main() {
 
       final stored = await repo.fetchForPlace('ministry-of-crab');
       expect(stored.single.photoUrls, ['https://photos.example/crab-1.jpg']);
+    });
+
+    test('delete removes the review', () async {
+      final repo = SampleReviewsRepository();
+      final added = await repo.add(
+        placeId: 'odel',
+        authorName: 'Test User',
+        rating: 3,
+        text: 'Fine, nothing special.',
+      );
+      await repo.delete(added.id);
+      final remaining = await repo.fetchForPlace('odel');
+      expect(remaining.any((r) => r.id == added.id), isFalse);
     });
   });
 
@@ -928,6 +950,7 @@ void main() {
       final review = Review(
         id: 'r1',
         placeId: 'ministry-of-crab',
+        authorId: 'sample-user',
         authorName: 'Nadeesha Perera',
         rating: 5,
         text: 'Loved it!',
@@ -956,6 +979,7 @@ void main() {
         Review(
           id: 'r1',
           placeId: 'ministry-of-crab',
+          authorId: 'sample-user',
           authorName: 'Nadeesha Perera',
           rating: 5,
           text: 'Loved it!',
@@ -986,6 +1010,7 @@ void main() {
         Review(
           id: 'r1',
           placeId: 'ministry-of-crab',
+          authorId: 'sample-user',
           authorName: 'Nadeesha Perera',
           rating: 5,
           text: 'Loved it!',
@@ -1134,6 +1159,9 @@ class _ThrowingPlacesRepository implements PlacesRepository {
 
   @override
   Future<List<Place>> search(String query) async => [];
+
+  @override
+  Future<void> delete(String id) async {}
 }
 
 class _ThrowingReviewsRepository implements ReviewsRepository {
@@ -1153,6 +1181,9 @@ class _ThrowingReviewsRepository implements ReviewsRepository {
 
   @override
   Future<List<Review>> fetchMine() async => [];
+
+  @override
+  Future<void> delete(String reviewId) async {}
 }
 
 class _EmptyLeaderboardRepository implements LeaderboardRepository {

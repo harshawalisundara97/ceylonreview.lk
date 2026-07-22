@@ -3,6 +3,7 @@ class Review {
   const Review({
     required this.id,
     required this.placeId,
+    required this.authorId,
     required this.authorName,
     required this.rating,
     required this.text,
@@ -12,6 +13,9 @@ class Review {
 
   final String id;
   final String placeId;
+
+  /// The reviewer's user id (`profiles.id` / `auth.users.id`).
+  final String authorId;
   final String authorName;
   final int rating; // 1..5 whole stars
   final String text;
