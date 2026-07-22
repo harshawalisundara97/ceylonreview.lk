@@ -46,3 +46,10 @@ class AuthNotifier extends Notifier<AppUser?> {
 
 final authProvider =
     NotifierProvider<AuthNotifier, AppUser?>(AuthNotifier.new);
+
+/// Whether the signed-in user is an admin. False when signed out.
+final isAdminProvider = FutureProvider<bool>((ref) {
+  final user = ref.watch(authProvider);
+  if (user == null) return Future.value(false);
+  return ref.watch(authRepositoryProvider).isCurrentUserAdmin();
+});

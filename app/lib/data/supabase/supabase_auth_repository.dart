@@ -79,6 +79,18 @@ class SupabaseAuthRepository implements AuthRepository {
     }
   }
 
+  @override
+  Future<bool> isCurrentUserAdmin() async {
+    final userId = _client.auth.currentUser?.id;
+    if (userId == null) return false;
+    final row = await _client
+        .from('profiles')
+        .select('role')
+        .eq('id', userId)
+        .maybeSingle();
+    return row?['role'] == 'admin';
+  }
+
   AppUser? _toAppUser(User? user) {
     if (user == null) return null;
     final email = user.email ?? '';

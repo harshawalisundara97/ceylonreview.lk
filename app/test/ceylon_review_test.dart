@@ -1172,6 +1172,16 @@ void main() {
       }
     });
   });
+
+  group('isAdminProvider', () {
+    test('false when signed out', () async {
+      final container = ProviderContainer(overrides: [
+        authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+      ]);
+      addTearDown(container.dispose);
+      expect(await container.read(isAdminProvider.future), isFalse);
+    });
+  });
 }
 
 class _ThrowingPlacesRepository implements PlacesRepository {
