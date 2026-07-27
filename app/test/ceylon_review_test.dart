@@ -14,6 +14,7 @@ import 'package:ceylon_review/application/favorites_provider.dart';
 import 'package:ceylon_review/application/leaderboard_provider.dart';
 import 'package:ceylon_review/application/locale_provider.dart';
 import 'package:ceylon_review/application/repository_providers.dart';
+import 'package:ceylon_review/application/reports_provider.dart';
 import 'package:ceylon_review/application/reviews_provider.dart';
 import 'package:ceylon_review/core/sri_lanka_districts.dart';
 import 'package:ceylon_review/core/theme/app_theme.dart';
@@ -1170,6 +1171,106 @@ void main() {
         expect(find.text(expected), findsOneWidget,
             reason: 'Explore button should be translated for $locale');
       }
+    });
+  });
+
+  group('ReportSubmitter', () {
+    test('submit adds a report as the signed-in user', () async {
+      final reportsRepo = SampleReportsRepository();
+      final container = ProviderContainer(overrides: [
+        reportsRepositoryProvider.overrideWithValue(reportsRepo),
+        authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+            id: 'user-1', name: 'Test User', email: 't@example.com'))),
+      ]);
+      addTearDown(container.dispose);
+
+      await container.read(reportSubmitterProvider).submit(
+            reviewId: 'r1',
+            reason: ReportReason.spam,
+            note: 'obvious spam',
+          );
+
+      final open = await reportsRepo.fetchOpen();
+      expect(open, hasLength(1));
+      expect(open.first.reporterId, 'user-1');
+    });
+
+    test('submit throws when signed out', () async {
+      final container = ProviderContainer(overrides: [
+        reportsRepositoryProvider.overrideWithValue(SampleReportsRepository()),
+        authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+      ]);
+      addTearDown(container.dispose);
+
+      expect(
+        () => container
+            .read(reportSubmitterProvider)
+            .submit(reviewId: 'r1', reason: ReportReason.other),
+        throwsStateError,
+      );
+    });
+  });
+
+  group('ReportResolver', () {
+    test('resolve with actioned: true deletes the review and resolves the '
+        'report', () async {
+      final reviewsRepo = SampleReviewsRepository(seed: []);
+      final added = await reviewsRepo.add(
+        placeId: 'odel',
+        authorName: 'Someone',
+        rating: 1,
+        text: 'This is spam content here.',
+      );
+      final reportsRepo = SampleReportsRepository();
+      await reportsRepo.submit(
+        reviewId: added.id,
+        reporterId: 'user-2',
+        reason: ReportReason.spam,
+      );
+      final reportId = (await reportsRepo.fetchOpen()).first.id;
+
+      final container = ProviderContainer(overrides: [
+        reviewsRepositoryProvider.overrideWithValue(reviewsRepo),
+        reportsRepositoryProvider.overrideWithValue(reportsRepo),
+      ]);
+      addTearDown(container.dispose);
+
+      await container
+          .read(reportResolverProvider)
+          .resolve(reportId, actioned: true);
+
+      expect(await reportsRepo.fetchOpen(), isEmpty);
+      expect(await reviewsRepo.fetchForPlace('odel'), isEmpty);
+    });
+
+    test('resolve with actioned: false only dismisses the report', () async {
+      final reviewsRepo = SampleReviewsRepository(seed: []);
+      final added = await reviewsRepo.add(
+        placeId: 'odel',
+        authorName: 'Someone',
+        rating: 4,
+        text: 'A perfectly fine review, wrongly reported.',
+      );
+      final reportsRepo = SampleReportsRepository();
+      await reportsRepo.submit(
+        reviewId: added.id,
+        reporterId: 'user-2',
+        reason: ReportReason.other,
+      );
+      final reportId = (await reportsRepo.fetchOpen()).first.id;
+
+      final container = ProviderContainer(overrides: [
+        reviewsRepositoryProvider.overrideWithValue(reviewsRepo),
+        reportsRepositoryProvider.overrideWithValue(reportsRepo),
+      ]);
+      addTearDown(container.dispose);
+
+      await container
+          .read(reportResolverProvider)
+          .resolve(reportId, actioned: false);
+
+      expect(await reportsRepo.fetchOpen(), isEmpty);
+      expect(await reviewsRepo.fetchForPlace('odel'), hasLength(1));
     });
   });
 
