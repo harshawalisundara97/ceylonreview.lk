@@ -155,5 +155,10 @@
   "deletePlace": "Delete place",
   "deletePlaceConfirmTitle": "Delete this place?",
   "deletePlaceConfirmBody": "This permanently removes the place and all its reviews. This cannot be undone.",
-  "couldNotDeletePlace": "Could not delete the place. Please try again."
+  "couldNotDeletePlace": "Could not delete the place. Please try again.",
+  "moderation": "Moderation",
+  "noOpenReports": "No open reports.",
+  "couldNotLoadReports": "Could not load reports.",
+  "deleteReview": "Delete review",
+  "dismiss": "Dismiss"
 }

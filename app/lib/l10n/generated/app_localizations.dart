@@ -975,6 +975,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not delete the place. Please try again.'**
   String get couldNotDeletePlace;
+
+  /// No description provided for @moderation.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderation'**
+  String get moderation;
+
+  /// No description provided for @noOpenReports.
+  ///
+  /// In en, this message translates to:
+  /// **'No open reports.'**
+  String get noOpenReports;
+
+  /// No description provided for @couldNotLoadReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load reports.'**
+  String get couldNotLoadReports;
+
+  /// No description provided for @deleteReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete review'**
+  String get deleteReview;
+
+  /// No description provided for @dismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get dismiss;
 }
 
 class _AppLocalizationsDelegate

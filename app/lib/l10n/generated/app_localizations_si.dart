@@ -483,4 +483,19 @@ class AppLocalizationsSi extends AppLocalizations {
   @override
   String get couldNotDeletePlace =>
       'ස්ථානය මකා දැමිය නොහැකි විය. නැවත උත්සාහ කරන්න.';
+
+  @override
+  String get moderation => 'මධ්‍යස්ථභාවකරණය';
+
+  @override
+  String get noOpenReports => 'විවෘත වාර්තා නැත.';
+
+  @override
+  String get couldNotLoadReports => 'වාර්තා පූරණය කළ නොහැකි විය.';
+
+  @override
+  String get deleteReview => 'සමාලෝචනය මකන්න';
+
+  @override
+  String get dismiss => 'ඉවත් කරන්න';
 }

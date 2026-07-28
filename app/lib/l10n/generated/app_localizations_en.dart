@@ -479,4 +479,19 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get couldNotDeletePlace =>
       'Could not delete the place. Please try again.';
+
+  @override
+  String get moderation => 'Moderation';
+
+  @override
+  String get noOpenReports => 'No open reports.';
+
+  @override
+  String get couldNotLoadReports => 'Could not load reports.';
+
+  @override
+  String get deleteReview => 'Delete review';
+
+  @override
+  String get dismiss => 'Dismiss';
 }

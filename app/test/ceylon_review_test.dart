@@ -13,6 +13,7 @@ import 'package:ceylon_review/application/auth_provider.dart';
 import 'package:ceylon_review/application/favorites_provider.dart';
 import 'package:ceylon_review/application/leaderboard_provider.dart';
 import 'package:ceylon_review/application/locale_provider.dart';
+import 'package:ceylon_review/application/places_provider.dart';
 import 'package:ceylon_review/application/repository_providers.dart';
 import 'package:ceylon_review/application/reports_provider.dart';
 import 'package:ceylon_review/application/reviews_provider.dart';
@@ -38,7 +39,9 @@ import 'package:ceylon_review/domain/repositories/reviews_repository.dart';
 import 'package:ceylon_review/presentation/screens/add_place/add_place_screen.dart';
 import 'package:ceylon_review/presentation/screens/leaderboard/leaderboard_screen.dart';
 import 'package:ceylon_review/presentation/screens/login/login_screen.dart';
+import 'package:ceylon_review/presentation/screens/moderation/moderation_screen.dart';
 import 'package:ceylon_review/presentation/screens/place_detail/place_detail_screen.dart';
+import 'package:ceylon_review/presentation/screens/profile/profile_screen.dart';
 import 'package:ceylon_review/presentation/screens/write_review/write_review_screen.dart';
 import 'package:ceylon_review/presentation/widgets/photo_viewer.dart';
 import 'package:ceylon_review/presentation/widgets/place_card.dart';
@@ -1184,6 +1187,59 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.delete_outline_rounded), findsNothing);
+    });
+
+    testWidgets('Profile shows the Moderation row only for admins',
+        (tester) async {
+      await tester.pumpWidget(themed(
+        const ProfileScreen(),
+        overrides: [
+          authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+              id: 'admin-1', name: 'Admin', email: 'a@example.com'))),
+          isAdminProvider.overrideWith((ref) => Future.value(true)),
+          myReviewsProvider.overrideWith((ref) => Future.value(const [])),
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          allPlacesProvider.overrideWith((ref) => Future.value(const [])),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Moderation'), findsOneWidget);
+    });
+
+    testWidgets('ModerationScreen lists an open report and deletes the '
+        'review on Delete', (tester) async {
+      final reviewsRepo = SampleReviewsRepository(seed: []);
+      final review = await reviewsRepo.add(
+        placeId: 'odel',
+        authorName: 'Reported User',
+        rating: 1,
+        text: 'This looks like spam content.',
+      );
+      final reportsRepo = SampleReportsRepository();
+      await reportsRepo.submit(
+        reviewId: review.id,
+        reporterId: 'user-2',
+        reason: ReportReason.spam,
+      );
+
+      await tester.pumpWidget(themed(
+        const ModerationScreen(),
+        overrides: [
+          reportsRepositoryProvider.overrideWithValue(reportsRepo),
+          reviewsRepositoryProvider.overrideWithValue(reviewsRepo),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Review ${review.id}'), findsOneWidget);
+
+      await tester.tap(find.text('Delete review'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('No open reports.'), findsOneWidget);
+      expect(await reviewsRepo.fetchForPlace('odel'), isEmpty);
     });
   });
 
