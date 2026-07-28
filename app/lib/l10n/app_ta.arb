@@ -131,5 +131,15 @@
   "leaderboardEmptyState": "முதலில் ஒரு விமர்சனத்தை பதிவிட்டு #1 ஐப் பெறுங்கள்!",
   "you": "நீங்கள்",
   "noFavoritesYetTapHeart": "இன்னும் பிடித்தவை இல்லை. நீங்கள் விரும்பும் இடத்தில் இதயத்தைத் தட்டவும்!",
-  "aPlace": "ஒரு இடம்"
+  "aPlace": "ஒரு இடம்",
+  "reportReview": "புகார் செய்",
+  "reportThisReview": "இந்த விமர்சனத்தை புகார் செய்யுங்கள்",
+  "reportReasonSpam": "ஸ்பேம்",
+  "reportReasonInappropriate": "பொருத்தமற்றது",
+  "reportReasonFake": "போலி அல்லது தவறான தகவல்",
+  "reportReasonOther": "மற்றவை",
+  "reportNoteOptional": "கூடுதல் விவரங்கள் (விருப்பம்)",
+  "submitReport": "புகாரை சமர்ப்பிக்கவும்",
+  "reportSubmittedThankYou": "புகார் சமர்ப்பிக்கப்பட்டது. விமர்சனங்களை நம்பகமானதாக வைத்திருக்க உதவியதற்கு நன்றி.",
+  "couldNotSubmitReport": "புகாரை சமர்ப்பிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்."
 }

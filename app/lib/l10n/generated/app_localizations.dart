@@ -891,6 +891,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A place'**
   String get aPlace;
+
+  /// No description provided for @reportReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get reportReview;
+
+  /// No description provided for @reportThisReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Report this review'**
+  String get reportThisReview;
+
+  /// No description provided for @reportReasonSpam.
+  ///
+  /// In en, this message translates to:
+  /// **'Spam'**
+  String get reportReasonSpam;
+
+  /// No description provided for @reportReasonInappropriate.
+  ///
+  /// In en, this message translates to:
+  /// **'Inappropriate'**
+  String get reportReasonInappropriate;
+
+  /// No description provided for @reportReasonFake.
+  ///
+  /// In en, this message translates to:
+  /// **'Fake or misleading'**
+  String get reportReasonFake;
+
+  /// No description provided for @reportReasonOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get reportReasonOther;
+
+  /// No description provided for @reportNoteOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional details (optional)'**
+  String get reportNoteOptional;
+
+  /// No description provided for @submitReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit report'**
+  String get submitReport;
+
+  /// No description provided for @reportSubmittedThankYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Report submitted. Thank you for helping keep reviews trustworthy.'**
+  String get reportSubmittedThankYou;
+
+  /// No description provided for @couldNotSubmitReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not submit the report. Please try again.'**
+  String get couldNotSubmitReport;
 }
 
 class _AppLocalizationsDelegate

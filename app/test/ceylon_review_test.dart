@@ -886,6 +886,66 @@ void main() {
       expect(find.text('No results found for "Nowhereville".'), findsOneWidget);
     });
 
+    testWidgets('ReviewTile shows a report button for others\' reviews and '
+        'submits a report', (tester) async {
+      final review = Review(
+        id: 'r1',
+        placeId: 'odel',
+        authorId: 'other-user',
+        authorName: 'Someone Else',
+        rating: 3,
+        text: 'An okay experience overall.',
+        createdAt: DateTime(2026, 1, 1),
+      );
+      final reportsRepo = SampleReportsRepository();
+
+      await tester.pumpWidget(themed(
+        ReviewTile(review: review),
+        overrides: [
+          reportsRepositoryProvider.overrideWithValue(reportsRepo),
+          authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+              id: 'user-1', name: 'Test User', email: 't@example.com'))),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(Icons.flag_outlined));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Spam'));
+      await tester.pump();
+      await tester.tap(find.text('Submit report'));
+      await tester.pumpAndSettle();
+
+      final open = await reportsRepo.fetchOpen();
+      expect(open, hasLength(1));
+      expect(open.first.reason, ReportReason.spam);
+    });
+
+    testWidgets('ReviewTile hides the report button for the current user\'s '
+        'own review', (tester) async {
+      final review = Review(
+        id: 'r1',
+        placeId: 'odel',
+        authorId: 'user-1',
+        authorName: 'Test User',
+        rating: 5,
+        text: 'My own great review of this place.',
+        createdAt: DateTime(2026, 1, 1),
+      );
+
+      await tester.pumpWidget(themed(
+        ReviewTile(review: review),
+        overrides: [
+          authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+              id: 'user-1', name: 'Test User', email: 't@example.com'))),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.flag_outlined), findsNothing);
+    });
+
     testWidgets('LeaderboardScreen shows a podium for the top 3',
         (tester) async {
       await tester.pumpWidget(themed(
@@ -997,7 +1057,12 @@ void main() {
         ],
       );
 
-      await tester.pumpWidget(themed(ReviewTile(review: review)));
+      await tester.pumpWidget(themed(
+        ReviewTile(review: review),
+        overrides: [
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+        ],
+      ));
       await tester.pump();
 
       expect(find.byType(Image), findsNWidgets(2));

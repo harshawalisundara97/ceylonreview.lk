@@ -141,5 +141,15 @@
   "leaderboardEmptyState": "Be the first to post a review and claim #1!",
   "you": "You",
   "noFavoritesYetTapHeart": "No favorites yet. Tap the heart on a place you love!",
-  "aPlace": "A place"
+  "aPlace": "A place",
+  "reportReview": "Report",
+  "reportThisReview": "Report this review",
+  "reportReasonSpam": "Spam",
+  "reportReasonInappropriate": "Inappropriate",
+  "reportReasonFake": "Fake or misleading",
+  "reportReasonOther": "Other",
+  "reportNoteOptional": "Additional details (optional)",
+  "submitReport": "Submit report",
+  "reportSubmittedThankYou": "Report submitted. Thank you for helping keep reviews trustworthy.",
+  "couldNotSubmitReport": "Could not submit the report. Please try again."
 }

@@ -131,5 +131,15 @@
   "leaderboardEmptyState": "ප්‍රථම වරට සමාලෝචනයක් පළ කර #1 ලබාගන්න!",
   "you": "ඔබ",
   "noFavoritesYetTapHeart": "තවම ප්‍රියතම නැත. ඔබ ප්‍රිය කරන ස්ථානයක හදවත ස්පර්ශ කරන්න!",
-  "aPlace": "ස්ථානයක්"
+  "aPlace": "ස්ථානයක්",
+  "reportReview": "වාර්තා කරන්න",
+  "reportThisReview": "මෙම සමාලෝචනය වාර්තා කරන්න",
+  "reportReasonSpam": "ස්පෑම්",
+  "reportReasonInappropriate": "නුසුදුසුයි",
+  "reportReasonFake": "ව්‍යාජ හෝ නොමඟ යවන",
+  "reportReasonOther": "වෙනත්",
+  "reportNoteOptional": "අමතර විස්තර (අත්‍යවශ්‍ය නොවේ)",
+  "submitReport": "වාර්තාව යවන්න",
+  "reportSubmittedThankYou": "වාර්තාව යවන ලදී. සමාලෝචන විශ්වාසදායක තබා ගැනීමට උදව් කිරීම ගැන ස්තූතියි.",
+  "couldNotSubmitReport": "වාර්තාව යැවිය නොහැකි විය. නැවත උත්සාහ කරන්න."
 }

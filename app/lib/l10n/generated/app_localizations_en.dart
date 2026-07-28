@@ -433,4 +433,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aPlace => 'A place';
+
+  @override
+  String get reportReview => 'Report';
+
+  @override
+  String get reportThisReview => 'Report this review';
+
+  @override
+  String get reportReasonSpam => 'Spam';
+
+  @override
+  String get reportReasonInappropriate => 'Inappropriate';
+
+  @override
+  String get reportReasonFake => 'Fake or misleading';
+
+  @override
+  String get reportReasonOther => 'Other';
+
+  @override
+  String get reportNoteOptional => 'Additional details (optional)';
+
+  @override
+  String get submitReport => 'Submit report';
+
+  @override
+  String get reportSubmittedThankYou =>
+      'Report submitted. Thank you for helping keep reviews trustworthy.';
+
+  @override
+  String get couldNotSubmitReport =>
+      'Could not submit the report. Please try again.';
 }

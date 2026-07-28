@@ -437,4 +437,36 @@ class AppLocalizationsSi extends AppLocalizations {
 
   @override
   String get aPlace => 'ස්ථානයක්';
+
+  @override
+  String get reportReview => 'වාර්තා කරන්න';
+
+  @override
+  String get reportThisReview => 'මෙම සමාලෝචනය වාර්තා කරන්න';
+
+  @override
+  String get reportReasonSpam => 'ස්පෑම්';
+
+  @override
+  String get reportReasonInappropriate => 'නුසුදුසුයි';
+
+  @override
+  String get reportReasonFake => 'ව්‍යාජ හෝ නොමඟ යවන';
+
+  @override
+  String get reportReasonOther => 'වෙනත්';
+
+  @override
+  String get reportNoteOptional => 'අමතර විස්තර (අත්‍යවශ්‍ය නොවේ)';
+
+  @override
+  String get submitReport => 'වාර්තාව යවන්න';
+
+  @override
+  String get reportSubmittedThankYou =>
+      'වාර්තාව යවන ලදී. සමාලෝචන විශ්වාසදායක තබා ගැනීමට උදව් කිරීම ගැන ස්තූතියි.';
+
+  @override
+  String get couldNotSubmitReport =>
+      'වාර්තාව යැවිය නොහැකි විය. නැවත උත්සාහ කරන්න.';
 }

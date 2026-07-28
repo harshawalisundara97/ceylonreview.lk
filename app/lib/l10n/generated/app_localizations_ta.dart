@@ -445,4 +445,36 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get aPlace => 'ஒரு இடம்';
+
+  @override
+  String get reportReview => 'புகார் செய்';
+
+  @override
+  String get reportThisReview => 'இந்த விமர்சனத்தை புகார் செய்யுங்கள்';
+
+  @override
+  String get reportReasonSpam => 'ஸ்பேம்';
+
+  @override
+  String get reportReasonInappropriate => 'பொருத்தமற்றது';
+
+  @override
+  String get reportReasonFake => 'போலி அல்லது தவறான தகவல்';
+
+  @override
+  String get reportReasonOther => 'மற்றவை';
+
+  @override
+  String get reportNoteOptional => 'கூடுதல் விவரங்கள் (விருப்பம்)';
+
+  @override
+  String get submitReport => 'புகாரை சமர்ப்பிக்கவும்';
+
+  @override
+  String get reportSubmittedThankYou =>
+      'புகார் சமர்ப்பிக்கப்பட்டது. விமர்சனங்களை நம்பகமானதாக வைத்திருக்க உதவியதற்கு நன்றி.';
+
+  @override
+  String get couldNotSubmitReport =>
+      'புகாரை சமர்ப்பிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
 }
