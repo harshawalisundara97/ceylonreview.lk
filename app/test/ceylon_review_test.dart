@@ -1133,6 +1133,58 @@ void main() {
 
       expect(find.text('Photos'), findsNothing);
     });
+
+    testWidgets('PlaceDetailScreen shows a delete button for admins and '
+        'deletes the place on confirm', (tester) async {
+      final placesRepo = SamplePlacesRepository();
+      final place = (await placesRepo.fetchAll()).first;
+
+      await tester.pumpWidget(themed(
+        PlaceDetailScreen(placeId: place.id),
+        overrides: [
+          placesRepositoryProvider.overrideWithValue(placesRepo),
+          reviewsRepositoryProvider
+              .overrideWithValue(SampleReviewsRepository(seed: [])),
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+              id: 'admin-1', name: 'Admin', email: 'a@example.com'))),
+          isAdminProvider.overrideWith((ref) => Future.value(true)),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.delete_outline_rounded), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.delete_outline_rounded));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Delete place'));
+      await tester.pumpAndSettle();
+
+      expect(await placesRepo.fetchById(place.id), isNull);
+    });
+
+    testWidgets('PlaceDetailScreen hides the delete button for non-admins',
+        (tester) async {
+      final placesRepo = SamplePlacesRepository();
+      final place = (await placesRepo.fetchAll()).first;
+
+      await tester.pumpWidget(themed(
+        PlaceDetailScreen(placeId: place.id),
+        overrides: [
+          placesRepositoryProvider.overrideWithValue(placesRepo),
+          reviewsRepositoryProvider
+              .overrideWithValue(SampleReviewsRepository(seed: [])),
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+          isAdminProvider.overrideWith((ref) => Future.value(false)),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.delete_outline_rounded), findsNothing);
+    });
   });
 
   group('Localization', () {

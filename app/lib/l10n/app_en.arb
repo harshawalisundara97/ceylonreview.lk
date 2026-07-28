@@ -151,5 +151,9 @@
   "reportNoteOptional": "Additional details (optional)",
   "submitReport": "Submit report",
   "reportSubmittedThankYou": "Report submitted. Thank you for helping keep reviews trustworthy.",
-  "couldNotSubmitReport": "Could not submit the report. Please try again."
+  "couldNotSubmitReport": "Could not submit the report. Please try again.",
+  "deletePlace": "Delete place",
+  "deletePlaceConfirmTitle": "Delete this place?",
+  "deletePlaceConfirmBody": "This permanently removes the place and all its reviews. This cannot be undone.",
+  "couldNotDeletePlace": "Could not delete the place. Please try again."
 }

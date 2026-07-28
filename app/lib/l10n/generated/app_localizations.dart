@@ -951,6 +951,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not submit the report. Please try again.'**
   String get couldNotSubmitReport;
+
+  /// No description provided for @deletePlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete place'**
+  String get deletePlace;
+
+  /// No description provided for @deletePlaceConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this place?'**
+  String get deletePlaceConfirmTitle;
+
+  /// No description provided for @deletePlaceConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This permanently removes the place and all its reviews. This cannot be undone.'**
+  String get deletePlaceConfirmBody;
+
+  /// No description provided for @couldNotDeletePlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete the place. Please try again.'**
+  String get couldNotDeletePlace;
 }
 
 class _AppLocalizationsDelegate

@@ -465,4 +465,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get couldNotSubmitReport =>
       'Could not submit the report. Please try again.';
+
+  @override
+  String get deletePlace => 'Delete place';
+
+  @override
+  String get deletePlaceConfirmTitle => 'Delete this place?';
+
+  @override
+  String get deletePlaceConfirmBody =>
+      'This permanently removes the place and all its reviews. This cannot be undone.';
+
+  @override
+  String get couldNotDeletePlace =>
+      'Could not delete the place. Please try again.';
 }

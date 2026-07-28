@@ -469,4 +469,18 @@ class AppLocalizationsSi extends AppLocalizations {
   @override
   String get couldNotSubmitReport =>
       'වාර්තාව යැවිය නොහැකි විය. නැවත උත්සාහ කරන්න.';
+
+  @override
+  String get deletePlace => 'ස්ථානය මකන්න';
+
+  @override
+  String get deletePlaceConfirmTitle => 'මෙම ස්ථානය මකන්නද?';
+
+  @override
+  String get deletePlaceConfirmBody =>
+      'මෙය ස්ථානය සහ එහි සියලුම සමාලෝචන ස්ථිරවම ඉවත් කරයි. මෙය ආපසු හැරවිය නොහැක.';
+
+  @override
+  String get couldNotDeletePlace =>
+      'ස්ථානය මකා දැමිය නොහැකි විය. නැවත උත්සාහ කරන්න.';
 }

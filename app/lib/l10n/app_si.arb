@@ -141,5 +141,9 @@
   "reportNoteOptional": "අමතර විස්තර (අත්‍යවශ්‍ය නොවේ)",
   "submitReport": "වාර්තාව යවන්න",
   "reportSubmittedThankYou": "වාර්තාව යවන ලදී. සමාලෝචන විශ්වාසදායක තබා ගැනීමට උදව් කිරීම ගැන ස්තූතියි.",
-  "couldNotSubmitReport": "වාර්තාව යැවිය නොහැකි විය. නැවත උත්සාහ කරන්න."
+  "couldNotSubmitReport": "වාර්තාව යැවිය නොහැකි විය. නැවත උත්සාහ කරන්න.",
+  "deletePlace": "ස්ථානය මකන්න",
+  "deletePlaceConfirmTitle": "මෙම ස්ථානය මකන්නද?",
+  "deletePlaceConfirmBody": "මෙය ස්ථානය සහ එහි සියලුම සමාලෝචන ස්ථිරවම ඉවත් කරයි. මෙය ආපසු හැරවිය නොහැක.",
+  "couldNotDeletePlace": "ස්ථානය මකා දැමිය නොහැකි විය. නැවත උත්සාහ කරන්න."
 }

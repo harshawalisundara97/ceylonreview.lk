@@ -477,4 +477,18 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get couldNotSubmitReport =>
       'புகாரை சமர்ப்பிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
+
+  @override
+  String get deletePlace => 'இடத்தை நீக்கு';
+
+  @override
+  String get deletePlaceConfirmTitle => 'இந்த இடத்தை நீக்கவா?';
+
+  @override
+  String get deletePlaceConfirmBody =>
+      'இது இடத்தையும் அதன் அனைத்து விமர்சனங்களையும் நிரந்தரமாக அகற்றும். இதை மீட்க முடியாது.';
+
+  @override
+  String get couldNotDeletePlace =>
+      'இடத்தை நீக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
 }
