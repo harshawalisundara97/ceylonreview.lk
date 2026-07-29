@@ -120,6 +120,9 @@ Plus:
 - **RLS policies:** places readable by everyone, writable by no one (admin/MCP
   seeds them); reviews readable by everyone, insertable only with
   `auth.uid() = user_id`; profiles readable by all, updatable only by owner.
+  Phase 1 moderation adds: a `security definer` `is_admin()` function backs
+  admin-bypass delete policies on `reviews`/`places`, plus insert (self only)
+  and admin-only select/update policies on `reports`.
 - **Seed migration:** insert the 18 places from
   `app/lib/data/sample/sample_data.dart` (sample reviews need real user ids, so
   reviews start empty / or seed after creating a demo user).
