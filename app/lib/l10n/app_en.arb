@@ -160,5 +160,7 @@
   "noOpenReports": "No open reports.",
   "couldNotLoadReports": "Could not load reports.",
   "deleteReview": "Delete review",
-  "dismiss": "Dismiss"
+  "dismiss": "Dismiss",
+  "reviewIdLabel": "Review {id}",
+  "@reviewIdLabel": {"placeholders": {"id": {"type": "String"}}}
 }

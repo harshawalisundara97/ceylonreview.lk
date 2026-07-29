@@ -506,4 +506,9 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get dismiss => 'நிராகரி';
+
+  @override
+  String reviewIdLabel(String id) {
+    return 'விமர்சனம் $id';
+  }
 }

@@ -498,4 +498,9 @@ class AppLocalizationsSi extends AppLocalizations {
 
   @override
   String get dismiss => 'ඉවත් කරන්න';
+
+  @override
+  String reviewIdLabel(String id) {
+    return 'සමාලෝචනය $id';
+  }
 }

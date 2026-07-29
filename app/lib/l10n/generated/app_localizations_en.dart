@@ -494,4 +494,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dismiss => 'Dismiss';
+
+  @override
+  String reviewIdLabel(String id) {
+    return 'Review $id';
+  }
 }

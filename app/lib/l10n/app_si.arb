@@ -150,5 +150,7 @@
   "noOpenReports": "විවෘත වාර්තා නැත.",
   "couldNotLoadReports": "වාර්තා පූරණය කළ නොහැකි විය.",
   "deleteReview": "සමාලෝචනය මකන්න",
-  "dismiss": "ඉවත් කරන්න"
+  "dismiss": "ඉවත් කරන්න",
+  "reviewIdLabel": "සමාලෝචනය {id}",
+  "@reviewIdLabel": {"placeholders": {"id": {"type": "String"}}}
 }

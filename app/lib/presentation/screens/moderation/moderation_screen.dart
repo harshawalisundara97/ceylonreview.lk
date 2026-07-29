@@ -48,7 +48,7 @@ class _ReportRow extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Review ${report.reviewId}', style: theme.textTheme.titleSmall),
+        Text(context.l10n.reviewIdLabel(report.reviewId), style: theme.textTheme.titleSmall),
         const SizedBox(height: AppSpacing.xs),
         Text(_reasonLabel(context, report.reason)),
         if (report.note != null) ...[

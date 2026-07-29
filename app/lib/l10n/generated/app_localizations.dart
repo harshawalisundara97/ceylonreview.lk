@@ -1005,6 +1005,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dismiss'**
   String get dismiss;
+
+  /// No description provided for @reviewIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Review {id}'**
+  String reviewIdLabel(String id);
 }
 
 class _AppLocalizationsDelegate

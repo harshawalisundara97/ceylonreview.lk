@@ -150,5 +150,7 @@
   "noOpenReports": "திறந்த புகார்கள் இல்லை.",
   "couldNotLoadReports": "புகார்களை ஏற்ற முடியவில்லை.",
   "deleteReview": "விமர்சனத்தை நீக்கு",
-  "dismiss": "நிராகரி"
+  "dismiss": "நிராகரி",
+  "reviewIdLabel": "விமர்சனம் {id}",
+  "@reviewIdLabel": {"placeholders": {"id": {"type": "String"}}}
 }
