@@ -16,6 +16,7 @@ Sri Lanka's all-in-one place review app — discover, rate and review restaurant
 - **Add a Place** — signed-in users add missing places with full details, a camera/gallery photo, and a map-pinned location (or their current position); community places are public instantly and badged "COMMUNITY"
 - **Leaderboard** — every review earns 10 points; a "Ranks" tab shows an animated podium for the top 3 and a live, all-time ranked list for everyone, with daily rank-change indicators
 - **3 languages** — English, Sinhala (සිංහල), Tamil (தமிழ்) — switchable in-app, persisted
+- **Content moderation** — users can report reviews (spam/inappropriate/fake/other); admins can delete any review or place and resolve reports from a dedicated Moderation screen
 
 ## Tech Stack
 
@@ -100,6 +101,9 @@ Test groups, by area:
 | `localeProvider` | Persisted locale restore/clear |
 | `LanguagePicker` | Language picker selection updates the locale |
 | `Locale end-to-end` | Login screen renders correctly in Sinhala and Tamil |
+| `SampleReportsRepository` | Report submit/fetchOpen/resolve |
+| `ReportSubmitter`/`ReportResolver` | Report submission and resolution business logic |
+| `isAdminProvider` | Admin-role check, empty when signed out |
 
 When adding a feature or fixing a bug, add or update the relevant group above — this table should stay in sync with the actual `group(...)` blocks in the test file.
 
