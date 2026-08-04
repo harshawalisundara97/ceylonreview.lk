@@ -50,7 +50,7 @@ abstract final class SampleData {
     'dutch-hospital':
         'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Dutch_Hospital.jpg/1280px-Dutch_Hospital.jpg',
     'pettah-market':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Colombo_02.jpg/1280px-Colombo_02.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/7/73/Market_Scene_-_Pettah_District_-_Colombo_-_Sri_Lanka_%2813994395406%29.jpg',
   };
 
   static String _img(String id) => _images[id]!;
