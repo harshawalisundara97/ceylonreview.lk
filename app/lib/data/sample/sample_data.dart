@@ -25,9 +25,8 @@ abstract final class SampleData {
         'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Baydickwella.jpg/1280px-Baydickwella.jpg',
     'arugam-bay':
         'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Beach_of_Arugam_Bay.jpg/1280px-Beach_of_Arugam_Bay.jpg',
-    // Kandalama Reservoir (no Commons photo of the hotel building itself).
     'heritance-kandalama':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/KandalamaReservoir-June2008-2.jpg/1280px-KandalamaReservoir-June2008-2.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/c/ca/Heritance_Kandalama_Exterior_View.JPG',
     'cinnamon-grand':
         'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Cinnamon_Grand%2C_Colombo%2C_Reception.jpg/1280px-Cinnamon_Grand%2C_Colombo%2C_Reception.jpg',
     // Koggala Lake, which the lodge spirals around (no direct hotel photo).
@@ -36,7 +35,7 @@ abstract final class SampleData {
     'temple-of-the-tooth':
         'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/SL_Kandy_asv2020-01_img33_Sacred_Tooth_Temple.jpg/1280px-SL_Kandy_asv2020-01_img33_Sacred_Tooth_Temple.jpg',
     'dambulla-cave-temple':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Dambulla-buddhastupa.jpg/1280px-Dambulla-buddhastupa.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/6/6a/Dhambulla_Cave_Interior.JPG',
     'kelaniya-temple':
         'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Colombo._Kelaniya_Raja_Maha_Vihara_temple_%284%29.jpg/1280px-Colombo._Kelaniya_Raja_Maha_Vihara_temple_%284%29.jpg',
     'sinharaja-forest':
