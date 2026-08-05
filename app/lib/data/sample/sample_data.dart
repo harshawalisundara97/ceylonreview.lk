@@ -10,9 +10,8 @@ import '../../domain/models/review.dart';
 /// stop loading if the source site changes/removes the asset.
 abstract final class SampleData {
   static const _images = <String, String>{
-    // Crab curry dish (no Commons photo of the restaurant itself).
     'ministry-of-crab':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Colombo_restaurant_visit_to_enjoy_crab_curry_-_Oct_2022.jpg/1280px-Colombo_restaurant_visit_to_enjoy_crab_curry_-_Oct_2022.jpg',
+        'https://i0.wp.com/seeingtheworldinsteps.com/wp-content/uploads/2025/08/img_9845.jpg?ssl=1',
     'nuga-gama':
         'https://upload.wikimedia.org/wikipedia/commons/6/6f/Sri_Lankan_Rice_and_Curry.jpg',
     'beach-wadiya':
