@@ -19,6 +19,19 @@ final myReviewsProvider = FutureProvider<List<Review>>((ref) {
   return ref.watch(reviewsRepositoryProvider).fetchMine();
 });
 
+/// Places the signed-in user has reviewed, mapped to their most recent
+/// rating for that place. Empty when signed out.
+final myReviewRatingsProvider = Provider<Map<String, int>>((ref) {
+  final reviews = ref.watch(myReviewsProvider).valueOrNull ?? const [];
+  final map = <String, int>{};
+  for (final r in reviews) {
+    // Reviews are fetched newest-first, so the first occurrence per
+    // place is the most recent rating.
+    map.putIfAbsent(r.placeId, () => r.rating);
+  }
+  return map;
+});
+
 /// Posts a review and refreshes the affected lists.
 class ReviewSubmitter {
   ReviewSubmitter(this._ref);
