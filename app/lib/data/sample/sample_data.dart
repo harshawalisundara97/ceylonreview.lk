@@ -3,55 +3,51 @@ import '../../domain/models/place.dart';
 import '../../domain/models/review.dart';
 
 /// Realistic sample content. Per the design system: always real Sri Lankan
-/// places, never Lorem Ipsum. Image URLs are real, freely-licensed photos
-/// sourced from Wikimedia Commons (same set used to seed the live Supabase
-/// `places.image_url` column).
+/// places, never Lorem Ipsum. Most image URLs are direct third-party links
+/// (hotel/attraction sites, TripAdvisor, Facebook) chosen for the specific
+/// place; a handful still use freely-licensed Wikimedia Commons photos where
+/// no better direct source was available. Some direct links may break or
+/// stop loading if the source site changes/removes the asset.
 abstract final class SampleData {
-  // A handful of entries have no exact business photo on Commons, so they
-  // use the closest well-known real-world subject instead (documented inline).
   static const _images = <String, String>{
-    // Crab curry dish (no Commons photo of the restaurant itself).
     'ministry-of-crab':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Colombo_restaurant_visit_to_enjoy_crab_curry_-_Oct_2022.jpg/1280px-Colombo_restaurant_visit_to_enjoy_crab_curry_-_Oct_2022.jpg',
+        'https://i0.wp.com/seeingtheworldinsteps.com/wp-content/uploads/2025/08/img_9845.jpg?ssl=1',
     'nuga-gama':
         'https://upload.wikimedia.org/wikipedia/commons/6/6f/Sri_Lankan_Rice_and_Curry.jpg',
     'beach-wadiya':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Wellawatte.jpg/1280px-Wellawatte.jpg',
+        'https://lookaside.fbsbx.com/lookaside/crawler/media/?media_id=508303821298563',
     'mirissa-beach':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Mirissa-Plage_%283%29.jpg/1280px-Mirissa-Plage_%283%29.jpg',
+        'https://ceylonroute.com/images/blog/mirissa-beach.jpg',
     'unawatuna-beach':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Unawatuna.jpg/1280px-Unawatuna.jpg',
+        'https://miradasnomadas.com/wp-content/uploads/2024/03/sunset-rock-unawatuna.jpg',
     'hiriketiya-beach':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Baydickwella.jpg/1280px-Baydickwella.jpg',
+        'https://whysrilanka.com/wp-content/uploads/2023/03/hiriketiya-beach-srilanka.jpg',
     'arugam-bay':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Beach_of_Arugam_Bay.jpg/1280px-Beach_of_Arugam_Bay.jpg',
-    // Kandalama Reservoir (no Commons photo of the hotel building itself).
+        'https://lookaside.fbsbx.com/lookaside/crawler/media/?media_id=1272613958200406',
     'heritance-kandalama':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/KandalamaReservoir-June2008-2.jpg/1280px-KandalamaReservoir-June2008-2.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/c/ca/Heritance_Kandalama_Exterior_View.JPG',
     'cinnamon-grand':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Cinnamon_Grand%2C_Colombo%2C_Reception.jpg/1280px-Cinnamon_Grand%2C_Colombo%2C_Reception.jpg',
-    // Koggala Lake, which the lodge spirals around (no direct hotel photo).
+        'https://ik.imgkit.net/3vlqs5axxjf/external/http://images.ntmllc.com/v4/hotel/H08/H08326/H08326_EXT_Z7AC17.JPG?tr=w-1200,fo-auto',
     'tri-hotel':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Lake_Koggala.jpg/1280px-Lake_Koggala.jpg',
+        'https://images.mrandmrssmith.com/images/767x288/6796391-tri-galle-sri-lanka.jpg',
     'temple-of-the-tooth':
         'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/SL_Kandy_asv2020-01_img33_Sacred_Tooth_Temple.jpg/1280px-SL_Kandy_asv2020-01_img33_Sacred_Tooth_Temple.jpg',
     'dambulla-cave-temple':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Dambulla-buddhastupa.jpg/1280px-Dambulla-buddhastupa.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/6/6a/Dhambulla_Cave_Interior.JPG',
     'kelaniya-temple':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Colombo._Kelaniya_Raja_Maha_Vihara_temple_%284%29.jpg/1280px-Colombo._Kelaniya_Raja_Maha_Vihara_temple_%284%29.jpg',
+        'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/09/36/fa/1c.jpg',
     'sinharaja-forest':
         'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/20160128_Sri_Lanka_4132_Sinharaja_Forest_Preserve_sRGB_%2825674474901%29.jpg/1280px-20160128_Sri_Lanka_4132_Sinharaja_Forest_Preserve_sRGB_%2825674474901%29.jpg',
     'horton-plains':
         'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Sri_Lanka%2C_World%27s_End_at_Horton_Plains.jpg/1280px-Sri_Lanka%2C_World%27s_End_at_Horton_Plains.jpg',
     'ravana-falls':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Ravana_Falls_%28Ella%29.jpg/1280px-Ravana_Falls_%28Ella%29.jpg',
-    // A Colombo retail/shopping complex (no Commons photo of the Odel store).
+        'https://ellatours.com/wp-content/uploads/2017/01/E_pmsIxWEAIMVpx-1.jpg',
     'odel':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/One_Galle_Face%2C_Colombo.jpg/1280px-One_Galle_Face%2C_Colombo.jpg',
+        'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/11/02/c6/f1/1507037291077-largejpg.jpg?w=1200&h=-1&s=1',
     'dutch-hospital':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Dutch_Hospital.jpg/1280px-Dutch_Hospital.jpg',
+        'https://r.profitroom.pl/fairwaycolombo/images/attractions/thumbs/1920x900/1753084682.57072-1%20(1).jpg?updated=2026-01-09_11-20',
     'pettah-market':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Colombo_02.jpg/1280px-Colombo_02.jpg',
+        'https://nynehotels.com/lake-lodge/wp-content/uploads/sites/2/2025/02/Pettah-Market-1200x630-1.jpg',
   };
 
   static String _img(String id) => _images[id]!;
