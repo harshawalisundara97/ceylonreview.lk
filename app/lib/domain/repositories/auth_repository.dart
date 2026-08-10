@@ -25,6 +25,10 @@ abstract interface class AuthRepository {
   /// after following a password-reset link, which establishes a temporary
   /// recovery session.
   Future<void> updatePassword(String newPassword);
+
+  /// Whether the currently signed-in user has the `admin` role. False when
+  /// signed out.
+  Future<bool> isCurrentUserAdmin();
 }
 
 /// Auth error with a message safe to show directly in the UI.

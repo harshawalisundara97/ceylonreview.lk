@@ -58,11 +58,17 @@ class SupabaseReviewsRepository implements ReviewsRepository {
         .single();
     return _reviewFromRow(row);
   }
+
+  @override
+  Future<void> delete(String reviewId) async {
+    await _client.from('reviews').delete().eq('id', reviewId);
+  }
 }
 
 Review _reviewFromRow(Map<String, dynamic> row) => Review(
       id: row['id'] as String,
       placeId: row['place_id'] as String,
+      authorId: row['user_id'] as String,
       authorName: row['author_name'] as String,
       rating: row['rating'] as int,
       text: row['text'] as String,

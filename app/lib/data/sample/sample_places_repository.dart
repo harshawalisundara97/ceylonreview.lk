@@ -47,4 +47,9 @@ class SamplePlacesRepository implements PlacesRepository {
     _places.add(place);
     return place;
   }
+
+  @override
+  Future<void> delete(String id) async {
+    _places.removeWhere((p) => p.id == id);
+  }
 }

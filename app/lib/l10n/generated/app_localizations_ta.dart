@@ -445,4 +445,70 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get aPlace => 'ஒரு இடம்';
+
+  @override
+  String get reportReview => 'புகார் செய்';
+
+  @override
+  String get reportThisReview => 'இந்த விமர்சனத்தை புகார் செய்யுங்கள்';
+
+  @override
+  String get reportReasonSpam => 'ஸ்பேம்';
+
+  @override
+  String get reportReasonInappropriate => 'பொருத்தமற்றது';
+
+  @override
+  String get reportReasonFake => 'போலி அல்லது தவறான தகவல்';
+
+  @override
+  String get reportReasonOther => 'மற்றவை';
+
+  @override
+  String get reportNoteOptional => 'கூடுதல் விவரங்கள் (விருப்பம்)';
+
+  @override
+  String get submitReport => 'புகாரை சமர்ப்பிக்கவும்';
+
+  @override
+  String get reportSubmittedThankYou =>
+      'புகார் சமர்ப்பிக்கப்பட்டது. விமர்சனங்களை நம்பகமானதாக வைத்திருக்க உதவியதற்கு நன்றி.';
+
+  @override
+  String get couldNotSubmitReport =>
+      'புகாரை சமர்ப்பிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
+
+  @override
+  String get deletePlace => 'இடத்தை நீக்கு';
+
+  @override
+  String get deletePlaceConfirmTitle => 'இந்த இடத்தை நீக்கவா?';
+
+  @override
+  String get deletePlaceConfirmBody =>
+      'இது இடத்தையும் அதன் அனைத்து விமர்சனங்களையும் நிரந்தரமாக அகற்றும். இதை மீட்க முடியாது.';
+
+  @override
+  String get couldNotDeletePlace =>
+      'இடத்தை நீக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
+
+  @override
+  String get moderation => 'நடத்தை மேற்பார்வை';
+
+  @override
+  String get noOpenReports => 'திறந்த புகார்கள் இல்லை.';
+
+  @override
+  String get couldNotLoadReports => 'புகார்களை ஏற்ற முடியவில்லை.';
+
+  @override
+  String get deleteReview => 'விமர்சனத்தை நீக்கு';
+
+  @override
+  String get dismiss => 'நிராகரி';
+
+  @override
+  String reviewIdLabel(String id) {
+    return 'விமர்சனம் $id';
+  }
 }

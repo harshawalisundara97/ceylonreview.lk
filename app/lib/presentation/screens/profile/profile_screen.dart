@@ -13,6 +13,7 @@ import '../../widgets/review_tile.dart';
 import '../../widgets/user_avatar.dart';
 import '../../widgets/language_picker.dart';
 import '../../../core/l10n_ext.dart';
+import '../moderation/moderation_screen.dart';
 import '../place_detail/place_detail_screen.dart';
 
 /// Profile: avatar + identity, dark-mode toggle, the user's reviews,
@@ -27,6 +28,7 @@ class ProfileScreen extends ConsumerWidget {
     final user = ref.watch(authProvider);
     final themeMode = ref.watch(themeModeProvider);
     final myReviews = ref.watch(myReviewsProvider);
+    final isAdmin = ref.watch(isAdminProvider).valueOrNull ?? false;
     final favoriteIds = ref.watch(myFavoriteIdsProvider);
     final placesAsync = ref.watch(allPlacesProvider);
 
@@ -74,6 +76,15 @@ class ProfileScreen extends ConsumerWidget {
               trailing: const Icon(Icons.chevron_right_rounded),
               onTap: () => showLanguagePicker(context),
             ),
+            if (isAdmin)
+              ListTile(
+                leading: const Icon(Icons.shield_rounded),
+                title: Text(context.l10n.moderation),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const ModerationScreen()),
+                ),
+              ),
             const Divider(height: 1),
             Padding(
               padding: const EdgeInsets.fromLTRB(AppSpacing.gutter,
