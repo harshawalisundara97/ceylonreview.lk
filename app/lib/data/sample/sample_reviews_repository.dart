@@ -37,6 +37,7 @@ class SampleReviewsRepository implements ReviewsRepository {
     final review = Review(
       id: 'r${_nextId++}',
       placeId: placeId,
+      authorId: 'sample-user',
       authorName: authorName,
       rating: rating,
       text: text,
@@ -46,5 +47,11 @@ class SampleReviewsRepository implements ReviewsRepository {
     _reviews.add(review);
     _mine.add(review);
     return review;
+  }
+
+  @override
+  Future<void> delete(String reviewId) async {
+    _reviews.removeWhere((r) => r.id == reviewId);
+    _mine.removeWhere((r) => r.id == reviewId);
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../application/auth_provider.dart';
 import '../../../application/favorites_provider.dart';
 import '../../../application/places_provider.dart';
+import '../../../application/repository_providers.dart';
 import '../../../application/reviews_provider.dart';
 import '../../../core/l10n_ext.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -59,6 +61,7 @@ class _PlaceDetailBody extends ConsumerWidget {
     final isFavorite =
         (ref.watch(myFavoriteIdsProvider).valueOrNull ?? const {})
             .contains(place.id);
+    final isAdmin = ref.watch(isAdminProvider).valueOrNull ?? false;
 
     return Scaffold(
       body: CustomScrollView(
@@ -157,6 +160,13 @@ class _PlaceDetailBody extends ConsumerWidget {
                             .read(myFavoriteIdsProvider.notifier)
                             .toggle(place.id),
                       ),
+                      if (isAdmin)
+                        IconButton(
+                          icon: const Icon(Icons.delete_outline_rounded),
+                          color: theme.colorScheme.error,
+                          onPressed: () =>
+                              _confirmDeletePlace(context, ref, place.id),
+                        ),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.lg),
@@ -267,6 +277,41 @@ class _PlaceDetailBody extends ConsumerWidget {
         ],
       ),
     );
+  }
+}
+
+Future<void> _confirmDeletePlace(
+    BuildContext context, WidgetRef ref, String placeId) async {
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: Text(context.l10n.deletePlaceConfirmTitle),
+      content: Text(context.l10n.deletePlaceConfirmBody),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(dialogContext).pop(false),
+          child: Text(context.l10n.cancel),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(dialogContext).pop(true),
+          child: Text(context.l10n.deletePlace),
+        ),
+      ],
+    ),
+  );
+  if (confirmed != true) return;
+  try {
+    await ref.read(placesRepositoryProvider).delete(placeId);
+    ref.invalidate(allPlacesProvider);
+    ref.invalidate(placesByCategoryProvider);
+    ref.invalidate(trendingPlacesProvider);
+    if (context.mounted) Navigator.of(context).maybePop();
+  } catch (_) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.couldNotDeletePlace)),
+      );
+    }
   }
 }
 

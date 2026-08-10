@@ -433,4 +433,70 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aPlace => 'A place';
+
+  @override
+  String get reportReview => 'Report';
+
+  @override
+  String get reportThisReview => 'Report this review';
+
+  @override
+  String get reportReasonSpam => 'Spam';
+
+  @override
+  String get reportReasonInappropriate => 'Inappropriate';
+
+  @override
+  String get reportReasonFake => 'Fake or misleading';
+
+  @override
+  String get reportReasonOther => 'Other';
+
+  @override
+  String get reportNoteOptional => 'Additional details (optional)';
+
+  @override
+  String get submitReport => 'Submit report';
+
+  @override
+  String get reportSubmittedThankYou =>
+      'Report submitted. Thank you for helping keep reviews trustworthy.';
+
+  @override
+  String get couldNotSubmitReport =>
+      'Could not submit the report. Please try again.';
+
+  @override
+  String get deletePlace => 'Delete place';
+
+  @override
+  String get deletePlaceConfirmTitle => 'Delete this place?';
+
+  @override
+  String get deletePlaceConfirmBody =>
+      'This permanently removes the place and all its reviews. This cannot be undone.';
+
+  @override
+  String get couldNotDeletePlace =>
+      'Could not delete the place. Please try again.';
+
+  @override
+  String get moderation => 'Moderation';
+
+  @override
+  String get noOpenReports => 'No open reports.';
+
+  @override
+  String get couldNotLoadReports => 'Could not load reports.';
+
+  @override
+  String get deleteReview => 'Delete review';
+
+  @override
+  String get dismiss => 'Dismiss';
+
+  @override
+  String reviewIdLabel(String id) {
+    return 'Review $id';
+  }
 }

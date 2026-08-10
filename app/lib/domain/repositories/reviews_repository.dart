@@ -14,4 +14,8 @@ abstract interface class ReviewsRepository {
     required String text,
     List<String> photoUrls = const [],
   });
+
+  /// Deletes a review by id. Requires either review ownership or admin
+  /// role, enforced by RLS.
+  Future<void> delete(String reviewId);
 }

@@ -45,4 +45,7 @@ class SampleAuthRepository implements AuthRepository {
 
   @override
   Future<void> updatePassword(String newPassword) async {}
+
+  @override
+  Future<bool> isCurrentUserAdmin() async => false;
 }

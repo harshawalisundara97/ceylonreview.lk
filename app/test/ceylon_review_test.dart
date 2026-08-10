@@ -13,7 +13,9 @@ import 'package:ceylon_review/application/auth_provider.dart';
 import 'package:ceylon_review/application/favorites_provider.dart';
 import 'package:ceylon_review/application/leaderboard_provider.dart';
 import 'package:ceylon_review/application/locale_provider.dart';
+import 'package:ceylon_review/application/places_provider.dart';
 import 'package:ceylon_review/application/repository_providers.dart';
+import 'package:ceylon_review/application/reports_provider.dart';
 import 'package:ceylon_review/application/reviews_provider.dart';
 import 'package:ceylon_review/core/sri_lanka_districts.dart';
 import 'package:ceylon_review/core/theme/app_theme.dart';
@@ -21,10 +23,12 @@ import 'package:ceylon_review/data/sample/sample_favorites_repository.dart';
 import 'package:ceylon_review/data/sample/sample_leaderboard_repository.dart';
 import 'package:ceylon_review/data/sample/sample_photo_storage_repository.dart';
 import 'package:ceylon_review/data/sample/sample_places_repository.dart';
+import 'package:ceylon_review/data/sample/sample_reports_repository.dart';
 import 'package:ceylon_review/data/sample/sample_reviews_repository.dart';
 import 'package:ceylon_review/domain/models/category.dart';
 import 'package:ceylon_review/domain/models/leaderboard_entry.dart';
 import 'package:ceylon_review/domain/models/place.dart';
+import 'package:ceylon_review/domain/models/report.dart';
 import 'package:ceylon_review/domain/models/review.dart';
 import 'package:ceylon_review/domain/models/user.dart';
 import 'package:ceylon_review/domain/repositories/favorites_repository.dart';
@@ -35,7 +39,9 @@ import 'package:ceylon_review/domain/repositories/reviews_repository.dart';
 import 'package:ceylon_review/presentation/screens/add_place/add_place_screen.dart';
 import 'package:ceylon_review/presentation/screens/leaderboard/leaderboard_screen.dart';
 import 'package:ceylon_review/presentation/screens/login/login_screen.dart';
+import 'package:ceylon_review/presentation/screens/moderation/moderation_screen.dart';
 import 'package:ceylon_review/presentation/screens/place_detail/place_detail_screen.dart';
+import 'package:ceylon_review/presentation/screens/profile/profile_screen.dart';
 import 'package:ceylon_review/presentation/screens/write_review/write_review_screen.dart';
 import 'package:ceylon_review/presentation/widgets/photo_viewer.dart';
 import 'package:ceylon_review/presentation/widgets/place_card.dart';
@@ -284,6 +290,15 @@ void main() {
       expect((await repo.fetchAll()).map((p) => p.id), contains('new-cafe'));
       expect(await repo.fetchById('new-cafe'), isNotNull);
     });
+
+    test('delete removes the place', () async {
+      final repo = SamplePlacesRepository();
+      final all = await repo.fetchAll();
+      final target = all.first;
+      await repo.delete(target.id);
+      final remaining = await repo.fetchAll();
+      expect(remaining.any((p) => p.id == target.id), isFalse);
+    });
   });
 
   group('SampleReviewsRepository', () {
@@ -313,6 +328,19 @@ void main() {
 
       final stored = await repo.fetchForPlace('ministry-of-crab');
       expect(stored.single.photoUrls, ['https://photos.example/crab-1.jpg']);
+    });
+
+    test('delete removes the review', () async {
+      final repo = SampleReviewsRepository();
+      final added = await repo.add(
+        placeId: 'odel',
+        authorName: 'Test User',
+        rating: 3,
+        text: 'Fine, nothing special.',
+      );
+      await repo.delete(added.id);
+      final remaining = await repo.fetchForPlace('odel');
+      expect(remaining.any((r) => r.id == added.id), isFalse);
     });
   });
 
@@ -412,6 +440,39 @@ void main() {
       expect(repo.uploads.keys, contains('user-1/abc.jpg'));
       await repo.deletePhoto(url);
       expect(repo.uploads, isEmpty);
+    });
+  });
+
+  group('SampleReportsRepository', () {
+    test('submit then fetchOpen returns it with status open', () async {
+      final repo = SampleReportsRepository();
+      await repo.submit(
+        reviewId: 'r1',
+        reporterId: 'user-1',
+        reason: ReportReason.spam,
+        note: null,
+      );
+      final open = await repo.fetchOpen();
+      expect(open, hasLength(1));
+      expect(open.first.reviewId, 'r1');
+      expect(open.first.reason, ReportReason.spam);
+      expect(open.first.status, ReportStatus.open);
+    });
+
+    test('resolve marks it actioned or dismissed and removes it from '
+        'fetchOpen', () async {
+      final repo = SampleReportsRepository();
+      await repo.submit(
+        reviewId: 'r1',
+        reporterId: 'user-1',
+        reason: ReportReason.fake,
+        note: 'looks copy-pasted',
+      );
+      final id = (await repo.fetchOpen()).first.id;
+
+      await repo.resolve(id, actioned: true);
+
+      expect(await repo.fetchOpen(), isEmpty);
     });
   });
 
@@ -912,6 +973,66 @@ void main() {
       expect(find.text('No results found for "Nowhereville".'), findsOneWidget);
     });
 
+    testWidgets('ReviewTile shows a report button for others\' reviews and '
+        'submits a report', (tester) async {
+      final review = Review(
+        id: 'r1',
+        placeId: 'odel',
+        authorId: 'other-user',
+        authorName: 'Someone Else',
+        rating: 3,
+        text: 'An okay experience overall.',
+        createdAt: DateTime(2026, 1, 1),
+      );
+      final reportsRepo = SampleReportsRepository();
+
+      await tester.pumpWidget(themed(
+        ReviewTile(review: review),
+        overrides: [
+          reportsRepositoryProvider.overrideWithValue(reportsRepo),
+          authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+              id: 'user-1', name: 'Test User', email: 't@example.com'))),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(Icons.flag_outlined));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Spam'));
+      await tester.pump();
+      await tester.tap(find.text('Submit report'));
+      await tester.pumpAndSettle();
+
+      final open = await reportsRepo.fetchOpen();
+      expect(open, hasLength(1));
+      expect(open.first.reason, ReportReason.spam);
+    });
+
+    testWidgets('ReviewTile hides the report button for the current user\'s '
+        'own review', (tester) async {
+      final review = Review(
+        id: 'r1',
+        placeId: 'odel',
+        authorId: 'user-1',
+        authorName: 'Test User',
+        rating: 5,
+        text: 'My own great review of this place.',
+        createdAt: DateTime(2026, 1, 1),
+      );
+
+      await tester.pumpWidget(themed(
+        ReviewTile(review: review),
+        overrides: [
+          authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+              id: 'user-1', name: 'Test User', email: 't@example.com'))),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.flag_outlined), findsNothing);
+    });
+
     testWidgets('LeaderboardScreen shows a podium for the top 3',
         (tester) async {
       await tester.pumpWidget(themed(
@@ -1012,6 +1133,7 @@ void main() {
       final review = Review(
         id: 'r1',
         placeId: 'ministry-of-crab',
+        authorId: 'sample-user',
         authorName: 'Nadeesha Perera',
         rating: 5,
         text: 'Loved it!',
@@ -1022,7 +1144,12 @@ void main() {
         ],
       );
 
-      await tester.pumpWidget(themed(ReviewTile(review: review)));
+      await tester.pumpWidget(themed(
+        ReviewTile(review: review),
+        overrides: [
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+        ],
+      ));
       await tester.pump();
 
       expect(find.byType(Image), findsNWidgets(2));
@@ -1040,6 +1167,7 @@ void main() {
         Review(
           id: 'r1',
           placeId: 'ministry-of-crab',
+          authorId: 'sample-user',
           authorName: 'Nadeesha Perera',
           rating: 5,
           text: 'Loved it!',
@@ -1070,6 +1198,7 @@ void main() {
         Review(
           id: 'r1',
           placeId: 'ministry-of-crab',
+          authorId: 'sample-user',
           authorName: 'Nadeesha Perera',
           rating: 5,
           text: 'Loved it!',
@@ -1090,6 +1219,111 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Photos'), findsNothing);
+    });
+
+    testWidgets('PlaceDetailScreen shows a delete button for admins and '
+        'deletes the place on confirm', (tester) async {
+      final placesRepo = SamplePlacesRepository();
+      final place = (await placesRepo.fetchAll()).first;
+
+      await tester.pumpWidget(themed(
+        PlaceDetailScreen(placeId: place.id),
+        overrides: [
+          placesRepositoryProvider.overrideWithValue(placesRepo),
+          reviewsRepositoryProvider
+              .overrideWithValue(SampleReviewsRepository(seed: [])),
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+              id: 'admin-1', name: 'Admin', email: 'a@example.com'))),
+          isAdminProvider.overrideWith((ref) => Future.value(true)),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.delete_outline_rounded), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.delete_outline_rounded));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Delete place'));
+      await tester.pumpAndSettle();
+
+      expect(await placesRepo.fetchById(place.id), isNull);
+    });
+
+    testWidgets('PlaceDetailScreen hides the delete button for non-admins',
+        (tester) async {
+      final placesRepo = SamplePlacesRepository();
+      final place = (await placesRepo.fetchAll()).first;
+
+      await tester.pumpWidget(themed(
+        PlaceDetailScreen(placeId: place.id),
+        overrides: [
+          placesRepositoryProvider.overrideWithValue(placesRepo),
+          reviewsRepositoryProvider
+              .overrideWithValue(SampleReviewsRepository(seed: [])),
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+          isAdminProvider.overrideWith((ref) => Future.value(false)),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.delete_outline_rounded), findsNothing);
+    });
+
+    testWidgets('Profile shows the Moderation row only for admins',
+        (tester) async {
+      await tester.pumpWidget(themed(
+        const ProfileScreen(),
+        overrides: [
+          authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+              id: 'admin-1', name: 'Admin', email: 'a@example.com'))),
+          isAdminProvider.overrideWith((ref) => Future.value(true)),
+          myReviewsProvider.overrideWith((ref) => Future.value(const [])),
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          allPlacesProvider.overrideWith((ref) => Future.value(const [])),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Moderation'), findsOneWidget);
+    });
+
+    testWidgets('ModerationScreen lists an open report and deletes the '
+        'review on Delete', (tester) async {
+      final reviewsRepo = SampleReviewsRepository(seed: []);
+      final review = await reviewsRepo.add(
+        placeId: 'odel',
+        authorName: 'Reported User',
+        rating: 1,
+        text: 'This looks like spam content.',
+      );
+      final reportsRepo = SampleReportsRepository();
+      await reportsRepo.submit(
+        reviewId: review.id,
+        reporterId: 'user-2',
+        reason: ReportReason.spam,
+      );
+
+      await tester.pumpWidget(themed(
+        const ModerationScreen(),
+        overrides: [
+          reportsRepositoryProvider.overrideWithValue(reportsRepo),
+          reviewsRepositoryProvider.overrideWithValue(reviewsRepo),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Review ${review.id}'), findsOneWidget);
+
+      await tester.tap(find.text('Delete review'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('No open reports.'), findsOneWidget);
+      expect(await reviewsRepo.fetchForPlace('odel'), isEmpty);
     });
   });
 
@@ -1196,6 +1430,116 @@ void main() {
       }
     });
   });
+
+  group('ReportSubmitter', () {
+    test('submit adds a report as the signed-in user', () async {
+      final reportsRepo = SampleReportsRepository();
+      final container = ProviderContainer(overrides: [
+        reportsRepositoryProvider.overrideWithValue(reportsRepo),
+        authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+            id: 'user-1', name: 'Test User', email: 't@example.com'))),
+      ]);
+      addTearDown(container.dispose);
+
+      await container.read(reportSubmitterProvider).submit(
+            reviewId: 'r1',
+            reason: ReportReason.spam,
+            note: 'obvious spam',
+          );
+
+      final open = await reportsRepo.fetchOpen();
+      expect(open, hasLength(1));
+      expect(open.first.reporterId, 'user-1');
+    });
+
+    test('submit throws when signed out', () async {
+      final container = ProviderContainer(overrides: [
+        reportsRepositoryProvider.overrideWithValue(SampleReportsRepository()),
+        authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+      ]);
+      addTearDown(container.dispose);
+
+      expect(
+        () => container
+            .read(reportSubmitterProvider)
+            .submit(reviewId: 'r1', reason: ReportReason.other),
+        throwsStateError,
+      );
+    });
+  });
+
+  group('ReportResolver', () {
+    test('resolve with actioned: true deletes the review and resolves the '
+        'report', () async {
+      final reviewsRepo = SampleReviewsRepository(seed: []);
+      final added = await reviewsRepo.add(
+        placeId: 'odel',
+        authorName: 'Someone',
+        rating: 1,
+        text: 'This is spam content here.',
+      );
+      final reportsRepo = SampleReportsRepository();
+      await reportsRepo.submit(
+        reviewId: added.id,
+        reporterId: 'user-2',
+        reason: ReportReason.spam,
+      );
+      final reportId = (await reportsRepo.fetchOpen()).first.id;
+
+      final container = ProviderContainer(overrides: [
+        reviewsRepositoryProvider.overrideWithValue(reviewsRepo),
+        reportsRepositoryProvider.overrideWithValue(reportsRepo),
+      ]);
+      addTearDown(container.dispose);
+
+      await container
+          .read(reportResolverProvider)
+          .resolve(reportId, actioned: true);
+
+      expect(await reportsRepo.fetchOpen(), isEmpty);
+      expect(await reviewsRepo.fetchForPlace('odel'), isEmpty);
+    });
+
+    test('resolve with actioned: false only dismisses the report', () async {
+      final reviewsRepo = SampleReviewsRepository(seed: []);
+      final added = await reviewsRepo.add(
+        placeId: 'odel',
+        authorName: 'Someone',
+        rating: 4,
+        text: 'A perfectly fine review, wrongly reported.',
+      );
+      final reportsRepo = SampleReportsRepository();
+      await reportsRepo.submit(
+        reviewId: added.id,
+        reporterId: 'user-2',
+        reason: ReportReason.other,
+      );
+      final reportId = (await reportsRepo.fetchOpen()).first.id;
+
+      final container = ProviderContainer(overrides: [
+        reviewsRepositoryProvider.overrideWithValue(reviewsRepo),
+        reportsRepositoryProvider.overrideWithValue(reportsRepo),
+      ]);
+      addTearDown(container.dispose);
+
+      await container
+          .read(reportResolverProvider)
+          .resolve(reportId, actioned: false);
+
+      expect(await reportsRepo.fetchOpen(), isEmpty);
+      expect(await reviewsRepo.fetchForPlace('odel'), hasLength(1));
+    });
+  });
+
+  group('isAdminProvider', () {
+    test('false when signed out', () async {
+      final container = ProviderContainer(overrides: [
+        authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+      ]);
+      addTearDown(container.dispose);
+      expect(await container.read(isAdminProvider.future), isFalse);
+    });
+  });
 }
 
 class _ThrowingPlacesRepository implements PlacesRepository {
@@ -1218,6 +1562,9 @@ class _ThrowingPlacesRepository implements PlacesRepository {
 
   @override
   Future<List<Place>> search(String query) async => [];
+
+  @override
+  Future<void> delete(String id) async {}
 }
 
 class _ThrowingReviewsRepository implements ReviewsRepository {
@@ -1237,6 +1584,9 @@ class _ThrowingReviewsRepository implements ReviewsRepository {
 
   @override
   Future<List<Review>> fetchMine() async => [];
+
+  @override
+  Future<void> delete(String reviewId) async {}
 }
 
 class _EmptyLeaderboardRepository implements LeaderboardRepository {

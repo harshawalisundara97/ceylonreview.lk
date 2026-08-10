@@ -338,6 +338,7 @@ abstract final class SampleData {
     Review(
       id: 'r1',
       placeId: 'ministry-of-crab',
+      authorId: 'sample-user',
       authorName: 'Nadeesha Perera',
       rating: 5,
       text:
@@ -348,6 +349,7 @@ abstract final class SampleData {
     Review(
       id: 'r2',
       placeId: 'ministry-of-crab',
+      authorId: 'sample-user',
       authorName: 'Tom Whitfield',
       rating: 4,
       text:
@@ -358,6 +360,7 @@ abstract final class SampleData {
     Review(
       id: 'r3',
       placeId: 'mirissa-beach',
+      authorId: 'sample-user',
       authorName: 'Ishara Fernando',
       rating: 5,
       text:
@@ -368,6 +371,7 @@ abstract final class SampleData {
     Review(
       id: 'r4',
       placeId: 'mirissa-beach',
+      authorId: 'sample-user',
       authorName: 'Clara Jensen',
       rating: 4,
       text:
@@ -378,6 +382,7 @@ abstract final class SampleData {
     Review(
       id: 'r5',
       placeId: 'temple-of-the-tooth',
+      authorId: 'sample-user',
       authorName: 'Ruwan Jayasuriya',
       rating: 5,
       text:
@@ -388,6 +393,7 @@ abstract final class SampleData {
     Review(
       id: 'r6',
       placeId: 'heritance-kandalama',
+      authorId: 'sample-user',
       authorName: 'Amaya Wickramasinghe',
       rating: 5,
       text:
@@ -398,6 +404,7 @@ abstract final class SampleData {
     Review(
       id: 'r7',
       placeId: 'sinharaja-forest',
+      authorId: 'sample-user',
       authorName: 'Daniel Okafor',
       rating: 5,
       text:
@@ -408,6 +415,7 @@ abstract final class SampleData {
     Review(
       id: 'r8',
       placeId: 'odel',
+      authorId: 'sample-user',
       authorName: 'Shanika de Silva',
       rating: 4,
       text:

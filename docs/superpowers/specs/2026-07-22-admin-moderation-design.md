@@ -20,11 +20,11 @@ owner outside the app entirely.
 - An `admin`-role user gets a "Moderation" screen (reachable from Profile,
   admin-only) listing open reports, and can delete the reported review or
   dismiss the report.
-- Admins can also delete any review or place directly from its existing
-  screen (place detail / review list) — the same admin-bypass RLS that
-  powers the moderation screen's delete action also applies wherever a
-  delete affordance already exists or gets added, so "un-publishing a bad
-  place" is just an admin deleting it, no separate UI.
+- Admins can also delete any place directly from its detail screen. Review
+  deletion is reachable only through the Moderation screen's report queue
+  (deleting a review always requires a report to resolve against) — there is
+  no direct delete affordance on the review list itself in this phase. The
+  same admin-bypass RLS backs both paths.
 - Admin role is assigned manually via SQL for now; there is no in-app
   promote-to-admin UI in this phase.
 

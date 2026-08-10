@@ -78,6 +78,11 @@ class SupabasePlacesRepository implements PlacesRepository {
         .single();
     return _placeFromRow(row);
   }
+
+  @override
+  Future<void> delete(String id) async {
+    await _client.from('places').delete().eq('id', id);
+  }
 }
 
 Place _placeFromRow(Map<String, dynamic> row) => Place(
