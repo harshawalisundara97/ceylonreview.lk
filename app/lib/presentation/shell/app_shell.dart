@@ -6,15 +6,15 @@ import '../../core/theme/app_spacing.dart';
 
 import '../../core/l10n_ext.dart';
 
-import '../screens/category/category_screen.dart';
 import '../screens/home/home_screen.dart';
-import '../screens/leaderboard/leaderboard_screen.dart';
 import '../screens/map/map_screen.dart';
 import '../screens/profile/profile_screen.dart';
+import '../screens/saved/saved_screen.dart';
 import '../screens/write_review/write_review_screen.dart';
 
-/// Signed-in shell: 6-tab bottom navigation —
-/// Home, Map, Ranks (leaderboard), Post Review, Feed, Profile.
+/// Signed-in shell: 5-tab bottom navigation — Home, Map, Review (centre),
+/// Saved, You. Category browse is reached by tapping a category pill on
+/// Home, not from the nav; Leaderboard is reached from the You tab.
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
 
@@ -28,9 +28,8 @@ class _AppShellState extends State<AppShell> {
   static const _tabs = [
     HomeScreen(),
     MapScreen(),
-    LeaderboardScreen(),
     WriteReviewScreen(),
-    CategoryScreen(),
+    SavedScreen(),
     ProfileScreen(),
   ];
 
@@ -57,19 +56,14 @@ class _AppShellState extends State<AppShell> {
             label: l10n.navMap,
           ),
           NavigationDestination(
-            icon: const Icon(Icons.leaderboard_outlined),
-            selectedIcon: const Icon(Icons.leaderboard_rounded),
-            label: l10n.navRanks,
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.add_circle_rounded,
-                color: scheme.primary, size: 32),
+            icon:
+                Icon(Icons.add_circle_rounded, color: scheme.primary, size: 32),
             label: l10n.navPost,
           ),
           NavigationDestination(
-            icon: const Icon(Icons.dynamic_feed_outlined),
-            selectedIcon: const Icon(Icons.dynamic_feed_rounded),
-            label: l10n.navFeed,
+            icon: const Icon(Icons.bookmark_outline_rounded),
+            selectedIcon: const Icon(Icons.bookmark_rounded),
+            label: l10n.navSaved,
           ),
           NavigationDestination(
             icon: const Icon(Icons.person_outline_rounded),

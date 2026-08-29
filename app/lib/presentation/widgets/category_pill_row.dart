@@ -13,7 +13,13 @@ import '../l10n/category_labels.dart';
 /// Horizontal category selector. Tapping a pill re-themes the entire app
 /// (the signature 360ms cross-fade); tapping again clears back to brand.
 class CategoryPillRow extends ConsumerWidget {
-  const CategoryPillRow({super.key});
+  const CategoryPillRow({super.key, this.onCategorySelected});
+
+  /// Called after a tap with the resulting active category (which is
+  /// [PlaceCategory.home] when tapping the already-selected pill clears
+  /// it back to brand). Home uses this to also push Category browse;
+  /// Map and Category browse leave it null to just filter in place.
+  final ValueChanged<PlaceCategory>? onCategorySelected;
 
   static IconData iconOf(PlaceCategory c) => switch (c) {
         PlaceCategory.home => Icons.explore_rounded,
@@ -60,8 +66,11 @@ class CategoryPillRow extends ConsumerWidget {
               ),
               child: InkWell(
                 borderRadius: BorderRadius.circular(AppRadius.pill),
-                onTap: () =>
-                    ref.read(activeCategoryProvider.notifier).toggle(category),
+                onTap: () {
+                  ref.read(activeCategoryProvider.notifier).toggle(category);
+                  onCategorySelected
+                      ?.call(selected ? PlaceCategory.home : category);
+                },
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: AppSpacing.lg),

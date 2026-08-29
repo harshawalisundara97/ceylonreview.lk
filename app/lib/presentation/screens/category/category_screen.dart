@@ -17,7 +17,7 @@ import '../../widgets/place_card.dart';
 import '../place_detail/place_detail_screen.dart';
 
 /// Category feed: themed header with the active category, pill switcher,
-/// and the full place list. Backs the "Feed" tab.
+/// and the full place list. Reached by tapping a category pill on Home.
 class CategoryScreen extends ConsumerWidget {
   const CategoryScreen({super.key});
 
@@ -72,13 +72,11 @@ class CategoryScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.md),
             Expanded(
               child: places.when(
-                loading: () =>
-                    const Center(child: CircularProgressIndicator()),
-                error: (_, __) =>
-                    Center(child: Text(l10n.couldNotLoadPlaces)),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (_, __) => Center(child: Text(l10n.couldNotLoadPlaces)),
                 data: (list) => ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(AppSpacing.gutter, 0,
-                      AppSpacing.gutter, AppSpacing.xl),
+                  padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.gutter, 0, AppSpacing.gutter, AppSpacing.xl),
                   itemCount: list.length,
                   separatorBuilder: (_, __) =>
                       const SizedBox(height: AppSpacing.md),
@@ -87,8 +85,7 @@ class CategoryScreen extends ConsumerWidget {
                     distanceKm: distanceToPlaceKm(from, list[i]),
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) =>
-                            PlaceDetailScreen(placeId: list[i].id),
+                        builder: (_) => PlaceDetailScreen(placeId: list[i].id),
                       ),
                     ),
                   ),

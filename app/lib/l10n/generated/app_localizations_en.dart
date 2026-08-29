@@ -30,7 +30,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navFeed => 'Feed';
 
   @override
-  String get navProfile => 'Profile';
+  String get navProfile => 'You';
+
+  @override
+  String get navSaved => 'Saved';
 
   @override
   String get name => 'Name';
@@ -383,6 +386,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get map => 'Map';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get comingSoon => 'Coming soon.';
 
   @override
   String get couldNotLoadMap => 'Could not load the map.';

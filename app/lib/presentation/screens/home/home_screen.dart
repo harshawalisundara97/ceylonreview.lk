@@ -23,6 +23,7 @@ import '../../widgets/place_card.dart';
 import '../../widgets/section_header.dart';
 import '../../widgets/user_avatar.dart';
 import '../add_place/add_place_screen.dart';
+import '../category/category_screen.dart';
 import '../place_detail/place_detail_screen.dart';
 
 /// Home: greeting, hero search, category pills (drives re-theming),
@@ -143,7 +144,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
-            const CategoryPillRow(),
+            CategoryPillRow(
+              onCategorySelected: (category) {
+                if (category != PlaceCategory.home) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const CategoryScreen()),
+                  );
+                }
+              },
+            ),
 
             if (searching)
               _SearchResults(query: _query, onOpen: _openPlace)

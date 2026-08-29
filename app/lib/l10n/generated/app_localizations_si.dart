@@ -30,7 +30,10 @@ class AppLocalizationsSi extends AppLocalizations {
   String get navFeed => 'ෆීඩ්';
 
   @override
-  String get navProfile => 'පැතිකඩ';
+  String get navProfile => 'ඔබ';
+
+  @override
+  String get navSaved => 'සුරැකි';
 
   @override
   String get name => 'නම';
@@ -388,6 +391,12 @@ class AppLocalizationsSi extends AppLocalizations {
 
   @override
   String get map => 'සිතියම';
+
+  @override
+  String get search => 'සොයන්න';
+
+  @override
+  String get comingSoon => 'ඉක්මනින් එනවා.';
 
   @override
   String get couldNotLoadMap => 'සිතියම පූරණය කළ නොහැකි විය.';
