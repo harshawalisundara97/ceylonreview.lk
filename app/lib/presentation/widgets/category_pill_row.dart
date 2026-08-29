@@ -28,7 +28,9 @@ class CategoryPillRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final active = ref.watch(activeCategoryProvider);
-    final scheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
     final l10n = context.l10n;
 
     return SizedBox(
@@ -46,12 +48,15 @@ class CategoryPillRow extends ConsumerWidget {
           return AnimatedContainer(
             duration: AppMotion.fast,
             child: Material(
-              color: selected ? scheme.primary : scheme.surfaceContainerLow,
+              color: selected
+                  ? (isDark ? seed.withValues(alpha: 0.16) : scheme.primary)
+                  : scheme.surfaceContainerLow,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppRadius.pill),
                 side: BorderSide(
-                    color:
-                        selected ? Colors.transparent : scheme.outlineVariant),
+                    color: selected
+                        ? (isDark ? seed : Colors.transparent)
+                        : scheme.outlineVariant),
               ),
               child: InkWell(
                 borderRadius: BorderRadius.circular(AppRadius.pill),
@@ -64,12 +69,16 @@ class CategoryPillRow extends ConsumerWidget {
                     children: [
                       Icon(iconOf(category),
                           size: 18,
-                          color: selected ? scheme.onPrimary : seed),
+                          color: selected
+                              ? (isDark ? seed : scheme.onPrimary)
+                              : seed),
                       const SizedBox(width: 6),
                       Text(
                         category.localizedLabel(l10n),
                         style: AppTypography.overline(
-                          selected ? scheme.onPrimary : scheme.onSurfaceVariant,
+                          selected
+                              ? (isDark ? seed : scheme.onPrimary)
+                              : scheme.onSurfaceVariant,
                         ),
                       ),
                     ],

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
-/// Initials avatar in the primary container colors.
+import '../../core/theme/app_colors.dart';
+
+/// Initials avatar. In dark mode this is the Nocturne prototype's fixed
+/// accent-bright circle (not category-tinted); light mode keeps the
+/// existing category-tinted look.
 class UserAvatar extends StatelessWidget {
   const UserAvatar({super.key, required this.name, this.radius = 20});
 
@@ -9,7 +13,9 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
     final parts = name.trim().split(RegExp(r'\s+'));
     final initials = parts
         .where((p) => p.isNotEmpty)
@@ -19,11 +25,11 @@ class UserAvatar extends StatelessWidget {
 
     return CircleAvatar(
       radius: radius,
-      backgroundColor: scheme.primaryContainer,
+      backgroundColor: isDark ? AppColors.accentDark : scheme.primaryContainer,
       child: Text(
         initials.isEmpty ? '?' : initials,
         style: TextStyle(
-          color: scheme.onPrimaryContainer,
+          color: isDark ? AppColors.surfaceDark : scheme.onPrimaryContainer,
           fontWeight: FontWeight.w700,
           fontSize: radius * 0.8,
         ),
