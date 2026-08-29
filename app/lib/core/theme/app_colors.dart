@@ -36,6 +36,9 @@ abstract final class AppColors {
   // Nocturne "accent bright" — UI accent (borders, focus, progress fill);
   // distinct from the star/rating gold, which stays unchanged below.
   static const accentDark = Color(0xFFB5ABFC);
+  // Nocturne base accent — outlined-button borders and focus rings; the
+  // bright shade above (accentDark) is for labels/icons on top of it.
+  static const accentBorderDark = Color(0xFF9184D9);
   static const onAccentDark = Color(0xFF1B1730);
   static const starLight = goldenAmber;
   static const starEmptyLight = Color(0xFFDAD7CF);
@@ -57,12 +60,14 @@ abstract final class AppColors {
 
   // ---- Neutral surfaces, dark ----
   // Sourced from the "Nocturne" design system
-  // (design_handoff_ceylonreview_mobile/README.md) — dark mode is opt-in via
-  // the existing Profile > Dark Mode toggle; the light Ceylon Green theme
-  // stays the app default.
+  // (design_handoff_ceylonreview_mobile/README.md). Dark is now the app
+  // default (ThemeModeNotifier); light stays available via the Profile
+  // toggle. surfaceContainerLowest/Low both carry Nocturne's single
+  // "surface" (#232532) — cards, inputs, nav bar and list rows all use it,
+  // the spec does not distinguish sub-levels for them.
   static const surfaceDark = Color(0xFF161826); // Nocturne "bg"
   static const surfaceBrightDark = Color(0xFF3A3D4D);
-  static const surfaceContainerLowestDark = Color(0xFF0E0F18); // "bg deep"
+  static const surfaceContainerLowestDark = Color(0xFF232532); // "surface"
   static const surfaceContainerLowDark = Color(0xFF232532); // "surface"
   static const surfaceContainerDark = Color(0xFF1B1D2A); // "surface raised"
   static const surfaceContainerHighDark = Color(0xFF2B2E3D);
