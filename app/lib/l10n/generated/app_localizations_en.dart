@@ -127,7 +127,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get whereToNext => 'Where to next in Sri Lanka?';
 
   @override
-  String get searchHint => 'Search places, beaches, food…';
+  String get searchHint => 'Beaches, kottu, waterfalls…';
+
+  @override
+  String homeKicker(String weekday) {
+    return '$weekday · Sri Lanka';
+  }
+
+  @override
+  String homeGreeting(String name) {
+    return 'Hi $name — where to, then?';
+  }
+
+  @override
+  String get homeGreetingGuest => 'Where to, then?';
 
   @override
   String get trendingThisWeek => 'Trending This Week';
