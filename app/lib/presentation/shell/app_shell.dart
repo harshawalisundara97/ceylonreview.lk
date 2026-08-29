@@ -1,4 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+
+import '../../core/theme/app_spacing.dart';
 
 import '../../core/l10n_ext.dart';
 
@@ -36,8 +40,9 @@ class _AppShellState extends State<AppShell> {
     final l10n = context.l10n;
 
     return Scaffold(
+      extendBody: true,
       body: IndexedStack(index: _index, children: _tabs),
-      bottomNavigationBar: NavigationBar(
+      bottomNavigationBar: _GlassNavBar(
         selectedIndex: _index,
         onDestinationSelected: (i) => setState(() => _index = i),
         destinations: [
@@ -72,6 +77,73 @@ class _AppShellState extends State<AppShell> {
             label: l10n.navProfile,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _GlassNavBar extends StatelessWidget {
+  const _GlassNavBar({
+    required this.selectedIndex,
+    required this.onDestinationSelected,
+    required this.destinations,
+  });
+
+  final int selectedIndex;
+  final ValueChanged<int> onDestinationSelected;
+  final List<NavigationDestination> destinations;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final navTheme = theme.navigationBarTheme;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.md),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerLowest.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(AppRadius.xl),
+              border: Border.all(
+                color: scheme.outlineVariant.withValues(alpha: 0.4),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: scheme.scrim.withValues(alpha: 0.12),
+                  blurRadius: 24,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Theme(
+              data: theme.copyWith(
+                navigationBarTheme: navTheme.copyWith(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  shadowColor: Colors.transparent,
+                  surfaceTintColor: Colors.transparent,
+                  indicatorShape: const StadiumBorder(),
+                ),
+              ),
+              child: NavigationBar(
+                selectedIndex: selectedIndex,
+                onDestinationSelected: onDestinationSelected,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                shadowColor: Colors.transparent,
+                surfaceTintColor: Colors.transparent,
+                indicatorShape: const StadiumBorder(),
+                destinations: destinations,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
