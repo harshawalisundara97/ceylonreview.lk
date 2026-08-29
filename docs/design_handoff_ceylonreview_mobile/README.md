@@ -1,5 +1,10 @@
 # Handoff: CeylonReview mobile app — dark redesign
 
+> **Start with `IMPLEMENTATION.md`, not this file.** It has the branch order, the
+> per-session prompts, and the three gaps that made the first pass come out incomplete.
+> This README is the reference spec — read one section at a time, not all of it at once.
+> Per-screen visual targets are in `screens/*.png`.
+
 ## Overview
 A ten-screen mobile design for Ceylon Review: discover, rate and review places across
 Sri Lanka (food, beaches, nature, temples, hotels, shopping), upload photos, and earn
@@ -264,16 +269,8 @@ building:
 3. Leaderboard scopes — is "Friends" real, or should it wait for a follow graph?
 
 ## Files
+- `IMPLEMENTATION.md` — **start here**: branch order, per-session prompts, known gaps.
+- `screens/*.png` — one visual target per screen; attach the matching image to each session.
 - `prototype/CeylonReview App.dc.html` — the click-through prototype, all ten screens.
 - `prototype/nocturne-styles.css` — the design-system token sheet the shell is built on.
 - `prototype/assets/*` — brand marks.
-
-## Using this with Claude Code
-1. Copy `design_handoff_ceylonreview_mobile/` into the repo root (it is reference material —
-   consider adding it to `.gitignore` or committing it under `docs/`).
-2. Open the repo in Claude Code and prompt, roughly:
-   > Read `design_handoff_ceylonreview_mobile/README.md`. Implement the Home and Place detail
-   > screens in `app/lib/presentation/` following our existing Riverpod + Material 3 patterns.
-   > Add the dark token set to the theme first. Follow `CLAUDE.md` — branch, tests, then PR.
-3. Their `CLAUDE.md` requires a feature branch, tests before the PR, and green CI — so ask
-   Claude Code to work one screen per branch rather than all ten at once.
