@@ -37,6 +37,7 @@ import 'package:ceylon_review/domain/repositories/places_repository.dart';
 import 'package:ceylon_review/domain/repositories/leaderboard_repository.dart';
 import 'package:ceylon_review/domain/repositories/reviews_repository.dart';
 import 'package:ceylon_review/presentation/screens/add_place/add_place_screen.dart';
+import 'package:ceylon_review/presentation/screens/home/home_screen.dart';
 import 'package:ceylon_review/presentation/screens/leaderboard/leaderboard_screen.dart';
 import 'package:ceylon_review/presentation/screens/login/login_screen.dart';
 import 'package:ceylon_review/presentation/screens/moderation/moderation_screen.dart';
@@ -44,6 +45,7 @@ import 'package:ceylon_review/presentation/screens/place_detail/place_detail_scr
 import 'package:ceylon_review/presentation/screens/profile/profile_screen.dart';
 import 'package:ceylon_review/presentation/screens/write_review/write_review_screen.dart';
 import 'package:ceylon_review/presentation/widgets/photo_viewer.dart';
+import 'package:ceylon_review/presentation/widgets/category_pill_row.dart';
 import 'package:ceylon_review/presentation/widgets/place_card.dart';
 import 'package:ceylon_review/presentation/widgets/rating_stars.dart';
 import 'package:ceylon_review/presentation/widgets/review_tile.dart';
@@ -459,7 +461,8 @@ void main() {
       expect(open.first.status, ReportStatus.open);
     });
 
-    test('resolve marks it actioned or dismissed and removes it from '
+    test(
+        'resolve marks it actioned or dismissed and removes it from '
         'fetchOpen', () async {
       final repo = SampleReportsRepository();
       await repo.submit(
@@ -547,8 +550,7 @@ void main() {
 
     test('empty when signed out', () {
       final container = ProviderContainer(overrides: [
-        reviewsRepositoryProvider
-            .overrideWithValue(SampleReviewsRepository()),
+        reviewsRepositoryProvider.overrideWithValue(SampleReviewsRepository()),
         authProvider.overrideWith(() => _FakeAuthNotifier(null)),
       ]);
       addTearDown(container.dispose);
@@ -810,7 +812,8 @@ void main() {
       expect(await repo.fetchMyFavoriteIds(), {'odel'});
     });
 
-    testWidgets('PlaceCard shows a past-rating badge when the user has '
+    testWidgets(
+        'PlaceCard shows a past-rating badge when the user has '
         'reviewed this place', (tester) async {
       final place = (await SamplePlacesRepository().fetchAll())
           .firstWhere((p) => p.id == 'odel');
@@ -847,6 +850,55 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.textContaining('You:'), findsNothing);
+    });
+
+    testWidgets(
+        'HomeScreen shows the discover kicker, trending carousel '
+        'and a two-column mosaic grid of places', (tester) async {
+      await tester.pumpWidget(themed(
+        const HomeScreen(),
+        overrides: [
+          placesRepositoryProvider.overrideWithValue(SamplePlacesRepository()),
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          reviewsRepositoryProvider
+              .overrideWithValue(SampleReviewsRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('DISCOVER SRI LANKA'), findsOneWidget);
+      expect(find.byType(CategoryPillRow), findsOneWidget);
+      // Trending rail cards plus the mosaic grid's own cards.
+      expect(find.byType(PlaceCard), findsAtLeastNWidgets(4));
+
+      // Scroll to reach a place further down the mosaic grid.
+      await tester.drag(
+          find.byKey(const Key('home-scroll')), const Offset(0, -600));
+      await tester.pumpAndSettle();
+      expect(find.text('Odel'), findsOneWidget);
+    });
+
+    testWidgets('HomeScreen search bar filter icon opens the filters sheet',
+        (tester) async {
+      await tester.pumpWidget(themed(
+        const HomeScreen(),
+        overrides: [
+          placesRepositoryProvider.overrideWithValue(SamplePlacesRepository()),
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          reviewsRepositoryProvider
+              .overrideWithValue(SampleReviewsRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(Icons.tune_rounded));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Sort by'), findsOneWidget);
     });
 
     testWidgets('PlaceCard with open-hours chip fits the trending carousel',
@@ -973,7 +1025,8 @@ void main() {
       expect(find.text('No results found for "Nowhereville".'), findsOneWidget);
     });
 
-    testWidgets('ReviewTile shows a report button for others\' reviews and '
+    testWidgets(
+        'ReviewTile shows a report button for others\' reviews and '
         'submits a report', (tester) async {
       final review = Review(
         id: 'r1',
@@ -1009,7 +1062,8 @@ void main() {
       expect(open.first.reason, ReportReason.spam);
     });
 
-    testWidgets('ReviewTile hides the report button for the current user\'s '
+    testWidgets(
+        'ReviewTile hides the report button for the current user\'s '
         'own review', (tester) async {
       final review = Review(
         id: 'r1',
@@ -1221,7 +1275,8 @@ void main() {
       expect(find.text('Photos'), findsNothing);
     });
 
-    testWidgets('PlaceDetailScreen shows a delete button for admins and '
+    testWidgets(
+        'PlaceDetailScreen shows a delete button for admins and '
         'deletes the place on confirm', (tester) async {
       final placesRepo = SamplePlacesRepository();
       final place = (await placesRepo.fetchAll()).first;
@@ -1292,7 +1347,8 @@ void main() {
       expect(find.text('Moderation'), findsOneWidget);
     });
 
-    testWidgets('ModerationScreen lists an open report and deletes the '
+    testWidgets(
+        'ModerationScreen lists an open report and deletes the '
         'review on Delete', (tester) async {
       final reviewsRepo = SampleReviewsRepository(seed: []);
       final review = await reviewsRepo.add(
@@ -1469,7 +1525,8 @@ void main() {
   });
 
   group('ReportResolver', () {
-    test('resolve with actioned: true deletes the review and resolves the '
+    test(
+        'resolve with actioned: true deletes the review and resolves the '
         'report', () async {
       final reviewsRepo = SampleReviewsRepository(seed: []);
       final added = await reviewsRepo.add(

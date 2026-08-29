@@ -10,6 +10,7 @@ import '../../../application/location_provider.dart';
 import '../../../application/place_filters_provider.dart';
 import '../../../application/places_provider.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../domain/models/category.dart';
 import '../../l10n/category_labels.dart';
@@ -58,6 +59,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       body: SafeArea(
         child: ListView(
+          key: const Key('home-scroll'),
           padding: const EdgeInsets.only(bottom: AppSpacing.xl),
           children: [
             // Greeting header on the category tint wash.
@@ -74,9 +76,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Text(l10n.discoverSriLanka,
+                                style: AppTypography.overline(
+                                    theme.colorScheme.primary)),
+                            const SizedBox(height: AppSpacing.xs),
                             Text(
                                 user != null
-                                    ? context.l10n.ayubowanUser(user.name.split(' ').first)
+                                    ? context.l10n.ayubowanUser(
+                                        user.name.split(' ').first)
                                     : context.l10n.ayubowan,
                                 style: theme.textTheme.headlineMedium),
                             const SizedBox(height: 2),
@@ -95,15 +102,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     decoration: InputDecoration(
                       hintText: context.l10n.searchHint,
                       prefixIcon: const Icon(Icons.search_rounded),
-                      suffixIcon: searching
-                          ? IconButton(
+                      suffixIcon: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (searching)
+                            IconButton(
                               icon: const Icon(Icons.close_rounded),
                               onPressed: () {
                                 _searchController.clear();
                                 setState(() => _query = '');
                               },
-                            )
-                          : null,
+                            ),
+                          SizedBox(
+                            height: 24,
+                            child: VerticalDivider(
+                                width: 1,
+                                color: theme.colorScheme.outlineVariant),
+                          ),
+                          Consumer(
+                            builder: (context, ref, _) => IconButton(
+                              icon: Badge(
+                                isLabelVisible:
+                                    ref.watch(placeFiltersProvider).isActive,
+                                child: const Icon(Icons.tune_rounded),
+                              ),
+                              tooltip: l10n.filters,
+                              onPressed: () => showFiltersSheet(
+                                  context, ref, activeCategory),
+                            ),
+                          ),
+                        ],
+                      ),
                       fillColor: theme.colorScheme.surfaceContainerLowest,
                     ),
                   ),
@@ -122,19 +151,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 title: activeCategory == PlaceCategory.home
                     ? l10n.placesYoullLove
                     : activeCategory.localizedDisplayName(l10n),
-                action: Consumer(
-                  builder: (context, ref, _) => IconButton(
-                    icon: Badge(
-                      isLabelVisible: ref.watch(placeFiltersProvider).isActive,
-                      child: const Icon(Icons.tune_rounded),
-                    ),
-                    tooltip: l10n.filters,
-                    onPressed: () =>
-                        showFiltersSheet(context, ref, activeCategory),
-                  ),
-                ),
               ),
-              _CategoryList(onOpen: _openPlace),
+              _MosaicGrid(onOpen: _openPlace),
             ],
           ],
         ),
@@ -172,8 +190,11 @@ class _TrendingCarousel extends ConsumerWidget {
   }
 }
 
-class _CategoryList extends ConsumerWidget {
-  const _CategoryList({required this.onOpen});
+/// Two-column mosaic grid of place cards for the active category — replaces
+/// a single vertical list with a denser, staggered-feeling layout (card
+/// heights vary naturally with each place's text content).
+class _MosaicGrid extends ConsumerWidget {
+  const _MosaicGrid({required this.onOpen});
 
   final ValueChanged<String> onOpen;
 
@@ -192,20 +213,42 @@ class _CategoryList extends ConsumerWidget {
         child: Center(child: CircularProgressIndicator()),
       ),
       error: (_, __) => const _ErrorNote(),
-      data: (list) => Column(
-        children: [
-          for (final place in list)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.gutter, 0, AppSpacing.gutter, AppSpacing.md),
-              child: PlaceCard(
-                place: place,
-                distanceKm: distanceToPlaceKm(from, place),
-                onTap: () => onOpen(place.id),
-              ),
-            ),
-        ],
-      ),
+      data: (list) {
+        if (list.isEmpty) {
+          return const SizedBox.shrink();
+        }
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final columnWidth = (constraints.maxWidth - AppSpacing.md) / 2;
+              final left = <Widget>[];
+              final right = <Widget>[];
+              for (var i = 0; i < list.length; i++) {
+                final place = list[i];
+                final card = Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                  child: PlaceCard(
+                    place: place,
+                    width: columnWidth,
+                    distanceKm: distanceToPlaceKm(from, place),
+                    onTap: () => onOpen(place.id),
+                  ),
+                );
+                (i.isEven ? left : right).add(card);
+              }
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(children: left),
+                  const SizedBox(width: AppSpacing.md),
+                  Column(children: right),
+                ],
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
