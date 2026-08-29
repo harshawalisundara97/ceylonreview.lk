@@ -325,8 +325,26 @@ abstract class AppLocalizations {
   /// No description provided for @searchHint.
   ///
   /// In en, this message translates to:
-  /// **'Search places, beaches, food…'**
+  /// **'Beaches, kottu, waterfalls…'**
   String get searchHint;
+
+  /// No description provided for @homeKicker.
+  ///
+  /// In en, this message translates to:
+  /// **'{weekday} · Sri Lanka'**
+  String homeKicker(String weekday);
+
+  /// No description provided for @homeGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi {name} — where to, then?'**
+  String homeGreeting(String name);
+
+  /// No description provided for @homeGreetingGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'Where to, then?'**
+  String get homeGreetingGuest;
 
   /// No description provided for @trendingThisWeek.
   ///

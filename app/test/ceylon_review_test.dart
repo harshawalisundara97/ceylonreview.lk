@@ -853,7 +853,7 @@ void main() {
     });
 
     testWidgets(
-        'HomeScreen shows the discover kicker, trending carousel '
+        'HomeScreen shows the greeting, trending carousel '
         'and a two-column mosaic grid of places', (tester) async {
       await tester.pumpWidget(themed(
         const HomeScreen(),
@@ -868,10 +868,11 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      expect(find.text('DISCOVER SRI LANKA'), findsOneWidget);
+      expect(find.text('Where to, then?'), findsOneWidget);
       expect(find.byType(CategoryPillRow), findsOneWidget);
-      // Trending rail cards plus the mosaic grid's own cards.
-      expect(find.byType(PlaceCard), findsAtLeastNWidgets(4));
+      // Trending rail cards use PlaceCard; the mosaic grid uses its own
+      // simpler tile, so this only counts the trending rail.
+      expect(find.byType(PlaceCard), findsWidgets);
 
       // Scroll to reach a place further down the mosaic grid.
       await tester.drag(
@@ -895,7 +896,7 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byIcon(Icons.tune_rounded));
+      await tester.tap(find.byIcon(Icons.filter_list_rounded));
       await tester.pumpAndSettle();
 
       expect(find.text('Sort by'), findsOneWidget);

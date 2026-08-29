@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart' as latlong;
 
 import '../../../core/l10n_ext.dart';
@@ -9,10 +10,12 @@ import '../../../application/category_theme_provider.dart';
 import '../../../application/location_provider.dart';
 import '../../../application/place_filters_provider.dart';
 import '../../../application/places_provider.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../../domain/models/category.dart';
+import '../../../domain/models/place.dart';
 import '../../l10n/category_labels.dart';
 import '../../widgets/category_pill_row.dart';
 import '../../widgets/filters_bottom_sheet.dart';
@@ -50,7 +53,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final tokens = theme.extension<CeylonTokens>()!;
     final user = ref.watch(authProvider);
     final activeCategory = ref.watch(activeCategoryProvider);
     final searching = _query.trim().isNotEmpty;
@@ -62,33 +64,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           key: const Key('home-scroll'),
           padding: const EdgeInsets.only(bottom: AppSpacing.xl),
           children: [
-            // Greeting header on the category tint wash.
-            Container(
-              color: tokens.categoryTint,
-              padding: const EdgeInsets.fromLTRB(AppSpacing.gutter,
-                  AppSpacing.lg, AppSpacing.gutter, AppSpacing.lg),
+            // Kicker + greeting + search — no tinted wash, matches the
+            // Nocturne prototype's plain-background Home header.
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.gutter, AppSpacing.lg, AppSpacing.gutter, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(l10n.discoverSriLanka,
-                                style: AppTypography.overline(
-                                    theme.colorScheme.primary)),
+                            Text(
+                              l10n.homeKicker(DateFormat.EEEE(
+                                      Localizations.localeOf(context)
+                                          .toString())
+                                  .format(DateTime.now())),
+                              style: AppTypography.overline(
+                                  theme.colorScheme.onSurfaceVariant),
+                            ),
                             const SizedBox(height: AppSpacing.xs),
                             Text(
-                                user != null
-                                    ? context.l10n.ayubowanUser(
-                                        user.name.split(' ').first)
-                                    : context.l10n.ayubowan,
-                                style: theme.textTheme.headlineMedium),
-                            const SizedBox(height: 2),
-                            Text(context.l10n.whereToNext,
-                                style: theme.textTheme.bodyMedium),
+                              user != null
+                                  ? l10n
+                                      .homeGreeting(user.name.split(' ').first)
+                                  : l10n.homeGreetingGuest,
+                              style: theme.textTheme.headlineMedium,
+                            ),
                           ],
                         ),
                       ),
@@ -100,7 +106,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     controller: _searchController,
                     onChanged: (v) => setState(() => _query = v),
                     decoration: InputDecoration(
-                      hintText: context.l10n.searchHint,
+                      hintText: l10n.searchHint,
                       prefixIcon: const Icon(Icons.search_rounded),
                       suffixIcon: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -121,11 +127,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ),
                           Consumer(
                             builder: (context, ref, _) => IconButton(
-                              icon: Badge(
-                                isLabelVisible:
-                                    ref.watch(placeFiltersProvider).isActive,
-                                child: const Icon(Icons.tune_rounded),
-                              ),
+                              icon: const Icon(Icons.filter_list_rounded),
+                              color: theme.colorScheme.secondary,
                               tooltip: l10n.filters,
                               onPressed: () => showFiltersSheet(
                                   context, ref, activeCategory),
@@ -190,9 +193,11 @@ class _TrendingCarousel extends ConsumerWidget {
   }
 }
 
-/// Two-column mosaic grid of place cards for the active category — replaces
-/// a single vertical list with a denser, staggered-feeling layout (card
-/// heights vary naturally with each place's text content).
+/// Two-column mosaic grid: the Nocturne prototype's "Fresh on the island"
+/// layout — every 3rd tile (by index) is taller than its neighbors for a
+/// staggered feel, tiles show category + name below the image (no overlay,
+/// no save button, no review count — that's the separate "photo card" list
+/// style used elsewhere, not this one).
 class _MosaicGrid extends ConsumerWidget {
   const _MosaicGrid({required this.onOpen});
 
@@ -217,38 +222,131 @@ class _MosaicGrid extends ConsumerWidget {
         if (list.isEmpty) {
           return const SizedBox.shrink();
         }
+        final left = <Widget>[];
+        final right = <Widget>[];
+        for (var i = 0; i < list.length; i++) {
+          final place = list[i];
+          final tile = Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.md),
+            child: _MosaicTile(
+              place: place,
+              imageHeight: i % 3 == 0 ? 156 : 116,
+              distanceKm: distanceToPlaceKm(from, place),
+              onTap: () => onOpen(place.id),
+            ),
+          );
+          (i.isEven ? left : right).add(tile);
+        }
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final columnWidth = (constraints.maxWidth - AppSpacing.md) / 2;
-              final left = <Widget>[];
-              final right = <Widget>[];
-              for (var i = 0; i < list.length; i++) {
-                final place = list[i];
-                final card = Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                  child: PlaceCard(
-                    place: place,
-                    width: columnWidth,
-                    distanceKm: distanceToPlaceKm(from, place),
-                    onTap: () => onOpen(place.id),
-                  ),
-                );
-                (i.isEven ? left : right).add(card);
-              }
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(children: left),
-                  const SizedBox(width: AppSpacing.md),
-                  Column(children: right),
-                ],
-              );
-            },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: Column(children: left)),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(child: Column(children: right)),
+            ],
           ),
         );
       },
+    );
+  }
+}
+
+class _MosaicTile extends StatelessWidget {
+  const _MosaicTile({
+    required this.place,
+    required this.imageHeight,
+    required this.distanceKm,
+    required this.onTap,
+  });
+
+  final Place place;
+  final double imageHeight;
+  final double? distanceKm;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = context.l10n;
+    final seed = AppColors.seedOf(place.category);
+
+    return Material(
+      color: theme.colorScheme.surfaceContainerLowest,
+      borderRadius: BorderRadius.circular(AppRadius.md),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                SizedBox(
+                  height: imageHeight,
+                  width: double.infinity,
+                  child: Image.network(
+                    place.imageUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      color: theme.colorScheme.surfaceContainerHigh,
+                      alignment: Alignment.center,
+                      child: Icon(Icons.photo_rounded,
+                          color: theme.colorScheme.outline, size: 28),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child:
+                      Container(height: 2, color: seed.withValues(alpha: 0.55)),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.sm, AppSpacing.sm, AppSpacing.sm, AppSpacing.sm),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(place.category.localizedLabel(l10n),
+                      style: AppTypography.overline(seed)),
+                  const SizedBox(height: 4),
+                  Text(
+                    place.name,
+                    style: theme.textTheme.labelLarge,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(Icons.star_rounded,
+                          size: 12,
+                          color: theme.extension<CeylonTokens>()!.star),
+                      const SizedBox(width: 3),
+                      Text(place.ratingLabel,
+                          style: theme.textTheme.labelSmall),
+                      const SizedBox(width: 3),
+                      Flexible(
+                        child: Text(
+                          '· ${distanceKm != null ? '${distanceKm!.toStringAsFixed(1)} km' : place.district}',
+                          style: theme.textTheme.labelSmall,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

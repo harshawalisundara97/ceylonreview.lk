@@ -128,7 +128,20 @@ class AppLocalizationsTa extends AppLocalizations {
   String get whereToNext => 'இலங்கையில் அடுத்து எங்கே?';
 
   @override
-  String get searchHint => 'இடங்கள், கடற்கரைகள், உணவு தேடுங்கள்…';
+  String get searchHint => 'கடற்கரைகள், கொத்து, அருவிகள்…';
+
+  @override
+  String homeKicker(String weekday) {
+    return '$weekday · இலங்கை';
+  }
+
+  @override
+  String homeGreeting(String name) {
+    return 'வணக்கம், $name — இன்று எங்கே?';
+  }
+
+  @override
+  String get homeGreetingGuest => 'இன்று எங்கே?';
 
   @override
   String get trendingThisWeek => 'இந்த வாரம் பிரபலமானவை';
