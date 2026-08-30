@@ -195,9 +195,18 @@ abstract final class AppTheme {
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: colorScheme.surfaceContainerLowest,
-        indicatorColor: p.primaryContainer,
+        indicatorColor: light
+            ? p.primaryContainer
+            : AppColors.accentDark.withValues(alpha: 0.22),
         height: 72,
         labelTextStyle: WidgetStatePropertyAll(textTheme.labelMedium),
+        iconTheme: light
+            ? null
+            : WidgetStateProperty.resolveWith((states) => IconThemeData(
+                  color: states.contains(WidgetState.selected)
+                      ? AppColors.accentDark
+                      : colorScheme.onSurfaceVariant,
+                )),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,

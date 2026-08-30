@@ -30,7 +30,10 @@ class AppLocalizationsTa extends AppLocalizations {
   String get navFeed => 'ஃபீடு';
 
   @override
-  String get navProfile => 'சுயவிவரம்';
+  String get navProfile => 'நீங்கள்';
+
+  @override
+  String get navSaved => 'சேமிக்கப்பட்டவை';
 
   @override
   String get name => 'பெயர்';
@@ -394,6 +397,12 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get map => 'வரைபடம்';
+
+  @override
+  String get search => 'தேடல்';
+
+  @override
+  String get comingSoon => 'விரைவில் வருகிறது.';
 
   @override
   String get couldNotLoadMap => 'வரைபடத்தை ஏற்ற முடியவில்லை.';

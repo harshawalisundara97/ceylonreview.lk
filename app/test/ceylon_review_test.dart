@@ -39,6 +39,7 @@ import 'package:ceylon_review/domain/repositories/reviews_repository.dart';
 import 'package:ceylon_review/presentation/screens/add_place/add_place_screen.dart';
 import 'package:ceylon_review/presentation/screens/home/home_screen.dart';
 import 'package:ceylon_review/presentation/screens/leaderboard/leaderboard_screen.dart';
+import 'package:ceylon_review/presentation/screens/category/category_screen.dart';
 import 'package:ceylon_review/presentation/screens/login/login_screen.dart';
 import 'package:ceylon_review/presentation/screens/moderation/moderation_screen.dart';
 import 'package:ceylon_review/presentation/screens/place_detail/place_detail_screen.dart';
@@ -881,6 +882,28 @@ void main() {
       expect(find.text('Odel'), findsOneWidget);
     });
 
+    testWidgets('HomeScreen tapping a category pill opens CategoryScreen',
+        (tester) async {
+      await tester.pumpWidget(themed(
+        const HomeScreen(),
+        overrides: [
+          placesRepositoryProvider.overrideWithValue(SamplePlacesRepository()),
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          reviewsRepositoryProvider
+              .overrideWithValue(SampleReviewsRepository()),
+          authProvider.overrideWith(() => _FakeAuthNotifier(null)),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.descendant(
+          of: find.byType(CategoryPillRow), matching: find.text('BEACHES')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CategoryScreen), findsOneWidget);
+    });
+
     testWidgets('HomeScreen search bar filter icon opens the filters sheet',
         (tester) async {
       await tester.pumpWidget(themed(
@@ -1346,6 +1369,32 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Moderation'), findsOneWidget);
+    });
+
+    testWidgets('Profile Leaderboard row opens the LeaderboardScreen',
+        (tester) async {
+      await tester.pumpWidget(themed(
+        const ProfileScreen(),
+        overrides: [
+          authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+              id: 'user-1', name: 'Test', email: 't@example.com'))),
+          isAdminProvider.overrideWith((ref) => Future.value(false)),
+          myReviewsProvider.overrideWith((ref) => Future.value(const [])),
+          favoritesRepositoryProvider
+              .overrideWithValue(SampleFavoritesRepository()),
+          allPlacesProvider.overrideWith((ref) => Future.value(const [])),
+          leaderboardRepositoryProvider
+              .overrideWithValue(SampleLeaderboardRepository()),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Leaderboard'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.byType(LeaderboardScreen), findsOneWidget);
     });
 
     testWidgets(

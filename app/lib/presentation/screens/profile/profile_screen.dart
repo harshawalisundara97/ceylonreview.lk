@@ -13,6 +13,7 @@ import '../../widgets/review_tile.dart';
 import '../../widgets/user_avatar.dart';
 import '../../widgets/language_picker.dart';
 import '../../../core/l10n_ext.dart';
+import '../leaderboard/leaderboard_screen.dart';
 import '../moderation/moderation_screen.dart';
 import '../place_detail/place_detail_screen.dart';
 
@@ -76,6 +77,14 @@ class ProfileScreen extends ConsumerWidget {
               trailing: const Icon(Icons.chevron_right_rounded),
               onTap: () => showLanguagePicker(context),
             ),
+            ListTile(
+              leading: const Icon(Icons.leaderboard_rounded),
+              title: Text(context.l10n.leaderboard),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const LeaderboardScreen()),
+              ),
+            ),
             if (isAdmin)
               ListTile(
                 leading: const Icon(Icons.shield_rounded),
@@ -89,7 +98,8 @@ class ProfileScreen extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(AppSpacing.gutter,
                   AppSpacing.xl, AppSpacing.gutter, AppSpacing.sm),
-              child: Text(context.l10n.yourFavorites, style: theme.textTheme.titleLarge),
+              child: Text(context.l10n.yourFavorites,
+                  style: theme.textTheme.titleLarge),
             ),
             favoriteIds.when(
               loading: () => const Padding(
@@ -137,7 +147,8 @@ class ProfileScreen extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(AppSpacing.gutter,
                   AppSpacing.xl, AppSpacing.gutter, AppSpacing.sm),
-              child: Text(context.l10n.yourReviews, style: theme.textTheme.titleLarge),
+              child: Text(context.l10n.yourReviews,
+                  style: theme.textTheme.titleLarge),
             ),
             myReviews.when(
               loading: () => const Padding(
