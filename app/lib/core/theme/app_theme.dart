@@ -133,10 +133,13 @@ abstract final class AppTheme {
       ),
       cardTheme: CardThemeData(
         color: colorScheme.surfaceContainerLowest,
-        elevation: 1.5,
-        shadowColor: colorScheme.scrim.withValues(alpha: 0.18),
+        elevation: light ? 1.5 : 0,
+        shadowColor: light ? colorScheme.scrim.withValues(alpha: 0.18) : null,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.lg),
+          side: light
+              ? BorderSide.none
+              : BorderSide(color: AppColors.outlineDark),
         ),
         margin: EdgeInsets.zero,
       ),
@@ -145,7 +148,13 @@ abstract final class AppTheme {
           minimumSize: const Size.fromHeight(AppSpacing.minTap + 8),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.pill),
+            side: light
+                ? BorderSide.none
+                : const BorderSide(color: AppColors.accentBorderDark),
           ),
+          backgroundColor:
+              light ? null : AppColors.accentBorderDark.withValues(alpha: 0.10),
+          foregroundColor: light ? null : AppColors.accentDark,
           textStyle: textTheme.labelLarge,
         ),
       ),
@@ -186,9 +195,18 @@ abstract final class AppTheme {
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: colorScheme.surfaceContainerLowest,
-        indicatorColor: p.primaryContainer,
+        indicatorColor: light
+            ? p.primaryContainer
+            : AppColors.accentDark.withValues(alpha: 0.22),
         height: 72,
         labelTextStyle: WidgetStatePropertyAll(textTheme.labelMedium),
+        iconTheme: light
+            ? null
+            : WidgetStateProperty.resolveWith((states) => IconThemeData(
+                  color: states.contains(WidgetState.selected)
+                      ? AppColors.accentDark
+                      : colorScheme.onSurfaceVariant,
+                )),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,

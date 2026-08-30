@@ -30,7 +30,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navFeed => 'Feed';
 
   @override
-  String get navProfile => 'Profile';
+  String get navProfile => 'You';
+
+  @override
+  String get navSaved => 'Saved';
 
   @override
   String get name => 'Name';
@@ -127,7 +130,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get whereToNext => 'Where to next in Sri Lanka?';
 
   @override
-  String get searchHint => 'Search places, beaches, food…';
+  String get searchHint => 'Beaches, kottu, waterfalls…';
+
+  @override
+  String homeKicker(String weekday) {
+    return '$weekday · Sri Lanka';
+  }
+
+  @override
+  String homeGreeting(String name) {
+    return 'Hi $name — where to, then?';
+  }
+
+  @override
+  String get homeGreetingGuest => 'Where to, then?';
 
   @override
   String get trendingThisWeek => 'Trending This Week';
@@ -370,6 +386,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get map => 'Map';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get comingSoon => 'Coming soon.';
 
   @override
   String get couldNotLoadMap => 'Could not load the map.';

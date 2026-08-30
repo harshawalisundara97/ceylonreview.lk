@@ -30,7 +30,10 @@ class AppLocalizationsSi extends AppLocalizations {
   String get navFeed => 'ෆීඩ්';
 
   @override
-  String get navProfile => 'පැතිකඩ';
+  String get navProfile => 'ඔබ';
+
+  @override
+  String get navSaved => 'සුරැකි';
 
   @override
   String get name => 'නම';
@@ -127,7 +130,20 @@ class AppLocalizationsSi extends AppLocalizations {
   String get whereToNext => 'ශ්‍රී ලංකාවේ ඊළඟට කොහෙද?';
 
   @override
-  String get searchHint => 'ස්ථාන, වෙරළ, කෑම සොයන්න…';
+  String get searchHint => 'වෙරළ, කොත්තු, දිය ඇල්ල…';
+
+  @override
+  String homeKicker(String weekday) {
+    return '$weekday · ශ්‍රී ලංකාව';
+  }
+
+  @override
+  String homeGreeting(String name) {
+    return 'ආයුබෝවන්, $name — අද කොහෙද?';
+  }
+
+  @override
+  String get homeGreetingGuest => 'අද කොහෙද?';
 
   @override
   String get trendingThisWeek => 'මේ සතියේ ජනප්‍රිය';
@@ -375,6 +391,12 @@ class AppLocalizationsSi extends AppLocalizations {
 
   @override
   String get map => 'සිතියම';
+
+  @override
+  String get search => 'සොයන්න';
+
+  @override
+  String get comingSoon => 'ඉක්මනින් එනවා.';
 
   @override
   String get couldNotLoadMap => 'සිතියම පූරණය කළ නොහැකි විය.';

@@ -145,8 +145,14 @@ abstract class AppLocalizations {
   /// No description provided for @navProfile.
   ///
   /// In en, this message translates to:
-  /// **'Profile'**
+  /// **'You'**
   String get navProfile;
+
+  /// No description provided for @navSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get navSaved;
 
   /// No description provided for @name.
   ///
@@ -325,8 +331,26 @@ abstract class AppLocalizations {
   /// No description provided for @searchHint.
   ///
   /// In en, this message translates to:
-  /// **'Search places, beaches, food…'**
+  /// **'Beaches, kottu, waterfalls…'**
   String get searchHint;
+
+  /// No description provided for @homeKicker.
+  ///
+  /// In en, this message translates to:
+  /// **'{weekday} · Sri Lanka'**
+  String homeKicker(String weekday);
+
+  /// No description provided for @homeGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi {name} — where to, then?'**
+  String homeGreeting(String name);
+
+  /// No description provided for @homeGreetingGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'Where to, then?'**
+  String get homeGreetingGuest;
 
   /// No description provided for @trendingThisWeek.
   ///
@@ -777,6 +801,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Map'**
   String get map;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon.'**
+  String get comingSoon;
 
   /// No description provided for @couldNotLoadMap.
   ///

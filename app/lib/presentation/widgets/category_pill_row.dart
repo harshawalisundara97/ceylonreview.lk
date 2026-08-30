@@ -13,7 +13,13 @@ import '../l10n/category_labels.dart';
 /// Horizontal category selector. Tapping a pill re-themes the entire app
 /// (the signature 360ms cross-fade); tapping again clears back to brand.
 class CategoryPillRow extends ConsumerWidget {
-  const CategoryPillRow({super.key});
+  const CategoryPillRow({super.key, this.onCategorySelected});
+
+  /// Called after a tap with the resulting active category (which is
+  /// [PlaceCategory.home] when tapping the already-selected pill clears
+  /// it back to brand). Home uses this to also push Category browse;
+  /// Map and Category browse leave it null to just filter in place.
+  final ValueChanged<PlaceCategory>? onCategorySelected;
 
   static IconData iconOf(PlaceCategory c) => switch (c) {
         PlaceCategory.home => Icons.explore_rounded,
@@ -28,7 +34,9 @@ class CategoryPillRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final active = ref.watch(activeCategoryProvider);
-    final scheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
     final l10n = context.l10n;
 
     return SizedBox(
@@ -46,17 +54,23 @@ class CategoryPillRow extends ConsumerWidget {
           return AnimatedContainer(
             duration: AppMotion.fast,
             child: Material(
-              color: selected ? scheme.primary : scheme.surfaceContainerLow,
+              color: selected
+                  ? (isDark ? seed.withValues(alpha: 0.16) : scheme.primary)
+                  : scheme.surfaceContainerLow,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppRadius.pill),
                 side: BorderSide(
-                    color:
-                        selected ? Colors.transparent : scheme.outlineVariant),
+                    color: selected
+                        ? (isDark ? seed : Colors.transparent)
+                        : scheme.outlineVariant),
               ),
               child: InkWell(
                 borderRadius: BorderRadius.circular(AppRadius.pill),
-                onTap: () =>
-                    ref.read(activeCategoryProvider.notifier).toggle(category),
+                onTap: () {
+                  ref.read(activeCategoryProvider.notifier).toggle(category);
+                  onCategorySelected
+                      ?.call(selected ? PlaceCategory.home : category);
+                },
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -64,12 +78,16 @@ class CategoryPillRow extends ConsumerWidget {
                     children: [
                       Icon(iconOf(category),
                           size: 18,
-                          color: selected ? scheme.onPrimary : seed),
+                          color: selected
+                              ? (isDark ? seed : scheme.onPrimary)
+                              : seed),
                       const SizedBox(width: 6),
                       Text(
                         category.localizedLabel(l10n),
                         style: AppTypography.overline(
-                          selected ? scheme.onPrimary : scheme.onSurfaceVariant,
+                          selected
+                              ? (isDark ? seed : scheme.onPrimary)
+                              : scheme.onSurfaceVariant,
                         ),
                       ),
                     ],
