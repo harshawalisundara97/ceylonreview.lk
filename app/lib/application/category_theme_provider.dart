@@ -20,10 +20,11 @@ final activeCategoryProvider =
     NotifierProvider<ActiveCategoryNotifier, PlaceCategory>(
         ActiveCategoryNotifier.new);
 
-/// User's light/dark preference; null follows the system setting.
+/// User's light/dark preference. Defaults to dark (the Nocturne redesign);
+/// light is still available via the Profile toggle.
 class ThemeModeNotifier extends Notifier<ThemeMode> {
   @override
-  ThemeMode build() => ThemeMode.system;
+  ThemeMode build() => ThemeMode.dark;
 
   void set(ThemeMode mode) => state = mode;
 }

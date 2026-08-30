@@ -12,9 +12,15 @@ import '../../domain/models/place_filters.dart';
 /// Categories where a price level is meaningful. Hidden for temples, nature,
 /// and beach — those places aren't priced.
 bool categoryHasPricing(PlaceCategory category) => switch (category) {
-      PlaceCategory.food || PlaceCategory.hotels || PlaceCategory.shopping => true,
+      PlaceCategory.food ||
+      PlaceCategory.hotels ||
+      PlaceCategory.shopping =>
+        true,
       PlaceCategory.home => true,
-      PlaceCategory.nature || PlaceCategory.beach || PlaceCategory.temples => false,
+      PlaceCategory.nature ||
+      PlaceCategory.beach ||
+      PlaceCategory.temples =>
+        false,
     };
 
 Future<void> showFiltersSheet(
@@ -39,85 +45,95 @@ class _FiltersSheet extends ConsumerWidget {
     final notifier = ref.read(placeFiltersProvider.notifier);
     final location = ref.watch(locationProvider);
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-          AppSpacing.gutter, 0, AppSpacing.gutter, AppSpacing.xl),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(l10n.filters, style: theme.textTheme.headlineSmall),
-          const SizedBox(height: AppSpacing.lg),
-          if (categoryHasPricing(category)) ...[
-            Text(l10n.price, style: theme.textTheme.titleSmall),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+            AppSpacing.gutter, 0, AppSpacing.gutter, AppSpacing.xl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.filters, style: theme.textTheme.headlineSmall),
+            const SizedBox(height: AppSpacing.lg),
+            if (categoryHasPricing(category)) ...[
+              Text(l10n.price, style: theme.textTheme.titleSmall),
+              const SizedBox(height: AppSpacing.sm),
+              Wrap(
+                spacing: AppSpacing.sm,
+                children: [
+                  for (final level in [1, 2, 3])
+                    ChoiceChip(
+                      label: Text('₨' * level),
+                      selected: filters.priceLevel == level,
+                      onSelected: (selected) =>
+                          notifier.setPriceLevel(selected ? level : null),
+                    ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.lg),
+            ],
+            Text(l10n.hours, style: theme.textTheme.titleSmall),
+            const SizedBox(height: AppSpacing.sm),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.openNow),
+              value: filters.openNowOnly,
+              onChanged: notifier.setOpenNowOnly,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(l10n.sortBy, style: theme.textTheme.titleSmall),
             const SizedBox(height: AppSpacing.sm),
             Wrap(
               spacing: AppSpacing.sm,
               children: [
-                for (final level in [1, 2, 3])
+                for (final sort in PlaceSort.values)
                   ChoiceChip(
-                    label: Text('₨' * level),
-                    selected: filters.priceLevel == level,
-                    onSelected: (selected) =>
-                        notifier.setPriceLevel(selected ? level : null),
+                    label: Text(sort.label),
+                    selected: filters.sortBy == sort,
+                    onSelected: (selected) {
+                      if (!selected) return;
+                      if (sort == PlaceSort.distance &&
+                          location.valueOrNull == null) {
+                        ref.read(locationProvider.notifier).refresh();
+                      }
+                      notifier.setSortBy(sort);
+                    },
                   ),
               ],
             ),
-            const SizedBox(height: AppSpacing.lg),
-          ],
-          Text(l10n.hours, style: theme.textTheme.titleSmall),
-          const SizedBox(height: AppSpacing.sm),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(l10n.openNow),
-            value: filters.openNowOnly,
-            onChanged: notifier.setOpenNowOnly,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(l10n.sortBy, style: theme.textTheme.titleSmall),
-          const SizedBox(height: AppSpacing.sm),
-          Wrap(
-            spacing: AppSpacing.sm,
-            children: [
-              for (final sort in PlaceSort.values)
-                ChoiceChip(
-                  label: Text(sort.label),
-                  selected: filters.sortBy == sort,
-                  onSelected: (selected) {
-                    if (!selected) return;
-                    if (sort == PlaceSort.distance && location.valueOrNull == null) {
-                      ref.read(locationProvider.notifier).refresh();
-                    }
-                    notifier.setSortBy(sort);
-                  },
-                ),
+            if (filters.sortBy == PlaceSort.distance &&
+                location.valueOrNull == null &&
+                !location.isLoading) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                l10n.locationAccessSortByDistance,
+                style: theme.textTheme.bodySmall
+                    ?.copyWith(color: theme.colorScheme.error),
+              ),
             ],
-          ),
-          if (filters.sortBy == PlaceSort.distance &&
-              location.valueOrNull == null &&
-              !location.isLoading) ...[
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              l10n.locationAccessSortByDistance,
-              style: theme.textTheme.bodySmall
-                  ?.copyWith(color: theme.colorScheme.error),
+            const SizedBox(height: AppSpacing.lg),
+            Row(
+              children: [
+                TextButton(
+                  onPressed: notifier.reset,
+                  child: Text(l10n.reset),
+                ),
+                const Spacer(),
+                FilledButton(
+                  // The theme's default minimumSize is Size.fromHeight(...),
+                  // an infinite width meant for full-bleed buttons. This
+                  // button sits inline next to a Spacer, which itself gives
+                  // an unbounded width — combined, that produces an invalid
+                  // infinite-width layout. Give it a finite floor instead.
+                  style: FilledButton.styleFrom(
+                      minimumSize: const Size(88, AppSpacing.minTap)),
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(l10n.apply),
+                ),
+              ],
             ),
           ],
-          const SizedBox(height: AppSpacing.lg),
-          Row(
-            children: [
-              TextButton(
-                onPressed: notifier.reset,
-                child: Text(l10n.reset),
-              ),
-              const Spacer(),
-              FilledButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(l10n.apply),
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }

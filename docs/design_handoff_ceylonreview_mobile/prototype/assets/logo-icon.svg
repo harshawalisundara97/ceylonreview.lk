@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 72" width="64" height="72" role="img" aria-label="Ceylon Review icon">
+  <path d="M32 2C19.297 2 9 12.297 9 25c0 17.5 23 45 23 45s23-27.5 23-45C55 12.297 44.703 2 32 2z" fill="#0F6E56"></path>
+  <ellipse cx="32" cy="20" rx="5.5" ry="9" fill="white" opacity="0.95" transform="rotate(0,32,26)"></ellipse>
+  <ellipse cx="32" cy="20" rx="5.5" ry="9" fill="white" opacity="0.80" transform="rotate(72,32,26)"></ellipse>
+  <ellipse cx="32" cy="20" rx="5.5" ry="9" fill="white" opacity="0.80" transform="rotate(144,32,26)"></ellipse>
+  <ellipse cx="32" cy="20" rx="5.5" ry="9" fill="white" opacity="0.80" transform="rotate(216,32,26)"></ellipse>
+  <ellipse cx="32" cy="20" rx="5.5" ry="9" fill="white" opacity="0.80" transform="rotate(288,32,26)"></ellipse>
+  <circle cx="32" cy="26" r="5" fill="#0F6E56"></circle>
+</svg>

@@ -30,7 +30,10 @@ class AppLocalizationsTa extends AppLocalizations {
   String get navFeed => 'ஃபீடு';
 
   @override
-  String get navProfile => 'சுயவிவரம்';
+  String get navProfile => 'நீங்கள்';
+
+  @override
+  String get navSaved => 'சேமிக்கப்பட்டவை';
 
   @override
   String get name => 'பெயர்';
@@ -128,7 +131,20 @@ class AppLocalizationsTa extends AppLocalizations {
   String get whereToNext => 'இலங்கையில் அடுத்து எங்கே?';
 
   @override
-  String get searchHint => 'இடங்கள், கடற்கரைகள், உணவு தேடுங்கள்…';
+  String get searchHint => 'கடற்கரைகள், கொத்து, அருவிகள்…';
+
+  @override
+  String homeKicker(String weekday) {
+    return '$weekday · இலங்கை';
+  }
+
+  @override
+  String homeGreeting(String name) {
+    return 'வணக்கம், $name — இன்று எங்கே?';
+  }
+
+  @override
+  String get homeGreetingGuest => 'இன்று எங்கே?';
 
   @override
   String get trendingThisWeek => 'இந்த வாரம் பிரபலமானவை';
@@ -381,6 +397,12 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get map => 'வரைபடம்';
+
+  @override
+  String get search => 'தேடல்';
+
+  @override
+  String get comingSoon => 'விரைவில் வருகிறது.';
 
   @override
   String get couldNotLoadMap => 'வரைபடத்தை ஏற்ற முடியவில்லை.';

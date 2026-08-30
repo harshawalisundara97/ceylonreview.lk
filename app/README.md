@@ -8,13 +8,13 @@ Sri Lanka's all-in-one place review app — discover, rate and review restaurant
 - **6 themed categories** — Food, Nature, Beach, Hotels, Temples, Shopping, each with its own colour palette that re-skins the UI with an animated cross-fade
 - **Star ratings & reviews** — interactive star picker, review tiles with author avatars, one-decimal rating display (e.g. `4.7`)
 - **Interactive map** — browse places on a map of Sri Lanka with category-coloured pins
-- **Light & dark mode** — warm greenish off-white light surfaces and green-charcoal dark surfaces, per the Ceylon Review design system
+- **Light & dark mode** — warm greenish off-white light surfaces (Ceylon Green theme, default); dark mode uses the "Nocturne" design system's indigo-charcoal surfaces and purple accent (see `docs/design_handoff_ceylonreview_mobile/`), toggled from Profile
 - **Real Sri Lankan places** — the database is seeded with Ministry of Crab, Mirissa Beach, Temple of the Tooth, Sinharaja Forest, Heritance Kandalama, Odel and more, each with a real, freely-licensed photo (sourced from Wikimedia Commons) instead of a placeholder
 - **Cloud backend (Supabase)** — real email/password sign-up & sign-in with persisted sessions, places and reviews stored in PostgreSQL, live ratings recomputed by a database trigger on every new review, and Row Level Security guarding writes
 - **Search & discovery filters** — filter by price level and "open now", sort by rating/price/distance, and see live distance ("2.3 km") from your current location on place cards
 - **Favorites** — bookmark places from any card or the detail screen; saved places appear under "Your Favorites" on your profile
 - **Add a Place** — signed-in users add missing places with full details, a camera/gallery photo, and a map-pinned location (or their current position); community places are public instantly and badged "COMMUNITY"
-- **Leaderboard** — every review earns 10 points; a "Ranks" tab shows an animated podium for the top 3 and a live, all-time ranked list for everyone, with daily rank-change indicators
+- **Leaderboard** — every review earns 10 points; reachable from the Profile ("You") tab, showing an animated podium for the top 3 and a live, all-time ranked list for everyone, with daily rank-change indicators
 - **3 languages** — English, Sinhala (සිංහල), Tamil (தமிழ்) — switchable in-app, persisted
 - **Content moderation** — users can report reviews (spam/inappropriate/fake/other); admins can delete any review or place and resolve reports from a dedicated Moderation screen
 
