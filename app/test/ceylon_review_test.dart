@@ -1266,7 +1266,7 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      expect(find.text('Photos'), findsOneWidget);
+      expect(find.text('Traveller photos'), findsOneWidget);
     });
 
     testWidgets(
@@ -1296,7 +1296,7 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      expect(find.text('Photos'), findsNothing);
+      expect(find.text('Traveller photos'), findsNothing);
     });
 
     testWidgets(
@@ -1350,6 +1350,34 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.delete_outline_rounded), findsNothing);
+    });
+
+    testWidgets('PlaceDetailScreen hero bookmark button toggles favorite',
+        (tester) async {
+      final repo = SampleFavoritesRepository();
+      final placesRepo = SamplePlacesRepository();
+      final place = (await placesRepo.fetchAll()).first;
+
+      await tester.pumpWidget(themed(
+        PlaceDetailScreen(placeId: place.id),
+        overrides: [
+          placesRepositoryProvider.overrideWithValue(placesRepo),
+          reviewsRepositoryProvider
+              .overrideWithValue(SampleReviewsRepository(seed: [])),
+          favoritesRepositoryProvider.overrideWithValue(repo),
+          authProvider.overrideWith(() => _FakeAuthNotifier(const AppUser(
+              id: 'user-1', name: 'Test User', email: 't@example.com'))),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.bookmark_border_rounded), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.bookmark_border_rounded));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.bookmark_rounded), findsOneWidget);
+      expect(await repo.fetchMyFavoriteIds(), {place.id});
     });
 
     testWidgets('Profile shows the Moderation row only for admins',

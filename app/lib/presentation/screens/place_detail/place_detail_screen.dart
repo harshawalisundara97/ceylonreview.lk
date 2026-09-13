@@ -7,6 +7,7 @@ import '../../../application/places_provider.dart';
 import '../../../application/repository_providers.dart';
 import '../../../application/reviews_provider.dart';
 import '../../../core/l10n_ext.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/app_typography.dart';
@@ -62,15 +63,16 @@ class _PlaceDetailBody extends ConsumerWidget {
         (ref.watch(myFavoriteIdsProvider).valueOrNull ?? const {})
             .contains(place.id);
     final isAdmin = ref.watch(isAdminProvider).valueOrNull ?? false;
+    final seed = AppColors.seedOf(place.category);
 
     return Scaffold(
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 280,
+            expandedHeight: 322,
             pinned: true,
             backgroundColor: theme.colorScheme.surface,
-            leading: _CircleBackButton(),
+            automaticallyImplyLeading: false,
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
                 fit: StackFit.expand,
@@ -85,9 +87,48 @@ class _PlaceDetailBody extends ConsumerWidget {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.bottomCenter,
-                        end: Alignment(0, -0.2),
-                        colors: [Color(0xA6000000), Colors.transparent],
+                        end: Alignment(0, -0.6),
+                        colors: [
+                          Color(0xCC000000),
+                          Color(0x66000000),
+                          Colors.transparent,
+                        ],
+                        stops: [0.0, 0.35, 0.75],
                       ),
+                    ),
+                  ),
+                  Positioned(
+                    top: AppSpacing.xl,
+                    left: AppSpacing.gutter,
+                    right: AppSpacing.gutter,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _HeroCircleButton(
+                          icon: Icons.arrow_back_rounded,
+                          onTap: () => Navigator.of(context).maybePop(),
+                        ),
+                        Row(
+                          children: [
+                            _HeroCircleButton(
+                              icon: isFavorite
+                                  ? Icons.bookmark_rounded
+                                  : Icons.bookmark_border_rounded,
+                              iconColor: isFavorite ? seed : Colors.white,
+                              onTap: () => ref
+                                  .read(myFavoriteIdsProvider.notifier)
+                                  .toggle(place.id),
+                            ),
+                            const SizedBox(width: AppSpacing.sm),
+                            _HeroCircleButton(
+                              icon: Icons.ios_share_rounded,
+                              onTap: () => ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                      content: Text(context.l10n.share))),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                   Positioned(
@@ -100,7 +141,14 @@ class _PlaceDetailBody extends ConsumerWidget {
                         Row(
                           children: [
                             Text(place.category.localizedLabel(context.l10n),
-                                style: AppTypography.overline(Colors.white)),
+                                style: AppTypography.overline(seed)),
+                            const SizedBox(width: AppSpacing.sm),
+                            Flexible(
+                              child: Text(place.district,
+                                  overflow: TextOverflow.ellipsis,
+                                  style:
+                                      AppTypography.overline(Colors.white70)),
+                            ),
                             if (place.addedBy != null) ...[
                               const SizedBox(width: AppSpacing.sm),
                               Text('· ${context.l10n.community}',
@@ -142,24 +190,6 @@ class _PlaceDetailBody extends ConsumerWidget {
                         ],
                       ),
                       const Spacer(),
-                      Icon(Icons.place_rounded,
-                          size: 18, color: theme.colorScheme.primary),
-                      const SizedBox(width: 2),
-                      Text(place.district,
-                          style: theme.textTheme.titleSmall),
-                      IconButton(
-                        icon: Icon(
-                          isFavorite
-                              ? Icons.favorite_rounded
-                              : Icons.favorite_border_rounded,
-                          color: isFavorite
-                              ? Colors.redAccent
-                              : theme.colorScheme.outline,
-                        ),
-                        onPressed: () => ref
-                            .read(myFavoriteIdsProvider.notifier)
-                            .toggle(place.id),
-                      ),
                       if (isAdmin)
                         IconButton(
                           icon: const Icon(Icons.delete_outline_rounded),
@@ -170,37 +200,43 @@ class _PlaceDetailBody extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: AppSpacing.lg),
-                  Text(place.description, style: theme.textTheme.bodyLarge),
+                  Text(place.description, style: theme.textTheme.bodyMedium),
                   const SizedBox(height: AppSpacing.xl),
                   Row(
                     children: [
                       Expanded(
-                        child: FilledButton.icon(
-                          icon: const Icon(Icons.rate_review_rounded),
-                          label: Text(context.l10n.writeAReview),
+                        child: FilledButton(
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) =>
                                   WriteReviewScreen(initialPlaceId: place.id),
                             ),
                           ),
+                          child: Text(context.l10n.writeAReview),
                         ),
                       ),
                       const SizedBox(width: AppSpacing.md),
                       Expanded(
-                        child: OutlinedButton.icon(
-                          icon: const Icon(Icons.directions_rounded),
-                          label: Text(context.l10n.getDirections),
+                        child: OutlinedButton(
                           onPressed: () => ScaffoldMessenger.of(context)
                               .showSnackBar(SnackBar(
                                   content: Text(
                                       context.l10n.directionsOpenInMapTab))),
+                          child: Text(context.l10n.getDirections),
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.xl),
-                  Text(context.l10n.reviews, style: theme.textTheme.titleLarge),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(context.l10n.whatPeopleSaid,
+                          style: theme.textTheme.titleLarge),
+                      Text(context.l10n.mostHelpful,
+                          style: theme.textTheme.bodySmall),
+                    ],
+                  ),
                   reviews.when(
                     loading: () => const Padding(
                       padding: EdgeInsets.all(AppSpacing.xl),
@@ -222,7 +258,16 @@ class _PlaceDetailBody extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (reviewPhotos.isNotEmpty) ...[
-                            Text(context.l10n.photos, style: theme.textTheme.titleLarge),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(context.l10n.travellerPhotos,
+                                    style: theme.textTheme.titleLarge),
+                                Text('${photos.length}',
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                        color: theme.colorScheme.secondary)),
+                              ],
+                            ),
                             const SizedBox(height: AppSpacing.sm),
                             SizedBox(
                               height: 96,
@@ -244,8 +289,8 @@ class _PlaceDetailBody extends ConsumerWidget {
                                       errorBuilder: (_, __, ___) => Container(
                                         width: 96,
                                         height: 96,
-                                        color: theme
-                                            .colorScheme.surfaceContainerHighest,
+                                        color: theme.colorScheme
+                                            .surfaceContainerHighest,
                                       ),
                                     ),
                                   ),
@@ -263,7 +308,18 @@ class _PlaceDetailBody extends ConsumerWidget {
                             Column(
                               children: [
                                 for (final review in list)
-                                  ReviewTile(review: review),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        bottom: AppSpacing.md),
+                                    child: Card(
+                                      margin: EdgeInsets.zero,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: AppSpacing.md),
+                                        child: ReviewTile(review: review),
+                                      ),
+                                    ),
+                                  ),
                               ],
                             ),
                         ],
@@ -315,19 +371,30 @@ Future<void> _confirmDeletePlace(
   }
 }
 
-/// Back button legible over the hero photo.
-class _CircleBackButton extends StatelessWidget {
+/// Icon button legible over the hero photo (back, save, share).
+class _HeroCircleButton extends StatelessWidget {
+  const _HeroCircleButton({
+    required this.icon,
+    required this.onTap,
+    this.iconColor = Colors.white,
+  });
+
+  final IconData icon;
+  final Color iconColor;
+  final VoidCallback onTap;
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacing.sm),
-      child: Material(
-        color: Colors.black38,
-        shape: const CircleBorder(),
-        child: InkWell(
-          customBorder: const CircleBorder(),
-          onTap: () => Navigator.of(context).maybePop(),
-          child: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+    return Material(
+      color: Colors.black38,
+      shape: CircleBorder(
+          side: BorderSide(color: Colors.white.withValues(alpha: 0.16))),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.sm),
+          child: Icon(icon, color: iconColor, size: 20),
         ),
       ),
     );

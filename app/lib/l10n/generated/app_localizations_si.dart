@@ -203,6 +203,18 @@ class AppLocalizationsSi extends AppLocalizations {
   String get photos => 'ඡායාරූප';
 
   @override
+  String get travellerPhotos => 'සංචාරකයන්ගේ ඡායාරූප';
+
+  @override
+  String get whatPeopleSaid => 'අය කීවේ මොකක්ද';
+
+  @override
+  String get mostHelpful => 'වඩාත් ප්‍රයෝජනවත්';
+
+  @override
+  String get share => 'බෙදාගන්න';
+
+  @override
   String get hours => 'වේලාවන්';
 
   @override

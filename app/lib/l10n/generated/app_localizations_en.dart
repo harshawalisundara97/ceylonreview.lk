@@ -203,6 +203,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get photos => 'Photos';
 
   @override
+  String get travellerPhotos => 'Traveller photos';
+
+  @override
+  String get whatPeopleSaid => 'What people said';
+
+  @override
+  String get mostHelpful => 'Most helpful';
+
+  @override
+  String get share => 'Share';
+
+  @override
   String get hours => 'Hours';
 
   @override
