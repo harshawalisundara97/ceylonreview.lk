@@ -454,6 +454,30 @@ abstract class AppLocalizations {
   /// **'Photos'**
   String get photos;
 
+  /// No description provided for @travellerPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Traveller photos'**
+  String get travellerPhotos;
+
+  /// No description provided for @whatPeopleSaid.
+  ///
+  /// In en, this message translates to:
+  /// **'What people said'**
+  String get whatPeopleSaid;
+
+  /// No description provided for @mostHelpful.
+  ///
+  /// In en, this message translates to:
+  /// **'Most helpful'**
+  String get mostHelpful;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
+
   /// No description provided for @hours.
   ///
   /// In en, this message translates to:

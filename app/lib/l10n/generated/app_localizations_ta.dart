@@ -205,6 +205,18 @@ class AppLocalizationsTa extends AppLocalizations {
   String get photos => 'புகைப்படங்கள்';
 
   @override
+  String get travellerPhotos => 'பயணிகளின் புகைப்படங்கள்';
+
+  @override
+  String get whatPeopleSaid => 'மக்கள் சொன்னது';
+
+  @override
+  String get mostHelpful => 'மிகவும் பயனுள்ளது';
+
+  @override
+  String get share => 'பகிர்';
+
+  @override
   String get hours => 'நேரங்கள்';
 
   @override
