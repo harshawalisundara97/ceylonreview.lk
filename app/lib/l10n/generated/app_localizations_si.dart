@@ -438,6 +438,33 @@ class AppLocalizationsSi extends AppLocalizations {
   String get categoryShopping => 'සාප්පු';
 
   @override
+  String nPlaces(String count) {
+    return 'ස්ථාන $count';
+  }
+
+  @override
+  String get categoryBlurbAll => 'දිවයින පුරා සංචාරකයින් ඇගයූ සියලු ස්ථාන.';
+
+  @override
+  String get categoryBlurbFood => 'බත් සහ කරි, කොත්තු කඩ සහ මුහුදු ආහාර.';
+
+  @override
+  String get categoryBlurbNature => 'වැසි වනාන්තර, දිය ඇලි සහ කඳුකර මං.';
+
+  @override
+  String get categoryBlurbBeaches => 'රන්වන් වෙරළ, රළ සහ නිසංසල බොක්ක.';
+
+  @override
+  String get categoryBlurbHotels =>
+      'වෙරළ කැබානා සිට කඳුකර බංගලා දක්වා නවාතැන්.';
+
+  @override
+  String get categoryBlurbTemples => 'පුරාණ ස්තූප, ගුහා විහාර සහ පූජනීය ස්ථාන.';
+
+  @override
+  String get categoryBlurbShopping => 'වෙළඳපොළ, බුටීක් සහ අත්කම් නිෂ්පාදන.';
+
+  @override
   String get placesYoullLove => 'ඔබ ප්‍රිය කරන ස්ථාන';
 
   @override
