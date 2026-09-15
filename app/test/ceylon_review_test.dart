@@ -902,6 +902,15 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(CategoryScreen), findsOneWidget);
+      expect(find.text('Golden coastlines, surf breaks and quiet coves.'),
+          findsOneWidget);
+      expect(find.textContaining(RegExp(r'^\d+ places · \d+ reviews$')),
+          findsOneWidget);
+      expect(find.byType(PlaceCard), findsWidgets);
+
+      await tester.tap(find.byIcon(Icons.chevron_left_rounded));
+      await tester.pumpAndSettle();
+      expect(find.byType(CategoryScreen), findsNothing);
     });
 
     testWidgets('HomeScreen search bar filter icon opens the filters sheet',

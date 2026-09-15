@@ -444,6 +444,38 @@ class AppLocalizationsTa extends AppLocalizations {
   String get categoryShopping => 'கடைத்தொகுப்பு';
 
   @override
+  String nPlaces(String count) {
+    return '$count இடங்கள்';
+  }
+
+  @override
+  String get categoryBlurbAll =>
+      'தீவு முழுவதும் பயணிகள் மதிப்பிட்ட அனைத்து இடங்களும்.';
+
+  @override
+  String get categoryBlurbFood => 'சோறு கறி, கொத்து கடைகள் மற்றும் கடல் உணவு.';
+
+  @override
+  String get categoryBlurbNature =>
+      'மழைக்காடுகள், நீர்வீழ்ச்சிகள் மற்றும் மலைப்பாதைகள்.';
+
+  @override
+  String get categoryBlurbBeaches =>
+      'பொன்னிற கடற்கரைகள், அலைகள் மற்றும் அமைதியான குடாக்கள்.';
+
+  @override
+  String get categoryBlurbHotels =>
+      'கடற்கரை குடில்கள் முதல் மலைநாட்டு பங்களாக்கள் வரை தங்குமிடங்கள்.';
+
+  @override
+  String get categoryBlurbTemples =>
+      'பழமையான தூபிகள், குகைக் கோவில்கள் மற்றும் புனித தலங்கள்.';
+
+  @override
+  String get categoryBlurbShopping =>
+      'சந்தைகள், கடைகள் மற்றும் கைவினைப் பொருட்கள்.';
+
+  @override
   String get placesYoullLove => 'நீங்கள் விரும்பும் இடங்கள்';
 
   @override

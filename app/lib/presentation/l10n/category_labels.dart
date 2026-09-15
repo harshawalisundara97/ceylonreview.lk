@@ -14,6 +14,16 @@ extension PlaceCategoryLabels on PlaceCategory {
         PlaceCategory.shopping => l10n.categoryShopping,
       };
 
+  String localizedBlurb(AppLocalizations l10n) => switch (this) {
+        PlaceCategory.home => l10n.categoryBlurbAll,
+        PlaceCategory.food => l10n.categoryBlurbFood,
+        PlaceCategory.nature => l10n.categoryBlurbNature,
+        PlaceCategory.beach => l10n.categoryBlurbBeaches,
+        PlaceCategory.hotels => l10n.categoryBlurbHotels,
+        PlaceCategory.temples => l10n.categoryBlurbTemples,
+        PlaceCategory.shopping => l10n.categoryBlurbShopping,
+      };
+
   /// ALL-CAPS chip/overline style (no-op for Sinhala/Tamil scripts).
   String localizedLabel(AppLocalizations l10n) => switch (this) {
         PlaceCategory.home => l10n.categoryAll.toUpperCase(),
