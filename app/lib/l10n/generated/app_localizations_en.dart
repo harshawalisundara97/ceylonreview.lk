@@ -433,6 +433,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get categoryShopping => 'Shopping';
 
   @override
+  String nPlaces(String count) {
+    return '$count places';
+  }
+
+  @override
+  String get categoryBlurbAll =>
+      'Every reviewed spot across the island, rated by travellers.';
+
+  @override
+  String get categoryBlurbFood =>
+      'Rice and curry, kottu stalls and seaside seafood worth the detour.';
+
+  @override
+  String get categoryBlurbNature =>
+      'Rainforests, waterfalls and hill-country trails.';
+
+  @override
+  String get categoryBlurbBeaches =>
+      'Golden coastlines, surf breaks and quiet coves.';
+
+  @override
+  String get categoryBlurbHotels =>
+      'Places to stay, from beach cabanas to hill-country bungalows.';
+
+  @override
+  String get categoryBlurbTemples =>
+      'Ancient stupas, cave temples and sacred sites.';
+
+  @override
+  String get categoryBlurbShopping =>
+      'Markets, boutiques and handicrafts to bring home.';
+
+  @override
   String get placesYoullLove => 'Places You\'ll Love';
 
   @override

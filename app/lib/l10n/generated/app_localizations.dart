@@ -892,6 +892,54 @@ abstract class AppLocalizations {
   /// **'Shopping'**
   String get categoryShopping;
 
+  /// No description provided for @nPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} places'**
+  String nPlaces(String count);
+
+  /// No description provided for @categoryBlurbAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Every reviewed spot across the island, rated by travellers.'**
+  String get categoryBlurbAll;
+
+  /// No description provided for @categoryBlurbFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Rice and curry, kottu stalls and seaside seafood worth the detour.'**
+  String get categoryBlurbFood;
+
+  /// No description provided for @categoryBlurbNature.
+  ///
+  /// In en, this message translates to:
+  /// **'Rainforests, waterfalls and hill-country trails.'**
+  String get categoryBlurbNature;
+
+  /// No description provided for @categoryBlurbBeaches.
+  ///
+  /// In en, this message translates to:
+  /// **'Golden coastlines, surf breaks and quiet coves.'**
+  String get categoryBlurbBeaches;
+
+  /// No description provided for @categoryBlurbHotels.
+  ///
+  /// In en, this message translates to:
+  /// **'Places to stay, from beach cabanas to hill-country bungalows.'**
+  String get categoryBlurbHotels;
+
+  /// No description provided for @categoryBlurbTemples.
+  ///
+  /// In en, this message translates to:
+  /// **'Ancient stupas, cave temples and sacred sites.'**
+  String get categoryBlurbTemples;
+
+  /// No description provided for @categoryBlurbShopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Markets, boutiques and handicrafts to bring home.'**
+  String get categoryBlurbShopping;
+
   /// No description provided for @placesYoullLove.
   ///
   /// In en, this message translates to:
