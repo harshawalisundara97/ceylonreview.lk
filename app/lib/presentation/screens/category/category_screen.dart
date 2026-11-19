@@ -30,7 +30,7 @@ class CategoryScreen extends ConsumerWidget {
     final tokens = theme.extension<CeylonTokens>()!;
     final category = ref.watch(activeCategoryProvider);
     final places = ref.watch(filteredPlacesProvider(category));
-    final position = ref.watch(locationProvider).valueOrNull;
+    final position = ref.watch(locationProvider).value;
     final from = position == null
         ? null
         : latlong.LatLng(position.latitude, position.longitude);

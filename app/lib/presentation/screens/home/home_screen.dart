@@ -216,7 +216,7 @@ class _MosaicGrid extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final category = ref.watch(activeCategoryProvider);
     final places = ref.watch(filteredPlacesProvider(category));
-    final position = ref.watch(locationProvider).valueOrNull;
+    final position = ref.watch(locationProvider).value;
     final from = position == null
         ? null
         : latlong.LatLng(position.latitude, position.longitude);

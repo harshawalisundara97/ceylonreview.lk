@@ -46,7 +46,7 @@ final filteredPlacesProvider =
     FutureProvider.family<List<Place>, PlaceCategory>((ref, category) async {
   final places = await ref.watch(placesByCategoryProvider(category).future);
   final filters = ref.watch(placeFiltersProvider);
-  final position = ref.watch(locationProvider).valueOrNull;
+  final position = ref.watch(locationProvider).value;
   final from =
       position == null ? null : latlong.LatLng(position.latitude, position.longitude);
 

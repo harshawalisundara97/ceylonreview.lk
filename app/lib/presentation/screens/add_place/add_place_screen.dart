@@ -67,7 +67,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
 
   Future<void> _useCurrentLocation() async {
     await ref.read(locationProvider.notifier).refresh();
-    final position = ref.read(locationProvider).valueOrNull;
+    final position = ref.read(locationProvider).value;
     if (position == null) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

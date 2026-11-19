@@ -93,7 +93,7 @@ class _FiltersSheet extends ConsumerWidget {
                     onSelected: (selected) {
                       if (!selected) return;
                       if (sort == PlaceSort.distance &&
-                          location.valueOrNull == null) {
+                          location.value == null) {
                         ref.read(locationProvider.notifier).refresh();
                       }
                       notifier.setSortBy(sort);
@@ -102,7 +102,7 @@ class _FiltersSheet extends ConsumerWidget {
               ],
             ),
             if (filters.sortBy == PlaceSort.distance &&
-                location.valueOrNull == null &&
+                location.value == null &&
                 !location.isLoading) ...[
               const SizedBox(height: AppSpacing.sm),
               Text(

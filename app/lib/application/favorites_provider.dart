@@ -14,7 +14,7 @@ class FavoriteIdsNotifier extends AsyncNotifier<Set<String>> {
   /// Adds or removes [placeId], updating local state immediately and
   /// reverting if the backing repository call fails.
   Future<void> toggle(String placeId) async {
-    final current = state.valueOrNull ?? const <String>{};
+    final current = state.value ?? const <String>{};
     final wasFavorite = current.contains(placeId);
     final optimistic = {...current};
     wasFavorite ? optimistic.remove(placeId) : optimistic.add(placeId);
