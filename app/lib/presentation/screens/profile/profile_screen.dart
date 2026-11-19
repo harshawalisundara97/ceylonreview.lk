@@ -29,7 +29,7 @@ class ProfileScreen extends ConsumerWidget {
     final user = ref.watch(authProvider);
     final themeMode = ref.watch(themeModeProvider);
     final myReviews = ref.watch(myReviewsProvider);
-    final isAdmin = ref.watch(isAdminProvider).valueOrNull ?? false;
+    final isAdmin = ref.watch(isAdminProvider).value ?? false;
     final favoriteIds = ref.watch(myFavoriteIdsProvider);
     final placesAsync = ref.watch(allPlacesProvider);
 
@@ -111,7 +111,7 @@ class ProfileScreen extends ConsumerWidget {
                 child: Text(context.l10n.couldNotLoadYourFavorites),
               ),
               data: (ids) {
-                final places = (placesAsync.valueOrNull ?? [])
+                final places = (placesAsync.value ?? [])
                     .where((p) => ids.contains(p.id))
                     .toList();
                 if (places.isEmpty) {
@@ -170,7 +170,7 @@ class ProfileScreen extends ConsumerWidget {
                   );
                 }
                 final placeNames = {
-                  for (final p in placesAsync.valueOrNull ?? []) p.id: p.name,
+                  for (final p in placesAsync.value ?? []) p.id: p.name,
                 };
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

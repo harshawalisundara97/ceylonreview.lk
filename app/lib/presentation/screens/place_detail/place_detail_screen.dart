@@ -60,9 +60,9 @@ class _PlaceDetailBody extends ConsumerWidget {
     final tokens = theme.extension<CeylonTokens>()!;
     final reviews = ref.watch(reviewsForPlaceProvider(place.id));
     final isFavorite =
-        (ref.watch(myFavoriteIdsProvider).valueOrNull ?? const {})
+        (ref.watch(myFavoriteIdsProvider).value ?? const {})
             .contains(place.id);
-    final isAdmin = ref.watch(isAdminProvider).valueOrNull ?? false;
+    final isAdmin = ref.watch(isAdminProvider).value ?? false;
     final seed = AppColors.seedOf(place.category);
 
     return Scaffold(

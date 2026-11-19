@@ -30,7 +30,7 @@ class LeaderboardScreen extends ConsumerWidget {
           }
           final top = entries.take(3).toList();
           final rest = entries.skip(3).toList();
-          final myEntry = myRank.valueOrNull;
+          final myEntry = myRank.value;
           final showMyRankCard = myEntry != null && myEntry.rank > 3;
 
           return ListView(

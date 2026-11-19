@@ -22,7 +22,7 @@ final myReviewsProvider = FutureProvider<List<Review>>((ref) {
 /// Places the signed-in user has reviewed, mapped to their most recent
 /// rating for that place. Empty when signed out.
 final myReviewRatingsProvider = Provider<Map<String, int>>((ref) {
-  final reviews = ref.watch(myReviewsProvider).valueOrNull ?? const [];
+  final reviews = ref.watch(myReviewsProvider).value ?? const [];
   final map = <String, int>{};
   for (final r in reviews) {
     // Reviews are fetched newest-first, so the first occurrence per

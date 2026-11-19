@@ -40,7 +40,7 @@ class PlaceCard extends ConsumerWidget {
     final tokens = theme.extension<CeylonTokens>()!;
     final seed = AppColors.seedOf(place.category);
     final isFavorite =
-        (ref.watch(myFavoriteIdsProvider).valueOrNull ?? const {})
+        (ref.watch(myFavoriteIdsProvider).value ?? const {})
             .contains(place.id);
     final myRating = ref.watch(myReviewRatingsProvider)[place.id];
 

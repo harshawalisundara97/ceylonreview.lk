@@ -24,7 +24,7 @@ Sri Lanka's all-in-one place review app — discover, rate and review restaurant
 |---|---|
 | Framework | [Flutter](https://flutter.dev) (Material 3) |
 | Language | Dart |
-| State management | [flutter_riverpod](https://pub.dev/packages/flutter_riverpod) |
+| State management | [flutter_riverpod](https://pub.dev/packages/flutter_riverpod) 3.x |
 | Backend | [Supabase](https://supabase.com) — Auth (email/password), PostgreSQL, Row Level Security |
 | Backend SDK | [supabase_flutter](https://pub.dev/packages/supabase_flutter) |
 | Maps | [flutter_map](https://pub.dev/packages/flutter_map) + [latlong2](https://pub.dev/packages/latlong2) |

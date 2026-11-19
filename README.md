@@ -40,7 +40,7 @@ The production Flutter app lives in [`app/`](app/) — see [app/README.md](app/R
 |---|---|
 | Framework | Flutter (Material 3) |
 | Language | Dart |
-| State management | flutter_riverpod |
+| State management | flutter_riverpod 3.x |
 | Backend | Supabase (Auth + PostgreSQL + RLS) via supabase_flutter |
 | Maps | flutter_map + latlong2 |
 | Location | geolocator (device position for distance sort) |
